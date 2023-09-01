@@ -16,7 +16,7 @@ function AddressStaffDetail({ idStaff }) {
     setLoading(true);
     const timeout = setTimeout(() => {
       request.get(`/address/${id}`).then(response => {
-        setListAddress(response);
+        setListAddress(response.content);
         setLoading(false);
       }).catch(e => {
         console.log(e);

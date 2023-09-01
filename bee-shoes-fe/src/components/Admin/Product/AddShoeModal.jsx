@@ -3,75 +3,84 @@ import SelectField from "./SelectField";
 import * as request from "~/utils/httpRequest";
 import { toast } from "react-toastify";
 import swal from "sweetalert";
-import { Button, Col, Collapse, Input, Modal, Row, message } from "antd";
+import { Button, Col, Collapse, Form, Input, Modal, Row, Select, message } from "antd";
 import { FaPlus, FaPlusCircle } from "react-icons/fa";
+import { Option } from "antd/es/mentions";
 
 function AddShoeModal({ onAddSuccess }) {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedBrand, setSelectedBrand] = useState(null);
-  const [productName, setProductName] = useState(null);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [searchCate, setSearchCate] = useState(null);
+  const [cateList, setCateList] = useState([]);
+  const [searchBrand, setSearchBrand] = useState(null);
+  const [brandList, setBrandList] = useState([]);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const handleOk = (data) => {
+    console.log(data);
+    request.post('/shoe', { name: data.name , category: data.category, brand: data.brand}).then(response => {
+
+    }).catch(e => {
+      console.log(e)
+      if(e.response.status===500){
+        toast.error(e.response.data);
+      }
+      toast.error(e.response.data.message);
+    })
+    // setIsModalOpen(false);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const handleChangeProductName = (event) => {
-    setProductName(event.target.value);
-  };
+  useEffect(() => {
+    request.get('/category', { params: { name: searchCate } }).then((response) => {
+      setCateList(response.data);
+    });
+  }, [searchCate])
 
-  const handleCreateShoe = (e) => {
-    if (
-      productName === "" ||
-      productName === null ||
-      selectedCategory === null ||
-      selectedBrand === null
-    ) {
-      message.error("Vui lòng nhập đầy đủ thông tin!");
-    } else {
-      const data = {
-        name: productName,
-        category: selectedCategory,
-        brand: selectedBrand,
-      };
-      swal("Xác nhân thêm mới giày?", {
-        icon: "warning",
-        buttons: ["Không", "Đồng ý!"],
-      }).then((action) => {
-        if (action) {
-          request
-            .post("/shoe", data)
-            .then((response) => {
-              console.log(response);
-              if (response.status === 201) {
-                toast.success("Thêm thành công!");
-                onAddSuccess();
-              }
-            })
-            .catch((e) => {
-              if (e.response.status === 409)
-                toast.error(`${e.response.data.name} đã tồn tại!`);
-            });
-        }
-      });
-    }
-  };
+  useEffect(() => {
+    request.get('/brand', { params: { name: searchBrand } }).then((response) => {
+      setBrandList(response.data);
+    });
+  }, [searchBrand])
+
   return (
     <>
       <Button type="primary" onClick={showModal} className="bg-warning" size="large">
-        <FaPlusCircle/>
+        <FaPlusCircle />
       </Button>
-      <Modal title="Thêm giày" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <label className="mb-2">Nhập tên giày</label>
-        <Input />
-        <SelectField url={"/category"} label={"Danh mục"} onChange={setSelectedCategory} />
-        <SelectField url={"/brand"} label={"Thương hiệu"} onChange={setSelectedBrand} />
+      <Modal title="Thêm giày" open={isModalOpen} onCancel={handleCancel} footer="">
+        <Form onFinish={handleOk} layout="vertical">
+          <Form.Item label={"Tên giày"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!" }]}>
+            <Input placeholder="Nhập tên giày..." />
+          </Form.Item>
+          <Form.Item label={"Danh mục"} name={"category"} rules={[{ required: true, message: "Danh mục không được để trống!" }]}>
+            <Select className="me-2" showSearch optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchCate} placeholder="Chọn danh mục...">
+              <Option value="">-- Chọn danh mục --</Option>
+              {cateList.map((item) => (
+                <Option key={item.id} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item label={"Thương hiệu"} name={"brand"} rules={[{ required: true, message: "Thương hiệu không được để trống!" }]}>
+            <Select className="me-2" showSearch optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchBrand} placeholder="Chọn thương hiệu...">
+              <Option value="">-- Chọn thương hiệu --</Option>
+              {brandList.map((item) => (
+                <Option key={item.id} value={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <div className="d-flex justify-content-end">
+            <Button type="primary" htmlType="submit"><i className="fas fa-plus-circle me-1"></i> Thêm</Button>
+          </div>
+        </Form>
       </Modal>
 
     </>

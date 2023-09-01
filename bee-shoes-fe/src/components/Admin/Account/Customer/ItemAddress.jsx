@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Form, Input, Row, Switch } from 'antd'
+import { Button, Col, Form, Input, Row, Switch } from 'antd'
 import React from 'react'
 import { useState } from 'react';
 import { toast } from 'react-toastify';

@@ -3,6 +3,7 @@ package com.poly.beeshoes.infrastructure.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.poly.beeshoes.infrastructure.common.PageableRequest;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,6 +23,7 @@ public class AccountRequest extends PageableRequest {
     @NotNull(message = "Email không được để trống!")
     private String email;
     @NotNull(message = "SDT không được để trống!")
+    @Pattern(regexp = "^0[0-9]{9}$",message = "SDT không đúng định dạng!")
     private String phoneNumber;
     private MultipartFile avatar;
     @NotNull(message = "Ngày sinh không được để trống!")

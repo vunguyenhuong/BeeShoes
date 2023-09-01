@@ -31,7 +31,7 @@ public class ColorServiceImpl implements ColorService {
     @Override
     public Color create(Color color) {
         if (repository.existsByNameIgnoreCaseAndNameNot(color.getName(), "")) {
-            throw new RestApiException(color.getName() + " đã tồn tại!");
+            throw new RestApiException("Thuộc tính " + color.getName() + " đã tồn tại!");
         }
         return repository.save(color);
     }
@@ -40,7 +40,7 @@ public class ColorServiceImpl implements ColorService {
     public Color update(Long id, Color color) {
         Color old = this.getOne(id);
         if (repository.existsByNameIgnoreCaseAndNameNot(color.getName(), old.getName())) {
-            throw new RestApiException(color.getName() + " đã tồn tại!");
+            throw new RestApiException("Thuộc tính " + color.getName() + " đã tồn tại!");
         }
         old.setName(color.getName());
         return repository.save(old);

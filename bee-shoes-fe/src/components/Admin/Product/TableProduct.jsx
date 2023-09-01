@@ -21,6 +21,7 @@ function TableProduct({ props, handleChange }) {
         [colorName]: [...updatedItems],
       }).flat()
     );
+    console.log(groupByColor)
   };
 
   const handleChangeQuantity = (value, colorName, index) => {
@@ -48,6 +49,25 @@ function TableProduct({ props, handleChange }) {
     } else {
       const updatedItems = [...groupByColor[colorName]];
       updatedItems[index] = { ...updatedItems[index], price: value };
+      setGroupByColor({
+        ...groupByColor,
+        [colorName]: updatedItems,
+      });
+      handleChange(
+        Object.values({
+          ...groupByColor,
+          [colorName]: [...updatedItems],
+        }).flat()
+      );
+    }
+  };
+  const handleChangeWeight = (event, colorName, index) => {
+    const value = parseInt(event.target.value);
+    if (value < 1) {
+      toast.error("Cân nặng không hợp lệ!");
+    } else {
+      const updatedItems = [...groupByColor[colorName]];
+      updatedItems[index] = { ...updatedItems[index], weight: value };
       setGroupByColor({
         ...groupByColor,
         [colorName]: updatedItems,
@@ -88,7 +108,6 @@ function TableProduct({ props, handleChange }) {
       }
 
       groupedProducts[colorName].push(option);
-      console.log(groupedProducts);
     });
     setGroupByColor(groupedProducts);
   }, [props]);
@@ -99,30 +118,29 @@ function TableProduct({ props, handleChange }) {
         <Collapse.Panel key={0} header={"Danh sách các sản phẩm cùng loại"} className="border-bottom-0">
           <div className="table-responsive">
             <table className="table table-borderless text-nowrap">
-              <thead className="fw-semibold">
-                <tr>
-                  <td>#</td>
-                  <td>Sản phẩm</td>
-                  <td>Số lượng</td>
-                  <td>Đơn giá</td>
-                  <td>Danh mục</td>
-                  <td>Thương hiệu</td>
-                  <td>Loại đế</td>
-                  <td></td>
-                  <td>Ảnh</td>
-                </tr>
-              </thead>
               <tbody>
                 {Object.entries(groupByColor).map(([key, items], index) => (
                   <React.Fragment key={index}>
                     <tr>
                       <td
-                        colSpan="9"
+                        colSpan="10"
                         className="bg-secondary-subtle text-center fw-bold"
                       >
                         Các sản phẩm màu{" "}
                         <span className="text-lowercase">{key}</span>
                       </td>
+                    </tr>
+                    <tr className="fw-semibold">
+                      <td>#</td>
+                      <td>Sản phẩm</td>
+                      <td>Số lượng</td>
+                      <td>Đơn giá</td>
+                      <td>Cân nặng</td>
+                      <td>Danh mục</td>
+                      <td>Thương hiệu</td>
+                      <td>Loại đế</td>
+                      <td></td>
+                      <td>Ảnh</td>
                     </tr>
 
                     {items.map((option, idx) => (
@@ -139,11 +157,15 @@ function TableProduct({ props, handleChange }) {
                               </td>
                               <td width="100px">
                                 <InputNumber defaultValue={option.quantity} onChange={(value) =>
-                                    handleChangeQuantity(value, key, idx)} min={1}/>
+                                  handleChangeQuantity(value, key, idx)} min={1} />
                               </td>
                               <td width="100px">
                                 <Input defaultValue={option.price} onChange={(value) =>
-                                    handleChangePrice(value, key, idx)}/>
+                                  handleChangePrice(value, key, idx)} />
+                              </td>
+                              <td width="100px">
+                                <Input defaultValue={option.weight} onChange={(value) =>
+                                  handleChangeWeight(value, key, idx)} />
                               </td>
                               <td>{option.shoe.category.name}</td>
                               <td>{option.shoe.brand.name}</td>

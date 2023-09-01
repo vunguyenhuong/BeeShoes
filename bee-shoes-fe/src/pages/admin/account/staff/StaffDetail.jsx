@@ -1,10 +1,9 @@
-import { Breadcrumb, Button, Col, Divider, Form, Image, Input, Radio, Row } from "antd";
+import { Breadcrumb, Button, Col, Divider, Form, Input, Modal, Radio, Row } from "antd";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { FaHome, FaTrash } from "react-icons/fa";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import AddressStaffDetail from "~/components/Admin/Account/Staff/AddressStaffDetail";
-import GHNInfo from "~/components/GhnInfo";
 import Loading from "~/components/Loading/Loading";
 import BaseUI from "~/layouts/admin/BaseUI";
 import * as request from "~/utils/httpRequest";
@@ -31,24 +30,66 @@ function StaffDetail() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      request.get(`/staff/${id}`).then((response) => {
-        setStaff(response);
-        form.setFieldsValue({
-          username: response.username,
-          cccd: response.cccd,
-          name: response.name,
-          birthday: response.birthday,
-          gender: response.gender,
-          email: response.email,
-          phoneNumber: response.phoneNumber
-        });
-      }).catch((e) => {
-        console.log(e);
-      });
-      setLoading(false);
+      loadStaff(form,id);
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [id]);
+  }, [form, id]);
+
+  const loadStaff = (form,id) => {
+    request.get(`/staff/${id}`).then((response) => {
+      setStaff(response);
+      form.setFieldsValue({
+        username: response.username,
+        cccd: response.cccd,
+        name: response.name,
+        birthday: response.birthday,
+        gender: response.gender,
+        email: response.email,
+        phoneNumber: response.phoneNumber
+      });
+    }).catch((e) => {
+      console.log(e);
+    });
+    setLoading(false);
+  }
+
+  const handleUpdate = (data) => {
+    const formData = new FormData();
+    if (avatar !== null) {
+      formData.append("avatar", avatar);
+    }
+    formData.append("cccd", data.cccd);
+    formData.append("username", data.username);
+    formData.append("name", data.name);
+    formData.append("gender", data.gender);
+    formData.append("birthday", data.birthday);
+    formData.append("email", data.email);
+    formData.append("phoneNumber", data.phoneNumber);
+    Modal.confirm({
+      title: "Xác nhận",
+      maskClosable: true,
+      content: "Xác nhận cập nhật nhân viên ?",
+      okText: "Ok",
+      cancelText: "Cancel",
+      onOk: () => {
+        setLoading(true);
+        request.put(`/staff/${id}`, formData, { headers: { "Content-Type": "multipart/form-data", }, }).then((response) => {
+          console.log(response);
+          setLoading(true);
+          if (response.data.success) {
+            toast.success("Cập nhật thành công!");
+            setAvatar(null);
+            setPreviewUrl(null);
+            loadStaff(form,id);
+          }
+        }).catch((e) => {
+          console.log(e);
+          toast.error(e.response.data);
+          setLoading(false);
+        });
+      },
+    });
+  }
 
   if (loading) {
     return (
@@ -69,7 +110,7 @@ function StaffDetail() {
           <Col span={8}>
             <h6>Thông tin nhân viên</h6>
             <Divider />
-            <Form layout="vertical" form={form}>
+            <Form layout="vertical" form={form} onFinish={handleUpdate}>
               {previewUrl !== null ? (
                 <div className="text-center">
                   <img src={previewUrl} alt="Preview" style={{ width: "162px", height: "162px" }} className="mt-2 border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain" />
@@ -80,7 +121,7 @@ function StaffDetail() {
                   <div className="position-relative rounded-circle border border-warning mt-2 d-flex align-items-center justify-content-center" style={{ width: "162px", height: "162px" }}>
                     <Input type="file" accept="image/*" onChange={handleImageSelect} className="position-absolute opacity-0 py-5" />
                     <div className="text-center text-secondary">
-                      <Image src={staff.avatar} alt="Preview" style={{ width: "162px", height: "162px" }} className="border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain" />
+                      <img src={staff.avatar} alt="Preview" style={{ width: "162px", height: "162px" }} className="border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain" />
                     </div>
                   </div>
                 </div>
@@ -106,7 +147,7 @@ function StaffDetail() {
               <Form.Item label={"Email"} name={"email"} rules={[{ required: true, message: "Email không được để trống!" },]} >
                 <Input placeholder="Nhập email ..." />
               </Form.Item>
-              <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", },]} >
+              <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", }, { pattern: '^0[0-9]{9}$', message: "SDT không đúng định dạng!" }]} >
                 <Input placeholder="Nhập số điện thoại ..." />
               </Form.Item>
               <Form.Item className="float-end">
@@ -119,7 +160,7 @@ function StaffDetail() {
           <Col span={16}>
             <h6>Thông tin địa chỉ</h6>
             <Divider />
-            <AddressStaffDetail props={staff.addresses} />
+            <AddressStaffDetail idStaff={id} />
           </Col>
         </Row>
       </BaseUI>

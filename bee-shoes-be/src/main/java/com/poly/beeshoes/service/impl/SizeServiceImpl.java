@@ -29,7 +29,7 @@ public class SizeServiceImpl implements SizeService {
     @Override
     public Size create(Size size) {
         if (repository.existsByNameIgnoreCaseAndNameNot(size.getName(), "")) {
-            throw new RestApiException(size.getName() + " đã tồn tại!");
+            throw new RestApiException("Thuộc tính " + size.getName() + " đã tồn tại!");
         }
         return repository.save(size);
     }
@@ -38,7 +38,7 @@ public class SizeServiceImpl implements SizeService {
     public Size update(Long id, Size size) {
         Size old = this.getOne(id);
         if (repository.existsByNameIgnoreCaseAndNameNot(size.getName(), old.getName())) {
-            throw new RestApiException(size.getName() + " đã tồn tại!");
+            throw new RestApiException("Thuộc tính " + size.getName() + " đã tồn tại!");
         }
         old.setName(size.getName());
         return repository.save(old);

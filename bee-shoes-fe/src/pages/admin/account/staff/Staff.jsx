@@ -1,21 +1,7 @@
-import {
-  Button,
-  Col,
-  Divider,
-  Empty,
-  Input,
-  Modal,
-  Radio,
-  Row,
-  Select,
-  Space,
-  Table,
-  message,
-} from "antd";
-import Column from "antd/es/table/Column";
+import { Button, Col, Empty, Input, Modal, Radio, Row, Select, } from "antd";
 import React, { useEffect, useState } from "react";
-import { FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Pagination from "~/components/Pagination";
 import BaseUI from "~/layouts/admin/BaseUI";
 import FormatDate from "~/utils/FormatDate";
@@ -29,6 +15,8 @@ function Staff() {
   const [searchValue, setSearchValue] = useState("");
   const [staffStatus, setStaffStatus] = useState("");
   const [pageSize, setPageSize] = useState(3);
+  const indexOfLastItem = currentPage * pageSize;
+  const indexOfFirstItem = indexOfLastItem - pageSize;
 
   useEffect(() => {
     loadData();
@@ -62,9 +50,8 @@ function Staff() {
       maskClosable: true,
       content: (
         <div>
-          <p>{`Cập nhật trạng thái ${staff.name} thành ${
-            staff.deleted === false ? "Đã nghỉ" : "Đang làm"
-          } ?`}</p>
+          <p>{`Cập nhật trạng thái ${staff.name} thành ${staff.deleted === false ? "Đã nghỉ" : "Đang làm"
+            } ?`}</p>
           {staff.deleted === false ? (
             <Input
               placeholder="Nhập lý do nghỉ việc"
@@ -88,7 +75,7 @@ function Staff() {
           })
           .then((response) => {
             if (response.status === 200) {
-              message.success("Cập nhật thành công!");
+              toast.success("Cập nhật thành công!");
               loadData();
             }
           })
@@ -146,7 +133,8 @@ function Staff() {
               <td>#</td>
               <td>Tên</td>
               <td>Email</td>
-              <td>Ngày tạo</td>
+              <td>SDT</td>
+              <td>Ngày tham gia</td>
               <td>Trạng thái</td>
               <td>Thao tác</td>
             </tr>
@@ -161,18 +149,18 @@ function Staff() {
             ) : (
               staffList.map((item, index) => (
                 <tr key={item.id}>
-                  <td>{index + 1}</td>
+                  <td>{indexOfFirstItem + index + 1}</td>
                   <td>{item.name}</td>
                   <td>{item.email}</td>
+                  <td>{item.phoneNumber}</td>
                   <td>
                     <FormatDate date={item.createAt} />
                   </td>
                   <td>
                     <button
                       onClick={() => handleUpdateStatus(item)}
-                      class={`btn btn-sm border-0 fw-semibold ${
-                        item.deleted === true ? "text-danger" : "text-success"
-                      }`}
+                      class={`btn btn-sm border-0 fw-semibold ${item.deleted === true ? "text-danger" : "text-success"
+                        }`}
                     >
                       {item.deleted === true ? "Đã nghỉ" : "Đang làm"}
                     </button>

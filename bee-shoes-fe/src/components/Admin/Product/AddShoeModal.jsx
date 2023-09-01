@@ -4,7 +4,7 @@ import * as request from "~/utils/httpRequest";
 import { toast } from "react-toastify";
 import swal from "sweetalert";
 import { Button, Col, Collapse, Input, Modal, Row, message } from "antd";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaPlusCircle } from "react-icons/fa";
 
 function AddShoeModal({ onAddSuccess }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -65,7 +65,7 @@ function AddShoeModal({ onAddSuccess }) {
   return (
     <>
       <Button type="primary" onClick={showModal} className="bg-warning" size="large">
-        <FaPlus/>
+        <FaPlusCircle/>
       </Button>
       <Modal title="Thêm giày" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <label className="mb-2">Nhập tên giày</label>

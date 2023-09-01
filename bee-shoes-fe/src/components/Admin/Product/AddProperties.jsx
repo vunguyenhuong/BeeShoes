@@ -1,0 +1,26 @@
+import { Button, Form, Input } from 'antd'
+import React from 'react'
+import { toast } from 'react-toastify';
+import * as request from "~/utils/httpRequest";
+
+function AddProperties({ name, placeholder, }) {
+    const handleSubmit = (data) => {
+        request.post(`/${name}`, { name: data.name }).then(response => {
+            toast.success('Thêm thành công!');
+        }).catch(e => {
+            toast.error(e.response.data);
+        })
+    }
+    return (
+        <>
+            <Form className='d-flex' onFinish={handleSubmit}>
+                <Form.Item name={"name"} rules={[{ required: true, message: "Không được để trống!" },]} className='me-1 p-0 m-0'>
+                    <Input placeholder={`Thêm ${placeholder}`} />
+                </Form.Item>
+                <Button type="primary" htmlType="submit" style={{ backgroundColor: "#FFC107" }} icon={<i className="fas fa-plus"></i>}>Thêm</Button>
+            </Form>
+        </>
+    )
+}
+
+export default AddProperties

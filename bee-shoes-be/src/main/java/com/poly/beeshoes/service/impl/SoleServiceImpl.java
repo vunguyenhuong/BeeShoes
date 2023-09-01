@@ -29,7 +29,7 @@ public class SoleServiceImpl implements SoleService {
     @Override
     public Sole create(Sole sole) {
         if (repository.existsByNameIgnoreCaseAndNameNot(sole.getName(), "")) {
-            throw new RestApiException(sole.getName() + " đã tồn tại!");
+            throw new RestApiException("Thuộc tính " + sole.getName() + " đã tồn tại!");
         }
         return repository.save(sole);
     }
@@ -38,7 +38,7 @@ public class SoleServiceImpl implements SoleService {
     public Sole update(Long id, Sole sole) {
         Sole old = this.getOne(id);
         if (repository.existsByNameIgnoreCaseAndNameNot(sole.getName(), old.getName())) {
-            throw new RestApiException(sole.getName() + " đã tồn tại!");
+            throw new RestApiException("Thuộc tính " + sole.getName() + " đã tồn tại!");
         }
         old.setName(sole.getName());
         return repository.save(old);

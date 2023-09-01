@@ -1,14 +1,20 @@
 import { Menu } from "antd";
-import { MailOutlined } from "@ant-design/icons";
 import sidebarData from "../sidebarData";
 import { Link } from "react-router-dom";
 import "./Sidebar.module.css";
+import { useState } from "react";
 
 const Sidebar = () => {
+  const [theme, setTheme] = useState(true);
+  const changeTheme = () => {
+    setTheme(!theme);
+    sessionStorage.setItem('theme', !theme)
+    console.log(sessionStorage.getItem('theme'))
+  };
   return (
-    <Menu mode="vertical" className="h-100">
+    <Menu mode="vertical" className="h-100" theme={sessionStorage.getItem('theme') === "true" ? 'light' : 'dark'}>
       <Link className="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-        <img src="/logo.png" alt="" width="100%" />
+        <img src={sessionStorage.getItem('theme') === "true" ? `/logo.png` : `/logodark.png`} alt="" width="100%" onClick={() => changeTheme()}/>
       </Link>
       {sidebarData.map((item) => {
         if (item.children) {

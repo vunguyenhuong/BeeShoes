@@ -24,7 +24,6 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
 
     @Query("""
             SELECT s FROM ShoeDetail s
-            JOIN FETCH s.images
             WHERE
             (:#{#req.name} IS NULL OR CONCAT(s.shoe.name, ' ', s.color.name, '-', s.size.name) LIKE %:#{#req.name}%)
             AND (:#{#req.shoe} IS NULL OR s.shoe.id = :#{#req.shoe})
@@ -38,7 +37,7 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
             """)
     Page<ShoeDetail> getAllShoeDetail(@Param("req") ShoeDetailRequest request,Pageable pageable);
 
-    Boolean existsByShoeIdAndColorIdAndSizeIdAndSoleId(Long idShoe, Long idColor, Long idSize, Long idSole);
+    ShoeDetail findByShoeIdAndColorIdAndSizeIdAndSoleId(Long idShoe, Long idColor, Long idSize, Long idSole);
 
 //    @Query("""
 //            SELECT s FROM ShoeDetail s WHERE

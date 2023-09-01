@@ -9,16 +9,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface IAccountRepository extends JpaRepository<Account, Long> {
     @Query("""
-            SELECT a FROM Account a LEFT JOIN FETCH a.addresses
+            SELECT a FROM Account a
             WHERE a.role.name = :role AND a.id = :id
             """)
     Account getOne(@Param("id") Long id, @Param("role") String roleName);
 
     @Query("""
-            SELECT a FROM Account a LEFT JOIN a.addresses
+            SELECT a FROM Account a
             WHERE (:#{#req.name} IS NULL 
             OR a.name LIKE %:#{#req.name}% OR a.email LIKE %:#{#req.name}%
             OR a.username LIKE %:#{#req.name}% OR a.phoneNumber LIKE %:#{#req.name}%)

@@ -1,13 +1,11 @@
-import { Button, Carousel, Col, Empty, Input, Radio, Row, Select } from "antd";
+import { Button, Col, Empty, Input, Radio, Row, Select } from "antd";
 import { Option } from "antd/es/mentions";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import SelectFilter from "~/components/Admin/Product/SelectFilter";
 import Pagination from "~/components/Pagination";
 import BaseUI from "~/layouts/admin/BaseUI";
-import FormatCurrency from "~/utils/FormatCurrency";
 import * as request from "~/utils/httpRequest";
 
 function Shoe() {

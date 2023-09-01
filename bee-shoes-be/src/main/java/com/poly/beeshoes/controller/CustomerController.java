@@ -23,7 +23,7 @@ public class CustomerController {
     private AccountService accountService;
 
     @GetMapping
-    public PageableObject<Account> getAll(final AccountRequest request) {
+    public PageableObject<Account> getAll(AccountRequest request) {
         request.setRoleName(ROLE);
         return accountService.getAll(request);
     }

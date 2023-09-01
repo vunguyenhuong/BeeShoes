@@ -1,25 +1,6 @@
 import React, { useState } from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-  UserOutlined,
-  BellOutlined,
-} from "@ant-design/icons";
-import {
-  Layout,
-  Menu,
-  Button,
-  theme,
-  Breadcrumb,
-  Badge,
-  Avatar,
-  Space,
-} from "antd";
-import { ToastContainer } from "react-toastify";
-
+import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined, BellOutlined, } from "@ant-design/icons";
+import { Layout, Button, Badge, Space, Switch, } from "antd";
 import Footer from "./Footer";
 import Sidebar from "./components/Menu/Menu";
 const { Header, Sider, Content } = Layout;

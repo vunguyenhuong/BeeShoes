@@ -6,7 +6,6 @@ import Bill from './pages/admin/bill/Bill';
 import BillDetail from './pages/admin/bill/BillDetail';
 
 import Order from './pages/admin/order/Order';
-import OrderDetail from './pages/admin/order/OrderDetail';
 import AddProduct from './pages/admin/product/shoe-detail/AddShoe';
 import ShoeDetail from './pages/admin/product/shoe-detail/ShoeDetail';
 import ShoeDetailUpdate from './pages/admin/product/shoe-detail/ShoeDetailUpdate';
@@ -25,7 +24,6 @@ const publicRouters = [
     // { path: "/admin/profile", element: Profile },
     // { path: "/admin/thong-ke", element: Dashboard },
     { path: "/admin/order", element: Order },
-    { path: "/admin/order/:id", element: OrderDetail },
     { path: "/admin/bill", element: Bill },
     { path: "/admin/bill/:id", element: BillDetail },
     // { path: "/admin/bill/create", element: CreateBill },

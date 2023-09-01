@@ -3,7 +3,6 @@ import BaseUI from "~/layouts/admin/BaseUI";
 import * as request from "~/utils/httpRequest";
 import { Link, useNavigate } from "react-router-dom";
 import { Tabs } from "antd";
-import OrderDetail from "./OrderDetail";
 import NewOrder from "./neworder/NewOrder";
 import Bill from "../bill/Bill";
 import { useState } from "react";

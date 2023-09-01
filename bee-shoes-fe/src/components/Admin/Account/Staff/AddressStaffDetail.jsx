@@ -1,64 +1,42 @@
-import { Button, Col, Collapse, Form, Input, Modal, Row, message } from "antd";
-import Item from "antd/es/list/Item";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FaEdit } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import swal from "sweetalert";
-import GHNInfo from "~/components/GhnInfo";
+import { Collapse } from "antd";
+import React from "react";
 import Loading from "~/components/Loading/Loading";
+import ItemAddress from "./ItemAddress";
+import { useEffect } from "react";
 import * as request from "~/utils/httpRequest";
+import { useState } from "react";
 
-function AddressStaffDetail({ props, address, addressIndex, onSuccess }) {
-  const [dataAddress, setDataAddress] = useState(null);
-  const [form] = Form.useForm();
-  if (!props) {
-    return <Loading />;
+function AddressStaffDetail({ idStaff }) {
+  const [listAddress, setListAddress] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    loadData(idStaff);
+  }, [idStaff])
+  const loadData = (id) => {
+    setLoading(true);
+    const timeout = setTimeout(() => {
+      request.get(`/address/${id}`).then(response => {
+        setListAddress(response);
+        setLoading(false);
+      }).catch(e => {
+        console.log(e);
+      })
+    }, 800);
+    return () => clearTimeout(timeout);
   }
 
-  const ItemAddress = ({data}) => {
-    return (
-      <>
-        <Form layout="vertical" initialValues={
-          { name: data.name, phoneNumber: data.phoneNumber, specificAddress: data.specificAddress}
-        }>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item label={"Tên"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!", },]} >
-                <Input placeholder="Nhập tên ..." />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", },]} >
-                <Input placeholder="Nhập số điện thoại ..." />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item label={"Địa chỉ cụ thể"} name={"specificAddress"} rules={[{ required: true, message: "Địa chỉ cụ thể không được để trống!", },]} >
-                <Input placeholder="Nhập địa chỉ cụ thể..." />
-              </Form.Item>
-            </Col>
-            <GHNInfo prov={data.province} distr={data.district} war={data.ward}/>
-            <Col span={24} className="d-flex justify-content-end mt-3">
-              <Button type="primary" className="bg-warning" htmlType="submit">
-                <i className="fas fa-edit"></i>
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-      </>
-    )
+  if (loading) {
+    return <Loading />;
   }
 
   return (
     <>
-      {props.map((item, index) => (
+      {listAddress.map((item, index) => (
         <>
           <Collapse
             size="small"
             defaultActiveKey={index}
-            items={[{ key: `${index}`, label: 'Địa chỉ', children: <ItemAddress data={item} />, }]}
+            items={[{ key: `${index}`, label: 'Địa chỉ', children: <ItemAddress props={item} onSuccess={() => loadData(idStaff)} />, }]}
           />
         </>
       ))}

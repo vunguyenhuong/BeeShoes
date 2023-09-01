@@ -1,15 +1,12 @@
 /* eslint-disable eqeqeq */
-import { Breadcrumb, Button, Col, Collapse, Input, Row, Select, notification } from "antd";
+import { Breadcrumb, Button, Col, Collapse, Form, Input, Row, Select, Space } from "antd";
 import { Option } from "antd/es/mentions";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaHome, FaPlus } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import swal from "sweetalert";
+import AddProperties from "~/components/Admin/Product/AddProperties";
 import AddShoeModal from "~/components/Admin/Product/AddShoeModal";
-import AttributeModal from "~/components/Admin/Product/AttributeModal";
-import SelectField from "~/components/Admin/Product/SelectField";
 import TableProduct from "~/components/Admin/Product/TableProduct";
 import BaseUI from "~/layouts/admin/BaseUI";
 import * as request from "~/utils/httpRequest";
@@ -48,7 +45,6 @@ function AddProduct() {
           quantity: 10,
           deleted: false,
           weight: 2000,
-          images: []
         };
         options.push(option);
       });
@@ -56,6 +52,12 @@ function AddProduct() {
     setProductDetail(options);
     console.log(options)
   }, [selectedColors, selectedSizes, selectedProduct, selectedSole]);
+
+  const handleChangeProductDetail = (items) => {
+    console.log("--- đã nhảy sang add shoe ---")
+    setProductDetail(items);
+    console.log(items)
+  }
 
   useEffect(() => {
     request.get("/shoe", { params: { name: searchProduct } }).then((response) => {
@@ -78,7 +80,6 @@ function AddProduct() {
       console.log(error);
     });
   }, [searchColor])
-
   useEffect(() => {
     request.get("/sole", { params: { name: searchSole } }).then((response) => {
       setSole(response.data);
@@ -87,14 +88,27 @@ function AddProduct() {
     });
   }, [searchSole])
 
-  const handleChangeProductDetail = (items) => {
-    console.log("--- đã nhảy sang add shoe ---")
-    setProductDetail(items);
-    console.log(items)
-  }
-
   const handleCreate = () => {
+    console.log(productDetail)
+    productDetail.forEach((item) => {
+      const data = {
+        shoe: item.shoe.id,
+        color: item.color.id,
+        size: item.size.id,
+        sole: item.sole.id,
+        quantity: item.quantity,
+        price: item.price,
+        weight: item.weight,
+        listImages: item.images
+      }
+      request.post('/shoe-detail', data).then(response => {
+        console.log(response);
+      }).catch(e => {
+        console.log(e);
+      })
+    })
     toast.success("Thêm thành công!");
+    navigate("/admin/product");
   }
 
   return (
@@ -130,11 +144,11 @@ function AddProduct() {
           <Col xl={24} className="my-3">
             <Collapse defaultActiveKey={0} className="rounded-0 border-0">
               <Collapse.Panel key={0} header={"Thuộc tính"} className="border-bottom-0">
-                <div className="container">
-                  <label className="mb-1">Loại đế</label>
-                  <div className="d-flex align-items-center">
+                <Row gutter={24}>
+                  <Col xl={24}>
+                    <label className="mb-1">Loại đế</label>
                     <Select
-                      className="me-2 w-100" size="large"
+                      className="me-2 w-100 mb-3" size="large"
                       showSearch
                       onChange={(value) => {
                         setSelectedSole(sole.find(item => item.id === value))
@@ -142,6 +156,14 @@ function AddProduct() {
                       placeholder="Nhập tên đế giày..."
                       optionFilterProp="children"
                       onSearch={setSearchSole}
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          <Space className="my-2 ms-2">
+                            <AddProperties placeholder={"đế giày"} name={"sole"} />
+                          </Space>
+                        </>
+                      )}
                     >
                       <Option value="">Chọn loại đế</Option>
                       {sole.map((item) => (
@@ -150,12 +172,9 @@ function AddProduct() {
                         </Option>
                       ))}
                     </Select>
-                    <Button size="large" type="primary">
-                      <FaPlus />
-                    </Button>
-                  </div>
-                  <label className="mb-1">Kích cỡ</label>
-                  <div className="d-flex align-items-center">
+                  </Col>
+                  <Col xl={12}>
+                    <label className="mb-1">Kích cỡ</label>
                     <Select
                       className="me-2 w-100" size="large"
                       showSearch mode="multiple"
@@ -167,6 +186,14 @@ function AddProduct() {
                       placeholder="Nhập kích cỡ..."
                       optionFilterProp="children"
                       onSearch={setSearchSize}
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          <Space className="my-2 ms-2">
+                            <AddProperties placeholder={"kích cỡ"} name={"size"} />
+                          </Space>
+                        </>
+                      )}
                     >
                       {size.map((item) => (
                         <Option key={item.id} value={item.id}>
@@ -174,13 +201,9 @@ function AddProduct() {
                         </Option>
                       ))}
                     </Select>
-                    <Button size="large" type="primary">
-                      <FaPlus />
-                    </Button>
-                  </div>
-
-                  <label className="mb-1">Màu sắc</label>
-                  <div className="d-flex align-items-center">
+                  </Col>
+                  <Col xl={12}>
+                    <label className="mb-1">Màu sắc</label>
                     <Select
                       className="me-2 w-100" size="large"
                       showSearch mode="multiple"
@@ -192,6 +215,14 @@ function AddProduct() {
                       placeholder="Nhập màu sắc..."
                       optionFilterProp="children"
                       onSearch={setSearchColor}
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          <Space className="my-2 ms-2">
+                            <AddProperties placeholder={"màu sắc"} name={"color"} />
+                          </Space>
+                        </>
+                      )}
                     >
                       {color.map((item) => (
                         <Option key={item.id} value={item.id}>
@@ -199,11 +230,8 @@ function AddProduct() {
                         </Option>
                       ))}
                     </Select>
-                    <Button size="large" type="primary">
-                      <FaPlus />
-                    </Button>
-                  </div>
-                </div>
+                  </Col>
+                </Row>
               </Collapse.Panel>
             </Collapse>
           </Col>

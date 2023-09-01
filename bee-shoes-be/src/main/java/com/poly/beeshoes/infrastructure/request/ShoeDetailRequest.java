@@ -1,7 +1,9 @@
 package com.poly.beeshoes.infrastructure.request;
 
 import com.poly.beeshoes.infrastructure.common.PageableRequest;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +30,9 @@ public class ShoeDetailRequest extends PageableRequest {
     private BigDecimal price;
     @NotNull(message = "Cân nặng không được để trống!")
     private Double weight;
-    private List<MultipartFile> listImages;
+    @NotEmpty(message = "Hình ảnh không được để trống!")
+    @Size(max = 6, message = "Chỉ được thêm tối đa 6 hình ảnh!")
+    private List<String> listImages;
 
     //    filter
     private BigDecimal minPrice;

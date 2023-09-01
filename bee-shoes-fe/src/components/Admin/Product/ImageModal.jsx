@@ -39,7 +39,7 @@ function ImageModal({ colorName, sttModal, handleChange }) {
 
   useEffect(() => {
     handleChange(colorName, sttModal, selectedImages);
-    // console.log(selectedImages);
+    
   }, [selectedImages]);
 
   const handleUploadImage = (event) => {

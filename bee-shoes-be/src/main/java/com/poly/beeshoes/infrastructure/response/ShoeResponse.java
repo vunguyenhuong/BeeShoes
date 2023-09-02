@@ -16,5 +16,5 @@ public interface ShoeResponse {
     BrandResponse getBrand();
 
     CategoryResponse getCategory();
-    Integer getQuantity();
+//    Integer getQuantity();
 }

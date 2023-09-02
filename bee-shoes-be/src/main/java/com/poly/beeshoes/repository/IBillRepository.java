@@ -1,6 +1,8 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.Bill;
+import com.poly.beeshoes.infrastructure.request.BillRequest;
+import com.poly.beeshoes.infrastructure.response.BillResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,20 +16,16 @@ import java.util.List;
 @Repository
 public interface IBillRepository extends JpaRepository<Bill, Long> {
 
+    Boolean existsByCodeIgnoreCase(String code);
     @Query("""
-            SELECT b FROM Bill b
-            WHERE b.deleted = false 
-            AND (:value IS NULL OR :value = '' OR b.customerName LIKE %:value%
-            OR b.phoneNumber LIKE %:value%
-            OR b.code LIKE %:value%)
-            AND b.totalMoney >= :minPrice AND b.totalMoney <= :maxPrice
-            ORDER BY b.updateAt DESC
+            SELECT b
+            FROM Bill b
+            WHERE (:#{#req.code} IS NULL OR b.code LIKE %:#{#req.code}%)
+            AND (:#{#req.account} IS NULL OR b.account.id = :#{#req.account})
+            AND (:#{#req.voucher} IS NULL OR b.voucher.id = :#{#req.voucher})
+            ORDER BY b.createAt DESC
             """)
-    Page<Bill> getAllBill(
-            @Param("value") String value,
-            @Param("minPrice") BigDecimal minPrice,
-            @Param("maxPrice") BigDecimal maxPrice,
-            Pageable pageable);
+    Page<BillResponse> getAllBill(@Param("req") BillRequest request, Pageable pageable);
 
     Boolean existsByCode(String code);
 

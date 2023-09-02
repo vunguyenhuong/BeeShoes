@@ -14,7 +14,7 @@ public interface ShoeDetailResponse {
 
     String getCode();
 
-    String getName();
+//    String getName();
 
     SoleResponse getSole();
 

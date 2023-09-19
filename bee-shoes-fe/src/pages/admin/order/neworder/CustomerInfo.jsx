@@ -22,19 +22,15 @@ function CustomerInfo({ handleSelect }) {
   }, []);
 
   const loadCustomer = (value) => {
-    // Gọi API để lấy dữ liệu khách hàng
-    request
-      .get("/customer", {
-        params: {
-          value: value,
-        },
-      }) // Thay đổi đường dẫn API tùy theo yêu cầu của bạn
-      .then((response) => {
-        setCustomerData(response.content);
-      })
-      .catch((error) => {
-        console.error("Error fetching customer data:", error);
-      });
+    request.get("/customer", {
+      params: {
+        name: value,
+      },
+    }).then((response) => {
+      setCustomerData(response.data);
+    }).catch((error) => {
+      console.error("Error fetching customer data:", error);
+    });
   };
 
   const handleSearch = (value) => {
@@ -66,18 +62,11 @@ function CustomerInfo({ handleSelect }) {
             label: (
               <>
                 <div className="d-flex">
-                  <Avatar
-                    src={`https://res.cloudinary.com/beeshoes/image/upload/v1690189926/${customer.avatar}`}
-                    shape="circle"
-                    size={"default"}
-                    className="me-2"
-                  />
+                  <Avatar src={`${customer.avatar}`} shape="circle" size={"default"} className="me-2" />
                   <div className="">
-                    <span>
-                      {customer.name} - {customer.gender}
-                    </span>
+                    {customer.name} - {customer.gender}
                     <br />
-                    <span>{customer.phoneNumber}</span>
+                    {customer.phoneNumber}
                   </div>
                 </div>
               </>
@@ -88,13 +77,8 @@ function CustomerInfo({ handleSelect }) {
         </AutoComplete>
       </div>
 
-      <Modal
-        title="Thêm mới khách hàng"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        
+      <Modal title="Thêm mới khách hàng" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={1000} footer="">
+        abcs
       </Modal>
     </>
   );

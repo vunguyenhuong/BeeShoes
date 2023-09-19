@@ -20,7 +20,7 @@ function AddShoeModal({ onAddSuccess }) {
   };
   const handleOk = (data) => {
     console.log(data);
-    request.post('/shoe', { name: data.name , category: data.category, brand: data.brand}).then(response => {
+    request.post('/shoe', data).then(response => {
 
     }).catch(e => {
       console.log(e)

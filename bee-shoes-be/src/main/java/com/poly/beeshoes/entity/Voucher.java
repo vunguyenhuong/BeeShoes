@@ -21,7 +21,6 @@ import java.util.Date;
 public class Voucher extends PrimaryEntity {
     @Column(name = "code", unique = true, length = 20)
     private String code;
-
     @Nationalized
     @Column(name = "name", length = 50)
     private String name;

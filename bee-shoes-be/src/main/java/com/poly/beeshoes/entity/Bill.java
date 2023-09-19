@@ -26,11 +26,11 @@ public class Bill extends PrimaryEntity {
     private Voucher voucher;
     @ManyToOne
     @JoinColumn(name = "account_id")
-    @JsonIgnoreProperties(value = {"createAt", "updateAt", "createBy", "updateBy", "deleted"})
+    @JsonIgnoreProperties(value = {"createAt", "updateAt", "createBy", "updateBy", "deleted", "addresses", "password", "role"})
     private Account account;
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonIgnoreProperties(value = {"createAt", "updateAt", "createBy", "updateBy", "deleted"})
+    @JsonIgnoreProperties(value = {"createAt", "updateAt", "createBy", "updateBy", "deleted", "addresses", "password", "role"})
     private Account customer;
     @Column(name = "code")
     private String code;
@@ -60,4 +60,6 @@ public class Bill extends PrimaryEntity {
     private Date receiveDate;
     @Column(name = "status")
     private Integer status;
+    @Column(name = "note")
+    private String note;
 }

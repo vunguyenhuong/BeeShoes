@@ -1,7 +1,8 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.Bill;
-import com.poly.beeshoes.infrastructure.request.BillRequest;
+import com.poly.beeshoes.infrastructure.request.bill.BillRequest;
+import com.poly.beeshoes.infrastructure.request.bill.BillSearchRequest;
 import com.poly.beeshoes.infrastructure.response.BillResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,9 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Repository
 public interface IBillRepository extends JpaRepository<Bill, Long> {
@@ -21,13 +19,14 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
             SELECT b
             FROM Bill b
             WHERE (:#{#req.code} IS NULL OR b.code LIKE %:#{#req.code}%)
-            AND (:#{#req.account} IS NULL OR b.account.id = :#{#req.account})
-            AND (:#{#req.voucher} IS NULL OR b.voucher.id = :#{#req.voucher})
+            AND (:#{#req.idStaff} IS NULL OR b.account.id = :#{#req.idStaff})
+            AND (:#{#req.status} IS NULL OR b.status = :#{#req.status})
+            AND b.deleted = FALSE 
             ORDER BY b.createAt DESC
             """)
-    Page<BillResponse> getAllBill(@Param("req") BillRequest request, Pageable pageable);
+    Page<Bill> getAllBill(@Param("req") BillSearchRequest request, Pageable pageable);
 
     Boolean existsByCode(String code);
 
-    List<Bill> findByAccountIdAndStatusAndDeletedFalse(Long idAccount, Integer status);
+    Page<Bill> findByAccountIdAndStatusAndDeletedFalse(Long idAccount, Integer status, Pageable pageable);
 }

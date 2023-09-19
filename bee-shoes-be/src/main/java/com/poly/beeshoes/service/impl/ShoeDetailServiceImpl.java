@@ -59,6 +59,8 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
         Shoe shoe = shoeDetailSave.getShoe();
         shoe.setUpdateAt(LocalDateTime.now());
         shoeRepository.save(shoe);
+        if(request.getListImages().size()>=5)
+            throw new RestApiException("Chỉ được thêm tối đa 5 hình ảnh!");
         if (shoeDetailSave != null) {
             for (String x : request.getListImages()) {
                 imagesRepository.save(Images.builder().shoeDetail(shoeDetailSave).name(x).build());
@@ -68,11 +70,19 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
     }
 
     @Override
+    @Transactional
     public ShoeDetail update(Long id, ShoeDetailRequest request) {
+        ShoeDetail shoeDetailSave = new ShoeDetail();
         ShoeDetail old = shoeDetailRepository.findById(id).get();
         if (shoeDetailRepository.findByShoeIdAndColorIdAndSizeIdAndSoleId(request.getShoe(), request.getColor(), request.getSize(), request.getSole()) != null) {
             if (old.getSize().getId() == request.getSize() && old.getShoe().getId() == request.getShoe() && old.getColor().getId() == request.getColor() && old.getSole().getId() == request.getSole()) {
-                return shoeDetailRepository.save(shoeDetailConvert.convertRequestToEntity(old, request));
+                shoeDetailSave = shoeDetailRepository.save(shoeDetailConvert.convertRequestToEntity(old, request));
+                if(shoeDetailSave!=null){
+                    for (String x: request.getListImages()) {
+                        imagesRepository.save(Images.builder().shoeDetail(shoeDetailSave).name(x).build());
+                    }
+                }
+                return shoeDetailSave;
             }
             throw new RestApiException("Phiên bản này đã tồn tại!");
         }

@@ -1,12 +1,12 @@
 package com.poly.beeshoes.infrastructure.constant;
 
-public enum BillStatusConstant {
-    CHO_THANH_TOAN,
-    TAO_DON_HANG,
-    CHO_XAC_NHAN,
-    XAC_NHAN_THONG_TIN_THANH_TOAN,
-    CHO_GIAO,
-    DANG_GIAO,
-    HOAN_THANH,
-    DA_HUY
+public final class BillStatusConstant {
+    public static final int CHO_THANH_TOAN = 0;
+    public static final int TAO_DON_HANG = 1;
+    public static final int CHO_XAC_NHAN = 2;
+    public static final int XAC_NHAN_THONG_TIN_THANH_TOAN = 3;
+    public static final int CHO_GIAO = 4;
+    public static final int DANG_GIAO = 5;
+    public static final int HOAN_THANH = 6;
+    public static final int DA_HUY = 7;
 }

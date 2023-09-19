@@ -34,4 +34,7 @@ public class PaymentMethod extends PrimaryEntity {
     @Nationalized
     @Column(name = "note")
     private String note;
+    @Nationalized
+    @Column(name = "trading_code")
+    private String tradingCode;
 }

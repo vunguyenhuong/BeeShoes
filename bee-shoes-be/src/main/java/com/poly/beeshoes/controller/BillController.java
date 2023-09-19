@@ -4,7 +4,8 @@ package com.poly.beeshoes.controller;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.BillRequest;
+import com.poly.beeshoes.infrastructure.request.bill.BillRequest;
+import com.poly.beeshoes.infrastructure.request.bill.BillSearchRequest;
 import com.poly.beeshoes.infrastructure.response.BillResponse;
 import com.poly.beeshoes.service.BillService;
 import jakarta.validation.Valid;
@@ -18,7 +19,7 @@ public class BillController {
     private BillService billService;
 
     @GetMapping
-    public PageableObject<BillResponse> getAll(BillRequest request){
+    public PageableObject getAll(BillSearchRequest request){
         return billService.getAll(request);
     }
 
@@ -28,8 +29,8 @@ public class BillController {
     }
 
     @PostMapping
-    public ResponseObject create(@RequestBody @Valid BillRequest request) {
-        return new ResponseObject(billService.create(request));
+    public ResponseObject create() {
+        return new ResponseObject(billService.create());
     }
 
     @PutMapping("/{id}")

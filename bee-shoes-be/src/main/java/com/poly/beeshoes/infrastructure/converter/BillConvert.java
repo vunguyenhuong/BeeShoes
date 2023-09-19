@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Bill;
-import com.poly.beeshoes.infrastructure.request.BillRequest;
+import com.poly.beeshoes.infrastructure.request.bill.BillRequest;
 import com.poly.beeshoes.repository.IAccountRepository;
 import com.poly.beeshoes.repository.IBillRepository;
 import com.poly.beeshoes.repository.IVoucherRepository;

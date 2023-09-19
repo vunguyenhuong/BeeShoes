@@ -1,17 +1,7 @@
-import {
-  AutoComplete,
-  Carousel,
-  Empty,
-  Input,
-  Modal,
-  Switch,
-  message,
-} from "antd";
-import { options } from "numeral";
+import { AutoComplete, Carousel, Empty, Input, Modal, Switch, message, } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import SelectField from "~/components/Admin/Product/SelectField";
 import GHNInfo from "~/components/GhnInfo";
 import QrCode from "~/components/QrCode";
 import FormatCurrency from "~/utils/FormatCurrency";
@@ -19,6 +9,7 @@ import * as request from "~/utils/httpRequest";
 import CustomerInfo from "./CustomerInfo";
 import ChooseAddress from "./ChooseAddress";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function OrderItem({ index, props, onSuccess }) {
   const [dataAddress, setDataAddress] = useState(null);
@@ -177,15 +168,15 @@ function OrderItem({ index, props, onSuccess }) {
 
   const handleChangeAddress = (item) => {
     setAutoFillAddress(item);
-    message.success("Đã cập nhật địa chỉ mới!");
+    toast.success("Đã cập nhật địa chỉ mới!");
   };
 
   const getCustomer = async (id) => {
     setCustomer(await request.get(`/customer/${id}`));
     const dataAddress = await request.get(`/address/${id}`);
-    setListAddress(dataAddress);
+    setListAddress(dataAddress.content);
     setAutoFillAddress(
-      dataAddress.find((item) => item.defaultAddress === true) || dataAddress[0]
+      dataAddress.content.find((item) => item.defaultAddress === true) || dataAddress.content[0]
     );
   };
   const handleSelectCustomer = (value) => {
@@ -254,27 +245,27 @@ function OrderItem({ index, props, onSuccess }) {
     data.note = note;
     data.paymentMethod = paymentMethod;
     console.log(data);
-    Modal.confirm({
-      title: "Xác nhận",
-      maskClosable: true,
-      content: `Xác nhận tạo đơn hàng?`,
-      okText: "Ok",
-      cancelText: "Cancel",
-      onOk: async () => {
-        request
-          .put(`/bill/${data.id}`, data)
-          .then((response) => {
-            if (response.status === 200) {
-              message.success("Tạo đơn hàng thành công!");
-              onSuccess();
-              navigate(`/admin/bill/${response.data.id}`);
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      },
-    });
+    // Modal.confirm({
+    //   title: "Xác nhận",
+    //   maskClosable: true,
+    //   content: `Xác nhận tạo đơn hàng?`,
+    //   okText: "Ok",
+    //   cancelText: "Cancel",
+    //   onOk: async () => {
+    //     request
+    //       .put(`/bill/${data.id}`, data)
+    //       .then((response) => {
+    //         if (response.status === 200) {
+    //           toast.success("Tạo đơn hàng thành công!");
+    //           onSuccess();
+    //           navigate(`/admin/bill/${response.data.id}`);
+    //         }
+    //       })
+    //       .catch((e) => {
+    //         console.log(e);
+    //       });
+    //   },
+    // });
   };
   const handleSetWaitPay = (checked) => {
     setWaitPay(checked);
@@ -303,7 +294,7 @@ function OrderItem({ index, props, onSuccess }) {
                 {customer !== null && typeOrder === "1" && (
                   <ChooseAddress
                     props={listAddress}
-                    handleChooe={handleChangeAddress}
+                    handleChoose={handleChangeAddress}
                   />
                 )}
               </label>
@@ -472,14 +463,14 @@ function OrderItem({ index, props, onSuccess }) {
                   <label for="" class="form-label">
                     Tiền khách đưa
                   </label>
-                  <input type="text" class="form-control form-control-sm" 
-                  onChange={(event) => setExtraMoney(event.target.value - totalMoney)}/>
+                  <input type="text" class="form-control form-control-sm"
+                    onChange={(event) => setExtraMoney(event.target.value - totalMoney)} />
                 </div>
                 <div className="col-xl-6 mb-2">
                   <label for="" class="form-label">
                     Tiền thừa
                   </label>
-                  <input type="text" class="form-control form-control-sm" value={extraMoney}/>
+                  <input type="text" class="form-control form-control-sm" value={extraMoney} />
                 </div>
               </>
             ) : (

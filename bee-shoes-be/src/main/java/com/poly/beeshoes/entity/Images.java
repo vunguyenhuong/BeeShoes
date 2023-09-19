@@ -30,7 +30,4 @@ public class Images extends PrimaryEntity {
     @Nationalized
     @Column(name = "name")
     private String name;
-
-    @Column(name = "main_image")
-    private Boolean mainImage;
 }

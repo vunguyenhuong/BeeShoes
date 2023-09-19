@@ -1,4 +1,4 @@
-package com.poly.beeshoes.infrastructure.request;
+package com.poly.beeshoes.infrastructure.request.bill;
 
 import com.poly.beeshoes.infrastructure.common.PageableRequest;
 import jakarta.validation.constraints.NotNull;

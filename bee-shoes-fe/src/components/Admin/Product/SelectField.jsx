@@ -47,7 +47,7 @@ function SelectField({
     request.get(url, { params: { name: searchOption } }).then((response) => {
       setOption(response.data);
     });
-  }, [searchOption,url])
+  }, [searchOption, url])
 
   const onSubmit = (data) => {
     request
@@ -68,7 +68,7 @@ function SelectField({
     <>
       <label className="mb-1">{label}</label>
       <div className="d-flex">
-      <Select className="me-2" showSearch onChange={onChange} optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchOption} defaultValue={selected}>
+        <Select className="me-2" showSearch onChange={onChange} optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchOption} defaultValue={selected}>
           <Option value="">-- Chọn {label} --</Option>
           {option.map((item) => (
             <Option key={item.id} value={item.id}>
@@ -77,7 +77,7 @@ function SelectField({
           ))}
         </Select>
         <Button type="primary" onClick={showModal} className="bg-warning">
-          <FaPlusCircle/>
+          <FaPlusCircle />
         </Button>
       </div>
 

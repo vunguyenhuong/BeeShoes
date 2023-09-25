@@ -24,12 +24,24 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
 
     Boolean existsByShoeDetailIdAndBillId(Long idShoeDetail, Long idBill);
 
-    @Query("""
-            SELECT bd
-            FROM BillDetail bd
-            WHERE  (:#{#req.code} IS NULL OR bd.bill.code LIKE %:#{#req.code}%)
-            AND (:#{#req.minPrice} IS NULL OR :#{#req.maxPrice} IS NULL
-            OR bd.price >= :#{#req.minPrice} AND bd.price <= :#{#req.maxPrice})
-            """)
+    @Query(value = """
+            SELECT ROW_NUMBER() OVER(ORDER BY s.create_at DESC) AS indexs,
+            bd.id AS id,
+            CONCAT(s.name, ' [', c.name, ' - ', sz.name, ']') AS name,
+            sd.code AS shoeCode,
+            sl.name AS sole,
+            c.name AS color,
+            sz.name AS size,
+            bd.quantity AS quantity,
+            bd.price AS price
+            FROM bill_detail bd
+            JOIN shoe_detail sd ON sd.id = bd.shoe_detail_id
+            JOIN shoe s ON s.id = sd.shoe_id
+            JOIN color c ON sd.color_id = c.id
+            JOIN size sz ON sd.size_id = sz.id
+            JOIN sole sl ON sd.sole_id = sl.id
+            WHERE bd.bill_id = :#{#req.bill}
+            GROUP BY bd.id
+            """, nativeQuery = true)
     Page<BillDetailResponse> getAllBillDetail(@Param("req") BillDetailRequest request, Pageable pageable);
 }

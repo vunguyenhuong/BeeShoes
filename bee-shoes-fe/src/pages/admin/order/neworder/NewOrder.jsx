@@ -1,4 +1,4 @@
-import { Modal, Tabs, message } from "antd";
+import { Button, Modal, Tabs, message } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -21,7 +21,7 @@ function NewOrder() {
 
   const loadOrders = () => {
     request
-      .get(`bill`,{
+      .get(`bill`, {
         params: {
           idStaff: 1
         }
@@ -57,21 +57,21 @@ function NewOrder() {
       okText: "Ok",
       cancelText: "Cancel",
       onOk: async () => {
-        request.remove(`/bill/${idBill}`).then(response=>{
+        request.remove(`/bill/${idBill}`).then(response => {
           console.log(response);
           message.success("Xóa thành công!");
           loadOrders();
-        }).catch(e=>{
+        }).catch(e => {
           console.log(e);
         })
       },
     });
   }
 
-  if(loading){
+  if (loading) {
     return (
       <>
-      <Loading></Loading>
+        <Loading></Loading>
       </>
     )
   }
@@ -80,23 +80,17 @@ function NewOrder() {
     <>
       <div className="d-flex">
         <div className="flex-grow-1">
-          <button
-            type="button"
-            class="btn btn-warning btn-sm"
-            onClick={() => handleCreate()}
-          >
-            Tạo mới đơn hàng
-          </button>
+          <Button onClick={() => handleCreate()} className="bg-warning text-dark" type="primary">Tạo mới đơn hàng</Button>
         </div>
         <div className="">
-          
+
         </div>
       </div>
       <div className="mt-3">
         <Tabs hideAdd type="editable-card" onEdit={handleDelete}>
           {listOrder.length > 0 && listOrder.map((order, index) => (
             <Tabs.TabPane key={index} tab={`${order.code}`}>
-              <OrderItem props={order} index={index+1} onSuccess={loadOrders}/>
+              <OrderItem props={order} index={index + 1} onSuccess={loadOrders} />
             </Tabs.TabPane>
           ))}
         </Tabs>

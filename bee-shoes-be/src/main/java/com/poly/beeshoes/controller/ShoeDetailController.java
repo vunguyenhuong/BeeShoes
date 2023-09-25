@@ -25,7 +25,7 @@ public class ShoeDetailController {
     private ShoeDetailService shoeDetailService;
 
     @GetMapping
-    public PageableObject<ShoeDetail> getAll(ShoeDetailRequest request) {
+    public PageableObject getAll(ShoeDetailRequest request) {
         return shoeDetailService.getAll(request);
     }
 

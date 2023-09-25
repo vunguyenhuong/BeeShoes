@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Row, Tooltip } from "antd";
+import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Row, Table, Tooltip } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -11,6 +11,8 @@ import FormatDate from "~/utils/FormatDate";
 import request from "~/utils/httpRequest";
 import UpdateShoe from "./UpdateShoe";
 import UpdateShoeDetail from "./UpdateShoeDetail";
+import FormatCurrency from "~/utils/FormatCurrency";
+import Title from "antd/es/typography/Title";
 
 function ShoeInfo() {
   const { id } = useParams();
@@ -21,9 +23,7 @@ function ShoeInfo() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [pageSize, setPageSize] = useState(3);
-  const indexOfLastItem = currentPage * pageSize;
-  const indexOfFirstItem = indexOfLastItem - pageSize;
+  const [pageSize, setPageSize] = useState(5);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -42,7 +42,7 @@ function ShoeInfo() {
   }
 
   useEffect(() => {
-    loadShoeDetail(id,currentPage,pageSize);
+    loadShoeDetail(id, currentPage, pageSize);
   }, [id, currentPage, pageSize])
 
   const loadShoeDetail = (id, currentPage, pageSize) => {
@@ -64,6 +64,66 @@ function ShoeInfo() {
     );
   }
 
+  const columns = [
+    {
+      title: 'Tên',
+      dataIndex: 'shoe',
+      key: 'name',
+      render: (shoe, record) => (
+        <span>{shoe.name} [{record.size.name} -
+          {record.color.name}]</span>
+      ),
+    },
+    {
+      title: 'Đế giày',
+      dataIndex: 'sole',
+      key: 'sole',
+      render: (x) => x.name
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (x) => x == null ? 0 : x,
+    },
+    {
+      title: 'Đơn giá',
+      dataIndex: 'price',
+      key: 'price',
+      render: (x) => <FormatCurrency value={x} />
+    },
+    {
+      title: 'Cân nặng',
+      dataIndex: 'weight',
+      key: 'weight',
+    },
+    {
+      title: (<i className="fas fa-image"></i>),
+      dataIndex: 'images',
+      key: 'images',
+      render: (images) => (
+        <Carousel autoplay autoplaySpeed={3000} dots={false} arrows={false} style={{ width: "100px" }} >
+          {images.map((image, index) => (
+            <img src={image.name} alt="images" style={{ width: "100px", height: "100px" }} className="object-fit-contain" />
+          ))}
+        </Carousel>
+      )
+    },
+    {
+      title: 'Hành động',
+      dataIndex: 'id',
+      key: 'action',
+      render: (x, record) => (
+        <>
+          <UpdateShoeDetail props={record} />
+          <Tooltip placement="bottom" title="Xóa">
+            <Button type="text"><i className="fas fa-trash text-danger"></i></Button>
+          </Tooltip>
+        </>
+      )
+    },
+  ];
+
   return (
     <>
       <BaseUI>
@@ -74,7 +134,7 @@ function ShoeInfo() {
         <Row gutter={24}>
           <Col xl={24} className="d-flex align-items-center py-1 mb-3" style={{ backgroundColor: "#F2F2F2" }}>
             <div className="flex-grow-1">
-              <span className="fw-semibold">Thông tin sản phẩm</span>
+            <Title level={5} className="my-2">Thông tin sản phẩm</Title>
             </div>
             <div className="">
               <Tooltip placement="top" title="Xóa">
@@ -98,72 +158,20 @@ function ShoeInfo() {
           <Divider />
         </Row>
         {/* Thông tin chi tiết */}
-        <div class="table-responsive">
-          <span className="fw-semibold">Chi tiết sản phẩm</span>
-          <table class="table pb-0 mb-0 table-borderless table-striped align-middle">
-            {listProductDetail.length === 0 ? (
-              <Empty />
-            ) : (
-              <tbody>
-                <tr className="fw-semibold">
-                  <td>#</td>
-                  <td>Tên</td>
-                  <td>Loại đế</td>
-                  <td>Số lượng</td>
-                  <td>Đơn giá</td>
-                  <td>Cân nặng</td>
-                  <td><i className="fas fa-image"></i></td>
-                  <td>Hành động</td>
-                </tr>
-                {listProductDetail.map((item, index) => (
-                  <tr key={index}>
-                    <td>{indexOfFirstItem + index + 1}</td>
-                    <td>
-                      {item.shoe.name} [{item.size.name} -
-                      {item.color.name}]
-                    </td>
-                    <td>{item.sole.name}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.price}</td>
-                    <td>{item.weight}</td>
-                    <td>
-                      <Carousel
-                        autoplay
-                        autoplaySpeed={2000}
-                        dots={false}
-                        arrows={false}
-                        style={{ width: "100px" }}
-                      >
-                        {item.images.map((image, index) => (
-                          <div key={index}>
-                            <img
-                              src={image.name}
-                              alt="images"
-                              style={{ width: "100px", height: "100px" }}
-                              className="object-fit-cover"
-                            />
-                          </div>
-                        ))}
-                      </Carousel>
-                    </td>
-                    <td>
-                      <UpdateShoeDetail props={item} />
-                      <Tooltip placement="bottom" title="Xóa">
-                        <Button type="text"><i className="fas fa-trash text-danger"></i></Button>
-                      </Tooltip>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            )}
-          </table>
-        </div>
-        <Pagination totalPages={totalPages} currentPage={currentPage}
-          handleChange={(page) => {
-            if (page < 1) page = 1;
-            setCurrentPage(page);
-          }}
-        />
+        <Title level={5}>Chi tiết sản phẩm</Title>
+        <Table dataSource={listProductDetail} columns={columns} className="mt-3"
+          pagination={{
+            showSizeChanger: true,
+            current: currentPage,
+            pageSize: pageSize,
+            pageSizeOptions: [5, 10, 20, 50, 100],
+            showQuickJumper: true,
+            total: totalPages * pageSize,
+            onChange: (page, pageSize) => {
+              setCurrentPage(page);
+              setPageSize(pageSize);
+            },
+          }} />
       </BaseUI>
     </>
   );

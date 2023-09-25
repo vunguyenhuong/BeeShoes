@@ -17,18 +17,18 @@ public class BillDetailConvert {
     private IShoeDetailRepository shoeDetailRepository;
 
     public BillDetail convertRequestToEntity(BillDetailRequest request) {
-        ShoeDetail shoeDetail = shoeDetailRepository.findById(request.getShoeDetail()).get();
+        ShoeDetail shoeDetail = shoeDetailRepository.findByCode(request.getShoeDetail());
         Bill bill = billRepository.findById(request.getBill()).get();
         return BillDetail.builder()
                 .shoeDetail(shoeDetail)
                 .bill(bill)
-                .price(request.getPrice())
+                .price(shoeDetail.getPrice())
                 .quantity(request.getQuantity())
                 .build();
     }
 
     public BillDetail convertRequestToEntity(BillDetail entity, BillDetailRequest request) {
-        ShoeDetail shoeDetail = shoeDetailRepository.findById(request.getShoeDetail()).get();
+        ShoeDetail shoeDetail = shoeDetailRepository.findByCode(request.getShoeDetail());
         Bill bill = billRepository.findById(request.getBill()).get();
 
         entity.setShoeDetail(shoeDetail);

@@ -16,4 +16,5 @@ public class ShoeRequest extends PageableRequest {
     private Long brand;
     @NotNull(message = "Danh mục không được để trống!")
     private Long category;
+    private Boolean status;
 }

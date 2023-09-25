@@ -1,4 +1,4 @@
-import { AutoComplete, Avatar, Input, Modal, Select } from "antd";
+import { AutoComplete, Avatar, Button, Input, Modal, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import * as request from "~/utils/httpRequest"; // Import các hàm gọi API từ thư viện của bạn
 
@@ -45,37 +45,37 @@ function CustomerInfo({ handleSelect }) {
 
   return (
     <>
-      <label className="form-label">
-        <span className="me-3">Tìm khách hàng</span>{" "}
-        <span className="text-success fw-semibold" onClick={showModal}>
-          <i className="fas fa-plus-circle"></i> Thêm mới KH
-        </span>
-      </label>
-      <div className="">
-        <AutoComplete
-          value={searchValue}
-          onChange={handleSearch}
-          onSelect={onSelect}
-          style={{ width: "100%" }}
-          options={customerData.map((customer) => ({
-            value: customer.id,
-            label: (
-              <>
-                <div className="d-flex">
-                  <Avatar src={`${customer.avatar}`} shape="circle" size={"default"} className="me-2" />
-                  <div className="">
-                    {customer.name} - {customer.gender}
-                    <br />
-                    {customer.phoneNumber}
+      <div className="d-flex">
+        <div className="flex-grow-1 me-1">
+          <AutoComplete
+            value={searchValue}
+            onChange={handleSearch}
+            onSelect={onSelect}
+            style={{ width: "300px" }}
+            options={customerData.map((customer) => ({
+              value: customer.id,
+              label: (
+                <>
+                  <div className="d-flex">
+                    <Avatar src={`${customer.avatar}`} shape="circle" size={"default"} className="me-2" />
+                    <div className="">
+                      {customer.name} - {customer.gender}
+                      <br />
+                      {customer.phoneNumber}
+                    </div>
                   </div>
-                </div>
-              </>
-            ),
-          }))}
-        >
-          <Input.Search placeholder="Tìm kiếm khách hàng..." />
-        </AutoComplete>
+                </>
+              ),
+            }))}
+          >
+            <Input.Search placeholder="Tìm kiếm khách hàng..." />
+          </AutoComplete>
+        </div>
+        <div className="">
+          <Button type="primary" className="bg-warning text-dark" icon={<i className="fas fa-plus-circle"></i>} onClick={showModal}>Thêm mới KH</Button>
+        </div>
       </div>
+
 
       <Modal title="Thêm mới khách hàng" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={1000} footer="">
         abcs

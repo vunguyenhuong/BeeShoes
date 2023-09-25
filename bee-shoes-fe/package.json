@@ -24,6 +24,7 @@
     "react-perfect-scrollbar": "^1.5.8",
     "react-qr-code": "^2.0.11",
     "react-qr-scanner": "^1.0.0-alpha.11",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.1.3",

@@ -1,4 +1,4 @@
-import { Button, Card, Carousel, Col, Input, Modal, Pagination, Radio, Row, Select } from 'antd'
+import { Button, Card, Carousel, Col, Input, Modal, Pagination, Radio, Row, Select, Table } from 'antd'
 import Meta from 'antd/es/card/Meta';
 import { Option } from 'antd/es/mentions';
 import Title from 'antd/es/typography/Title';
@@ -12,46 +12,79 @@ import ChooseProductModal from './ChooseProductModal';
 function ShowProductModal({ idBill, onClose }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productList, setProductList] = useState([]);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [pageSize, setPageSize] = useState(3);
+
     useEffect(() => {
-        request.get('/shoe').then(response => {
+        request.get('/shoe-detail').then(response => {
             setProductList(response.data);
         }).catch(e => {
             console.log(e);
         })
     }, [isModalOpen])
+    const columns = [
+        {
+            title: '#',
+            dataIndex: 'index',
+            key: 'index',
+        },
+        {
+            title: 'Tên sản phẩm',
+            dataIndex: 'name',
+            key: 'name',
+            render(x, record) {
+                return (
+                    <Row>
+                        <Col xl={12}>
+                            <img src={record.images.split(',')[0]} alt="" width={100}/>
+                        </Col>
+                        <Col xl={12}>
+                            <ul className='list-unstyled'>
+                                <li>{x}</li>
+                                <li><small>Màu: {record.color} - Kích cỡ: {record.size}</small></li>
+                            </ul>
+                        </Col>
+                    </Row>
+                );
+            }
+        },
+        {
+            title: 'Số lượng',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        },
+        {
+            title: 'Đơn giá',
+            dataIndex: 'price',
+            key: 'price',
+            render: (x) => <FormatCurrency value={x} />
+        },
+        {
+            title: 'Loại đế',
+            dataIndex: 'sole',
+            key: 'sole',
+        },
+    ]
     return (
         <>
             <Button type="primary" onClick={() => setIsModalOpen(true)} className="bg-warning text-dark">Thêm sản phẩm</Button>
-            <Modal title="Danh sách sản phẩm" open={isModalOpen} onCancel={() => {setIsModalOpen(false);onClose();}} footer="" width={1000}>
-                <Row gutter={10} className='mb-3'>
-                    <Col span={8}>
-                        <label className="mb-1">Tên sản phẩm</label>
-                        <Input placeholder="Tìm kiếm sản phẩm theo tên..." />
-                    </Col>
-                    <Col span={8}>
-                        <label className="mb-1">Danh mục</label>
-                        <Select showSearch placeholder="Chọn danh mục..." optionFilterProp="children" style={{ width: "100%" }} >
-                            <Option value="">Chọn danh mục</Option>
-                            {/* {listCate.map((item) => (
-                            <Option key={item.id} value={item.id}>
-                                {item.name}
-                            </Option>
-                        ))} */}
-                        </Select>
-                    </Col>
-                    <Col span={8}>
-                        <label className="mb-1">Thương hiệu</label>
-                        <Select showSearch placeholder="Chọn thương hiệu..." optionFilterProp="children" style={{ width: "100%" }} >
-                            <Option value="">Chọn thương hiệu</Option>
-                            {/* {listBrand.map((item) => (
-                            <Option key={item.id} value={item.id}>
-                                {item.name}
-                            </Option>
-                        ))} */}
-                        </Select>
-                    </Col>
-                </Row>
-                <Row gutter={10}>
+            <Modal title="Danh sách sản phẩm" open={isModalOpen} onCancel={() => { setIsModalOpen(false); onClose(); }} footer="" width={1000}>
+                <Table dataSource={productList} columns={columns} className="mt-3"
+                    pagination={{
+                        showSizeChanger: true,
+                        current: currentPage,
+                        pageSize: pageSize,
+                        pageSizeOptions: [3, 5, 10, 20,],
+                        showQuickJumper: true,
+                        total: totalPages * pageSize,
+                        onChange: (page, pageSize) => {
+                            setCurrentPage(page);
+                            setPageSize(pageSize);
+                        },
+                    }} />
+                {/* <Row gutter={10}>
                     {productList.map((item, index) => (
                         <Col xl={6} key={index}>
                             <Card hoverable
@@ -71,10 +104,7 @@ function ShowProductModal({ idBill, onClose }) {
                             </Card>
                         </Col>
                     ))}
-                </Row>
-                <div className="text-center">
-                    <Pagination />
-                </div>
+                </Row> */}
             </Modal >
         </>
     )

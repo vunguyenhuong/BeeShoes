@@ -33,13 +33,17 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
             c.name AS color,
             sz.name AS size,
             bd.quantity AS quantity,
-            bd.price AS price
+            bd.price AS price,
+            GROUP_CONCAT(DISTINCT img.name) AS images
             FROM bill_detail bd
             JOIN shoe_detail sd ON sd.id = bd.shoe_detail_id
             JOIN shoe s ON s.id = sd.shoe_id
             JOIN color c ON sd.color_id = c.id
             JOIN size sz ON sd.size_id = sz.id
             JOIN sole sl ON sd.sole_id = sl.id
+            LEFT JOIN (SELECT shoe_detail_id, 
+            GROUP_CONCAT(DISTINCT name) AS name FROM images GROUP BY shoe_detail_id
+            ) img ON sd.id = img.shoe_detail_id
             WHERE bd.bill_id = :#{#req.bill}
             GROUP BY bd.id
             """, nativeQuery = true)

@@ -1,4 +1,4 @@
-import { AutoComplete, Button, Carousel, Col, Divider, Empty, Form, Input, Modal, Row, Switch, Tooltip, message, } from "antd";
+import { AutoComplete, Button, Carousel, Col, Divider, Empty, Form, Input, Modal, Pagination, Row, Switch, Tooltip, message, } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import Title from "antd/es/typography/Title";
 import TextArea from "antd/es/input/TextArea";
 import ShowProductModal from "./ShowProductModal";
+import Loading from "~/components/Loading/Loading";
 
 function OrderItem({ index, props, onSuccess }) {
   const [dataAddress, setDataAddress] = useState(null);
@@ -31,9 +32,16 @@ function OrderItem({ index, props, onSuccess }) {
   const [extraMoney, setExtraMoney] = useState(0);
 
   const [totalMoney, setTotalMoney] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [pageSize, setPageSize] = useState(3);
+
+
   useEffect(() => {
     loadListOrderDetail();
-  }, [props])
+  }, [props, currentPage, pageSize])
 
   const onSelect = (value) => {
     request.post('/bill-detail', {
@@ -48,10 +56,13 @@ function OrderItem({ index, props, onSuccess }) {
     })
   };
 
-  const loadListOrderDetail = () => {
-    request.get(`/bill-detail`, {
+  const loadListOrderDetail = async () => {
+    setLoading(true);
+    await request.get(`/bill-detail`, {
       params: {
-        bill: props.id
+        bill: props.id,
+        page: currentPage,
+        sizePage: pageSize,
       }
     }).then((response) => {
       setListOrderDetail(response.data);
@@ -59,6 +70,9 @@ function OrderItem({ index, props, onSuccess }) {
         return total + item.quantity * item.price;
       }, 0);
       setTotalMoney(calculatedTotalMoney);
+      setTotalPages(response.totalPages);
+      console.log(response.totalPages);
+      setLoading(false);
     })
       .catch((e) => {
         console.log(e);
@@ -125,7 +139,7 @@ function OrderItem({ index, props, onSuccess }) {
           <Title level={5}>Đơn hàng {props.code}</Title>
         </div>
         <div className="me-1">
-          <ShowProductModal idBill={props.id} onClose={loadListOrderDetail} />
+          <ShowProductModal idBill={props.id} onClose={() => { loadListOrderDetail() }} />
         </div>
         <div className="">
           <QrCode title={"QR Code sản phẩm"} onQrSuccess={onSelect} />
@@ -135,35 +149,61 @@ function OrderItem({ index, props, onSuccess }) {
         <Title level={5}>Giỏ hàng</Title>
         {listOrderDetail.length === 0 ? <Empty description={"Chưa có sản phẩm"} className="py-5" /> : (
           <>
-            {listOrderDetail.map((item, index) => (
+            {loading ? <Loading /> : listOrderDetail.map((item, index) => (
               <Form>
+                <Divider />
                 <Row gutter={10} className="d-flex align-items-center">
                   <Col xl={4}>
-                    img
+                    <Carousel autoplay autoplaySpeed={1500} dots={false} arrows={false} className='w-100'>
+                      {item.images.split(',').map((image, index) => (
+                        <div className="" style={{ height: "150px" }}>
+                          <img src={image} alt="images" style={{ width: "100%", height: "150px" }} className="object-fit-cover" />
+                        </div>
+                      ))}
+                    </Carousel>
                   </Col>
                   <Col xl={8}>
                     <ul className="list-unstyled ">
                       <li className="fw-semibold">{item.name}</li>
                       <li><small>{item.shoeCode}</small></li>
-                      <li className="text-danger"><FormatCurrency value={item.price} /></li>
+                      <li>Đơn giá: <span className="text-danger"><FormatCurrency value={item.price} /></span></li>
                     </ul>
                   </Col>
                   <Col xl={2} className="text-center">
-                    <Form.Item initialValue={item.quantity} name={"quantity"} >
-                      <Input className="text-center" />
+                    <Form.Item initialValue={item.quantity} name={"quantity"} className="m-0 p-0">
+                      <Input className="text-center" type="number" />
                     </Form.Item>
                   </Col>
-                  <Col xl={4} className="text-center text-danger">
+                  <Col xl={4} className="text-center text-danger fw-semibold">
                     <FormatCurrency value={item.price * item.quantity} />
                   </Col>
                   <Col xl={6} className="text-center">
-                    tiền
+                    <Tooltip placement="top" title="Cập nhật">
+                      <Button type="text" className="text-warning me-1"><i className="fas fa-edit"></i></Button>
+                    </Tooltip>
+                    <Tooltip placement="top" title="Xóa">
+                      <Button type="text" className="text-danger me-1"><i className="fas fa-trash"></i></Button>
+                    </Tooltip>
                   </Col>
                 </Row>
               </Form>
             ))}
           </>
         )}
+        <div className="text-center mt-3 mb-2">
+          <Pagination
+            pageSize={pageSize}
+            current={currentPage}
+            total={totalPages}
+            showSizeChanger
+            pageSizeOptions={[1,3,5,10]}
+            showQuickJumper
+            onChange={(page, pageSize) => {
+              setCurrentPage(page);
+              setPageSize(pageSize);
+            }}
+          />
+        </div>
       </div>
       <div style={{ boxShadow: "2px 2px 4px 4px rgba(0, 0, 0, 0.03)" }} className="my-3 p-2">
         <div className="d-flex mb-2">
@@ -256,28 +296,29 @@ function OrderItem({ index, props, onSuccess }) {
                 <Col xl={15}><Input placeholder="Nhập mã giảm giá..." /></Col>
                 <Col xl={9}><Button type="primary" className="w-100 bg-warning text-dark">Chọn mã giảm giá</Button></Col>
               </Row>
-              <li className="mb-2">Tạm tính: <span className="float-end fw-semibold"><FormatCurrency value={1000000} /></span></li>
+              <li className="mb-2">Tạm tính: <span className="float-end fw-semibold"><FormatCurrency value={totalMoney} /></span></li>
               {typeOrder === 1 && <li className="mb-2">Phí vận chuyển: <span className="float-end fw-semibold"><FormatCurrency value={47000} /></span></li>}
               <li className="mb-2">Giảm giá: <span className="float-end fw-semibold"><FormatCurrency value={0} /></span></li>
-              <li className="mb-2">Tổng tiền: <span className="float-end fw-semibold text-danger"><FormatCurrency value={1000} /></span></li>
+              <li className="mb-2">Tổng tiền: <span className="float-end fw-semibold text-danger"><FormatCurrency value={totalMoney} /></span></li>
               {typeOrder === 0 && (
                 <>
-                  <li className="mb-2"><Input placeholder="Nhập tiền khách đưa..." /></li>
                   <li className="mb-2">
-                    Tiền thừa: <span className="float-end fw-semibold text-danger"><FormatCurrency value={1000} /></span>
+                    <Input placeholder="Nhập tiền khách đưa..." thousandSeparator={true} onChange={(e) => setExtraMoney(e.target.value - totalMoney)} /></li>
+                  <li className="mb-2">
+                    Tiền thừa: <span className="float-end fw-semibold text-danger"><FormatCurrency value={extraMoney < 0 ? 0 : extraMoney} /></span>
                   </li>
                 </>
               )}
               <li className="mb-2 text-center">
                 <Row gutter={10}>
                   <Col xl={12} onClick={() => setPaymentMethod(0)}>
-                    <div className={`py-2 border rounded-2 d-flex align-items-center justify-content-center ${paymentMethod === 1 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
+                    <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${paymentMethod === 1 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
                       <i className="fa-solid fa-coins" style={{ fontSize: "36px" }}></i>
                       <span className="ms-2 fw-semibold text-dark">Tiền mặt</span>
                     </div>
                   </Col>
                   <Col xl={12} onClick={() => setPaymentMethod(1)}>
-                    <div className={`py-2 border rounded-2 d-flex align-items-center justify-content-center ${paymentMethod === 0 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
+                    <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${paymentMethod === 0 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
                       <i class="fa-regular fa-credit-card" style={{ fontSize: "36px" }}></i>
                       <span className="ms-2 fw-semibold text-dark">Chuyển khoản</span>
                     </div>

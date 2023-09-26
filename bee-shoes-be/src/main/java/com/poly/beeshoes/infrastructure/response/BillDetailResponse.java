@@ -24,4 +24,5 @@ public interface BillDetailResponse {
     BigDecimal getPrice();
 
     Integer getQuantity();
+    String getImages();
 }

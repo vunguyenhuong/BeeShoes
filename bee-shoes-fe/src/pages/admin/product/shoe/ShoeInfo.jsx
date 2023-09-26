@@ -67,18 +67,13 @@ function ShoeInfo() {
   const columns = [
     {
       title: 'Tên',
-      dataIndex: 'shoe',
+      dataIndex: 'name',
       key: 'name',
-      render: (shoe, record) => (
-        <span>{shoe.name} [{record.size.name} -
-          {record.color.name}]</span>
-      ),
     },
     {
       title: 'Đế giày',
       dataIndex: 'sole',
       key: 'sole',
-      render: (x) => x.name
     },
     {
       title: 'Số lượng',
@@ -103,8 +98,8 @@ function ShoeInfo() {
       key: 'images',
       render: (images) => (
         <Carousel autoplay autoplaySpeed={3000} dots={false} arrows={false} style={{ width: "100px" }} >
-          {images.map((image, index) => (
-            <img src={image.name} alt="images" style={{ width: "100px", height: "100px" }} className="object-fit-contain" />
+          {images.split(',').map((image, index) => (
+            <img src={image} alt="images" style={{ width: "100px", height: "100px" }} className="object-fit-contain" />
           ))}
         </Carousel>
       )
@@ -128,32 +123,32 @@ function ShoeInfo() {
     <>
       <BaseUI>
         <Breadcrumb className="mb-2"
-          items={[{ href: "/", title: <FaHome /> }, { href: "/admin/product", title: "Danh sách sản phẩm" }, { title: `${product.name}` },]}
+          items={[{ href: "/", title: <FaHome /> }, { href: "/admin/product", title: "Danh sách sản phẩm" }, { title: `` },]}
         />
         {/* Thông tin chung sản phẩm */}
         <Row gutter={24}>
           <Col xl={24} className="d-flex align-items-center py-1 mb-3" style={{ backgroundColor: "#F2F2F2" }}>
             <div className="flex-grow-1">
-            <Title level={5} className="my-2">Thông tin sản phẩm</Title>
+              <Title level={5} className="my-2">Thông tin sản phẩm</Title>
             </div>
             <div className="">
               <Tooltip placement="top" title="Xóa">
                 <Button type="primary" className="bg-danger me-1"><i className="fas fa-trash"></i></Button>
               </Tooltip>
-              <UpdateShoe props={product} onSuccess={() => loadData(id)} />
+              {/* <UpdateShoe props={product} onSuccess={() => loadData(id)} /> */}
             </div>
           </Col>
           <Col xl={8}>
-            <p><strong>Danh mục: </strong> {product.category.name}</p>
-            <p><strong>Thương hiệu: </strong> {product.brand.name}</p>
+            {/* <p><strong>Danh mục: </strong> {product.category}</p>
+            <p><strong>Thương hiệu: </strong> {product.brand}</p> */}
           </Col>
           <Col xl={8}>
-            <p><strong>Người tạo: </strong> {product.createBy}</p>
-            <p><strong>Người chỉnh sửa: </strong> {product.updateBy}</p>
+            {/* <p><strong>Người tạo: </strong> {product.createBy}</p>
+            <p><strong>Người chỉnh sửa: </strong> {product.updateBy}</p> */}
           </Col>
           <Col xl={8}>
-            <p><strong>Ngày tạo: </strong> <FormatDate date={product.createAt} /></p>
-            <p><strong>Ngày cập nhật cuối: </strong> <FormatDate date={product.updateAt} /></p>
+            {/* <p><strong>Ngày tạo: </strong> <FormatDate date={product.createAt} /></p>
+            <p><strong>Ngày cập nhật cuối: </strong> <FormatDate date={product.updateAt} /></p> */}
           </Col>
           <Divider />
         </Row>

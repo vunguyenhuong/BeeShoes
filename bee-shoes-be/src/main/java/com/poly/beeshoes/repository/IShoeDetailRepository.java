@@ -59,6 +59,7 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
             WHERE (:#{#req.shoe} IS NULL OR sd.shoe_id = :#{#req.shoe})
             AND (:#{#req.color} IS NULL OR sd.color_id = :#{#req.color})
             AND (:#{#req.size} IS NULL OR sd.size_id = :#{#req.size})
+            AND (:#{#req.name} IS NULL OR CONCAT(s.name, ' ', c.name, ' ', sz.name, ' ') LIKE %:#{#req.name}%)
             GROUP BY sd.id
             """, nativeQuery = true)
     Page<ShoeDetailResponse> getAll(@Param("req") ShoeDetailRequest request,Pageable pageable);

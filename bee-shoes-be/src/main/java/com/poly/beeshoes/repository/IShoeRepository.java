@@ -56,6 +56,9 @@ public interface IShoeRepository extends JpaRepository<Shoe, Long> {
             GROUP_CONCAT(DISTINCT name) AS name FROM images GROUP BY shoe_detail_id
             ) img ON sd.id = img.shoe_detail_id
             WHERE (:#{#req.name} IS NULL OR s.name LIKE %:#{#req.name}%)
+            AND (:#{#req.brand} IS NULL OR s.brand_id = :#{#req.brand})
+            AND (:#{#req.category} IS NULL OR s.category_id = :#{#req.category})
+            AND (:#{#req.status} IS NULL OR s.deleted = :#{#req.status})
             GROUP BY s.id
             """, nativeQuery = true)
     Page<ShoeResponse> getAllShoe(@Param("req") ShoeRequest request, Pageable pageable);

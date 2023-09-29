@@ -155,7 +155,7 @@ function OrderItem({ index, props, onSuccess }) {
                 <Row gutter={10} className="d-flex align-items-center">
                   <Col xl={4}>
                     <Carousel autoplay autoplaySpeed={1500} dots={false} arrows={false} className='w-100'>
-                      {item.images.split(',').map((image, index) => (
+                      {item.images !== undefined && item.images.split(',').map((image, index) => (
                         <div className="" style={{ height: "150px" }}>
                           <img src={image} alt="images" style={{ width: "100%", height: "150px" }} className="object-fit-cover" />
                         </div>
@@ -196,7 +196,7 @@ function OrderItem({ index, props, onSuccess }) {
             current={currentPage}
             total={totalPages}
             showSizeChanger
-            pageSizeOptions={[1,3,5,10]}
+            pageSizeOptions={[1, 3, 5, 10]}
             showQuickJumper
             onChange={(page, pageSize) => {
               setCurrentPage(page);

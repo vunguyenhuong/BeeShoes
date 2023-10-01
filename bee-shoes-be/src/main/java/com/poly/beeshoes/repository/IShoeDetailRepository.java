@@ -22,21 +22,6 @@ import java.util.List;
 public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
     ShoeDetail findByCode(String code);
 
-    @Query("""
-            SELECT s FROM ShoeDetail s
-            WHERE
-            (:#{#req.name} IS NULL OR CONCAT(s.shoe.name, ' ', s.color.name, '-', s.size.name) LIKE %:#{#req.name}%)
-            AND (:#{#req.shoe} IS NULL OR s.shoe.id = :#{#req.shoe})
-            AND (:#{#req.color} IS NULL OR s.color.id = :#{#req.color})
-            AND (:#{#req.size} IS NULL OR s.size.id = :#{#req.size})
-            AND (:#{#req.sole} IS NULL OR s.sole.id = :#{#req.sole})
-            AND (:#{#req.minPrice} IS NULL OR :#{#req.maxPrice} IS NULL 
-            OR s.price >= :#{#req.minPrice} AND s.price <= :#{#req.maxPrice})
-            AND (:#{#req.deleted} IS NULL OR :#{#req.deleted} = '' OR s.deleted = :#{#req.deleted})
-            ORDER BY s.createAt DESC
-            """)
-    Page<ShoeDetail> getAllShoeDetail(@Param("req") ShoeDetailRequest request,Pageable pageable);
-
     @Query(value = """
             SELECT sd.id AS id,
             ROW_NUMBER() OVER(ORDER BY s.create_at DESC) AS indexs,

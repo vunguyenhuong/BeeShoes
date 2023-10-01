@@ -1,14 +1,10 @@
-import { Button, Card, Carousel, Col, Form, Input, Modal, Pagination, Popconfirm, Radio, Row, Select, Table } from 'antd'
-import Meta from 'antd/es/card/Meta';
+import { Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Table } from 'antd'
 import { Option } from 'antd/es/mentions';
-import Title from 'antd/es/typography/Title';
 import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import FormatCurrency from '~/utils/FormatCurrency';
 import * as request from '~/utils/httpRequest';
-import ChooseProductModal from './ChooseProductModal';
-import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 function ShowProductModal({ idBill, onClose }) {
@@ -28,9 +24,11 @@ function ShowProductModal({ idBill, onClose }) {
 
     const [dataFilter, setDataFilter] = useState({});
 
-    const [inputQuantity, setInputQuantity] = useState(0);
-
     useEffect(() => {
+        loadData(dataFilter);
+    }, [isModalOpen, dataFilter])
+
+    const loadData = (dataFilter) => {
         request.get('/shoe-detail', {
             params: {
                 name: dataFilter.name,
@@ -40,10 +38,11 @@ function ShowProductModal({ idBill, onClose }) {
             }
         }).then(response => {
             setProductList(response.data);
+            setTotalPages(response.data.totalPages);
         }).catch(e => {
             console.log(e);
         })
-    }, [isModalOpen, dataFilter])
+    }
 
     useEffect(() => {
         request.get('/size', { params: { name: searchSize } }).then(response => {
@@ -62,6 +61,34 @@ function ShowProductModal({ idBill, onClose }) {
             console.log(e);
         })
     }, [isModalOpen, searchSize])
+
+    const handleChoose = (shoeDetail) => {
+        const data = {};
+        if(shoeDetail.quantity === 0){
+            toast.error("Sản phẩm này đã hết hàng!")
+        }else{
+            Modal.confirm({
+                title: "Xác nhận",
+                maskClosable: true,
+                content: "Xác nhận thêm sản phẩm ?",
+                okText: "Ok",
+                cancelText: "Cancel",
+                onOk: () => {
+                    data.shoeDetail = shoeDetail?.code;
+                    data.bill = idBill;
+                    data.price = shoeDetail?.price;
+                    data.quantity = 1;
+                    request.post('/bill-detail', data).then(response => {
+                        toast.success('Thêm thành công!');
+                        loadData(dataFilter);
+                    }).catch(e => {
+                        toast.error(e.response.data);
+                    })
+                },
+            });
+        }
+    }
+
     const columns = [
         {
             title: '#',
@@ -111,28 +138,7 @@ function ShowProductModal({ idBill, onClose }) {
             key: 'action',
             render: (id, record) => (
                 <>
-                    <Popconfirm
-                        title="Nhập số lượng"
-                        description={
-                            <>
-                                <Input onChange={(e) => setInputQuantity(e.target.value)} status='success' />
-                            </>
-                        }
-                        onConfirm={() => {
-                            if (inputQuantity > record.quantity) {
-                                toast.error("Quá số lượng cho phép!");
-                            }
-                            if (inputQuantity < 0) {
-                                toast.error("Số lượng phải > 0!");
-                            }
-                            setInputQuantity(null);
-                        }}
-                        // onCancel={cancel}
-                        okText="OK"
-                        cancelText="Thoát"
-                    >
-                        <Button type='primary' className='bg-warning text-dark'>Chọn</Button>
-                    </Popconfirm>
+                    <Button type='primary' className='bg-warning text-dark' onClick={() => handleChoose(record)}>Chọn</Button>
                 </>
             )
         },

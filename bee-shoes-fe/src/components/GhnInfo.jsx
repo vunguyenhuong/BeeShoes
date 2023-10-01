@@ -3,7 +3,7 @@ import { Option } from "antd/es/mentions";
 import React, { useEffect, useState } from "react";
 import * as request from "~/utils/httpRequest";
 
-const GHNInfo = ({ dataAddress, prov, distr, war }) => {
+const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -79,6 +79,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war }) => {
           <Select showSearch onChange={handleProvinceChange} placeholder="Chọn tỉnh/thành phố..." optionFilterProp="children"
             filterOption={(input, option) => (option?.children ?? "").toLowerCase().includes(input.toLowerCase())}
             defaultValue={!prov ? null : parseInt(prov)}
+            disabled={disabledValue}
           >
             {provinces.map((province) => (
               <Option key={province.ProvinceID} value={province.ProvinceID}>
@@ -93,6 +94,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war }) => {
           <Select showSearch onChange={handleDistrictChange} placeholder="Chọn quận/huyện..." optionFilterProp="children"
             filterOption={(input, option) => (option?.children ?? "").toLowerCase().includes(input.toLowerCase())}
             defaultValue={!distr ? null : parseInt(distr)}
+            disabled={disabledValue}
           >
             {districts.map((province) => (
               <Option key={province.DistrictID} value={province.DistrictID}>
@@ -107,6 +109,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war }) => {
           <Select showSearch onChange={handleWardChange} placeholder="Chọn xã/phường/thị trấn..." optionFilterProp="children"
             filterOption={(input, option) => (option?.children ?? "").toLowerCase().includes(input.toLowerCase())}
             defaultValue={war}
+            disabled={disabledValue}
           >
             {wards.map((ward) => (
               <Option

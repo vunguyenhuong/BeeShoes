@@ -59,11 +59,6 @@ public class BillDetailServiceImpl implements BillDetailService {
     @Override
     public BillDetail update(Long id, BillDetailRequest request) {
         BillDetail old = billDetailRepository.findById(id).get();
-//        if(billDetailRepository.existsByShoeDetailIdAndBillId(
-//                request.getShoeDetail(), request.getBill()
-//        )){
-//            //Mess đã tồn tại và cộng dồn số lượng
-//        }
         return billDetailRepository.save(billDetailConvert.convertRequestToEntity(old,request));
     }
 

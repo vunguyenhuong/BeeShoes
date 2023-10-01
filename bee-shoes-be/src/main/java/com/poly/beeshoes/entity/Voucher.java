@@ -34,4 +34,6 @@ public class Voucher extends PrimaryEntity {
     private Date startDate;
     @Column(name = "end_date")
     private Date endDate;
+    @Column(name = "status")
+    private Integer status;
 }

@@ -10,4 +10,5 @@ public class BillSearchRequest extends PageableRequest {
     private Long idStaff;
     private Integer status;
     private String code;
+    private Boolean deleted;
 }

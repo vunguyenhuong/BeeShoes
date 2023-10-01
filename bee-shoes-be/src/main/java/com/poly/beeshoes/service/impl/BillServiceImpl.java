@@ -9,6 +9,7 @@ import com.poly.beeshoes.infrastructure.converter.BillConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.infrastructure.request.bill.BillRequest;
 import com.poly.beeshoes.infrastructure.request.bill.BillSearchRequest;
+import com.poly.beeshoes.infrastructure.response.BillResponse;
 import com.poly.beeshoes.repository.IAccountRepository;
 import com.poly.beeshoes.repository.IBillHistoryRepository;
 import com.poly.beeshoes.repository.IBillRepository;
@@ -30,9 +31,9 @@ public class BillServiceImpl implements BillService {
     private IAccountRepository accountRepository;
 
     @Override
-    public PageableObject<Bill> getAll(BillSearchRequest request) {
+    public PageableObject<BillResponse> getAll(BillSearchRequest request) {
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
-        return new PageableObject<>(billRepository.getAllBill(request, pageable));
+        return new PageableObject<>(billRepository.getAll(request, pageable));
     }
 
     @Override

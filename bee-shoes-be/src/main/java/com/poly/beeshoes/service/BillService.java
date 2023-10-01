@@ -4,9 +4,10 @@ import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.request.bill.BillRequest;
 import com.poly.beeshoes.infrastructure.request.bill.BillSearchRequest;
+import com.poly.beeshoes.infrastructure.response.BillResponse;
 
 public interface BillService {
-    PageableObject<Bill> getAll(BillSearchRequest request);
+    PageableObject<BillResponse> getAll(BillSearchRequest request);
     Bill getOne(Long id);
     Bill create();
     Bill update(Long id,BillRequest request);

@@ -2,7 +2,6 @@ import { Button, Modal, Tabs, message } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import QrCode from "~/components/QrCode";
 import * as request from "~/utils/httpRequest";
 import OrderItem from "./OrderItem";
 import Loading from "~/components/Loading/Loading";
@@ -23,7 +22,8 @@ function NewOrder() {
     request
       .get(`bill`, {
         params: {
-          idStaff: 1
+          idStaff: 1,
+          status: 1
         }
       }).then((response) => {
         setListOrder(response.data);
@@ -89,7 +89,7 @@ function NewOrder() {
       <div className="mt-3">
         <Tabs hideAdd type="editable-card" onEdit={handleDelete}>
           {listOrder.length > 0 && listOrder.map((order, index) => (
-            <Tabs.TabPane key={index} tab={`${order.code}`}>
+            <Tabs.TabPane key={order.code} tab={`${order.code}`}>
               <OrderItem props={order} index={index + 1} onSuccess={loadOrders} />
             </Tabs.TabPane>
           ))}

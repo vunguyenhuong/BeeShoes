@@ -2,207 +2,149 @@ import React from "react";
 import BaseUI from "~/layouts/admin/BaseUI";
 import { useState, useEffect } from "react";
 import * as request from "~/utils/httpRequest";
-import Pagination from "~/components/Pagination";
-import { Link } from "react-router-dom";
+import { Badge, Button, Form, Input, Radio, Table, Tabs } from "antd";
 import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
 
 const Bill = () => {
-  const [billList, setBillList] = useState([]);
+  const [listOrder, setListOrder] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchValue, setSearchValue] = useState("");
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(5);
 
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber < 1) pageNumber = 1;
-    setCurrentPage(pageNumber);
-  };
+  const [status, setStatus] = useState(null);
 
-  const handleChangePageSize = (e) => {
-    setPageSize(e.target.value);
-  };
-  const handleChangeSearchValue = (e) => {
-    setSearchValue(e.target.value);
-  };
-
-  const loadData = () => {
+  const loadOrders = (status, currentPage, pageSize, searchValue) => {
     request
-      .get("/bill", {
+      .get(`bill`, {
         params: {
-          value: searchValue,
+          idStaff: 1,
           page: currentPage,
-          pageSize: pageSize,
-        },
+          sizePage: pageSize, 
+          status: status
+        }
+      }).then((response) => {
+        setListOrder(response.data);
+        setTotalPages(response.totalPages)
       })
-      .then((response) => {
-        setBillList(response.content);
-        setTotalPages(response.totalPages);
-      })
-      .catch((error) => {
-        console.log(error);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
   useEffect(() => {
-    loadData();
-  }, [currentPage, pageSize, searchValue]);
+    loadOrders();
+  }, [])
+
+  useEffect(() => {
+    loadOrders(status, currentPage, pageSize, searchValue);
+  }, [currentPage, pageSize, searchValue, status]);
+
+  const items = [
+    {
+      key: null,
+      label: <Badge count={5} offset={[8, 0]} size="small">Tất cả</Badge>,
+    },
+    {
+      key: 2,
+      label: <Badge count={5} offset={[8, 0]} size="small">Chờ xác nhận</Badge>,
+    },
+    {
+      key: 4,
+      label: <Badge count={5} offset={[8, 0]} size="small">Chờ giao</Badge>,
+    },
+    {
+      key: 5,
+      label: <Badge count={5} offset={[8, 0]} size="small">Đang giao</Badge>,
+    },
+    {
+      key: 6,
+      label: <Badge count={5} offset={[8, 0]} size="small">Hoàn thành</Badge>,
+    },
+    {
+      key: 7,
+      label: <Badge count={5} offset={[8, 0]} size="small">Hủy</Badge>,
+    },
+    {
+      key: 0,
+      label: <Badge count={5} offset={[8, 0]} size="small">Chờ thanh toán</Badge>,
+    },
+  ];
+
+  const columns = [
+    {
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
+    },
+    {
+      title: 'Mã',
+      dataIndex: 'code',
+      key: 'code',
+    },
+    {
+      title: 'Khách hàng',
+      dataIndex: 'customer',
+      key: 'customer',
+      render: (x) => x === null ? "Khách hàng lẻ" : x
+    },
+    {
+      title: 'SDT',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
+      render: (x) => x === null ? '-' : x
+    },
+    {
+      title: 'Tổng tiền',
+      dataIndex: 'totalMoney',
+      key: 'totalMoney',
+      render: (x) => x === null ? 0 : <FormatCurrency value={x} />
+    },
+    {
+      title: 'Loại đơn hàng',
+      dataIndex: 'type',
+      key: 'type',
+      render: (x) => x === null ? "Đơn mới" : x === 1 ? "Giao hàng" : "Tại quầy"
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'createAt',
+      key: 'createAt',
+      render: (x) => <FormatDate date={x} />
+    },
+    {
+      title: 'Hành động',
+      dataIndex: 'id',
+      key: '',
+      render: (x) => (
+        <>
+        <Button type="text" icon={<i className="fas fa-eye"></i>}/>
+        <Button type="text" icon={<i class="fas fa-ellipsis"></i>}/>
+        </>
+      )
+    },
+  ];
 
   return (
     <BaseUI>
-      <div class="">
-        <nav className="breadcrumb fw-semibold">
-          <Link
-            className="breadcrumb-item __bee-text text-decoration-none"
-            to={"/admin/bill"}
-          >
-            Danh sách hóa đơn
-          </Link>
-        </nav>
-        <div className="d-flex">
-          <div className="p-2 flex-grow-1">
-            <input
-              className="form-control form-control-sm me-2"
-              name="code"
-              type="search"
-              defaultValue={""}
-              placeholder="Mã hóa đơn..."
-              onChange={(event) => handleChangeSearchValue(event)}
-            />
-          </div>
-          <div className="p-2">
-            {/* <div class="input-group input-group-sm">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Nhập giá tối thiểu..."
-                onChange={(event) => setMinPriceValue(event.target.value)}
-              />
-              <span class="input-group-text bg-warning-subtitle">đến</span>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Nhập giá tối đa..."
-                onChange={(event) => setMaxPriceValue(event.target.value)}
-              />
-            </div> */}
-          </div>
-          <div className="p-2">
-            <select
-              className="form-select form-select-sm"
-              onChange={(event) => handleChangePageSize(event)}
-            >
-              <option value={3}>3</option>
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-            </select>
-          </div>
-          <div className="p-2">
-            <Link
-              type="button"
-              class="btn btn-warning btn-sm"
-              to={"/admin/order"}
-            >
-              <i className="fas fa-plus-circle"></i> Tạo đơn hàng
-            </Link>
-          </div>
-        </div>
-
-        <div className="table-responsive">
-          <table className="table table-striped">
-            <thead className="">
-              <tr>
-                <th>#</th>
-                <th>Mã HĐ</th>
-                <th>Tổng tiền</th>
-                <th>Ngày Tạo</th>
-                <th>Khách hàng</th>
-                <th>Số điện thoại</th>
-                <th>Loại đơn hàng</th>
-                <th>Trạng thái</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {billList.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{index + 1}</td>
-                  <td>#{item.code}</td>
-                  <td className="fw-semibold text-danger">
-                    <FormatCurrency value={item.totalMoney} />
-                  </td>
-                  <td>
-                    <FormatDate date={item.createAt} />
-                  </td>
-                  <td>
-                    {item.customerName === null || item.customerName === "" ? (
-                      <span class="badge bg-secondary py-2 rounded-3 w-100">
-                        Khách lẻ
-                      </span>
-                    ) : (
-                      item.customerName
-                    )}
-                  </td>
-                  <td>
-                    {item.phoneNumber === null ? "Chưa có" : item.phoneNumber}
-                  </td>
-                  <td>
-                    <span
-                      class={`badge bg-${
-                        item.type === 0
-                          ? "success"
-                          : item.type === 1
-                          ? "primary"
-                          : "danger"
-                      } py-2 rounded-3 w-100`}
-                    >
-                      {item.type === 0
-                        ? "Tại quầy"
-                        : item.type === 1
-                        ? "Giao hàng"
-                        : "Chưa thanh toán"}
-                    </span>
-                  </td>
-                  <td className="">
-                    <span class="badge bg-secondary py-2 rounded-3 w-100 text-wrap">
-                      {item.status === 1
-                        ? " Tạo đơn hàng"
-                        : item.status === 2
-                        ? " Chờ xác nhận"
-                        : item.status === 3
-                        ? " Xác nhận thông tin thanh toán"
-                        : item.status === 4
-                        ? " Chờ giao"
-                        : item.status === 5
-                        ? " Đang giao"
-                        : item.status === 6
-                        ? " Hoàn thành"
-                        : item.status === 7
-                        ? " Hủy"
-                        : " Chờ thanh toán"}
-                    </span>
-                  </td>
-                  <td>
-                    <Link
-                      type="button"
-                      class="btn btn-sm border-0"
-                      to={`/admin/bill/${item.id}`}
-                    >
-                      <i className="fas fa-eye"></i>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        handleChange={handlePageChange}
-      />
+      <h6>Danh sách hóa đơn</h6>
+      <Tabs defaultActiveKey={1} items={items} tabBarGutter={74} onChange={(key) => {
+        loadOrders(key);
+      }} />
+      <Table dataSource={listOrder} columns={columns}
+        pagination={{
+          showSizeChanger: true,
+          current: currentPage,
+          pageSize: pageSize,
+          pageSizeOptions: [5, 10, 20, 50, 100],
+          showQuickJumper: true,
+          total: totalPages * pageSize,
+          onChange: (page, pageSize) => {
+            setCurrentPage(page);
+            setPageSize(pageSize);
+          },
+        }} />
     </BaseUI>
   );
 };

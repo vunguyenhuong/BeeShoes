@@ -15,10 +15,13 @@ public class AddressConvert {
     private IAccountRepository accountRepository;
     public Address convertRequestToEntity(AddressRequest request) {
         return Address.builder()
-                .name(request.getName()).defaultAddress(request.getDefaultAddress())
-                .ward(request.getWard()).district(request.getDistrict())
-                .phoneNumber(request.getPhoneNumber())
+                .account(accountRepository.findById(request.getAccount()).get())
+                .name(request.getName())
+                .defaultAddress(false)
+                .ward(request.getWard())
+                .district(request.getDistrict())
                 .province(request.getProvince())
+                .phoneNumber(request.getPhoneNumber())
                 .specificAddress(request.getSpecificAddress())
                 .build();
     }

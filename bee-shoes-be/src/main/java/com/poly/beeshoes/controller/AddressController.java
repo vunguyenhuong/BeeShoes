@@ -3,6 +3,7 @@ package com.poly.beeshoes.controller;
 import com.poly.beeshoes.entity.Address;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.request.AddressRequest;
+import com.poly.beeshoes.infrastructure.response.AddressResponse;
 import com.poly.beeshoes.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,10 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AddressController {
     @Autowired
     private AddressService addressService;
-    @GetMapping("/{idAccount}")
-    public Page<Address> getByAccount(@PathVariable Long idAccount,
-                                      @RequestParam(defaultValue = "1",required = false) Integer page){
-        return addressService.getByAccount(idAccount, PageRequest.of(page-1,2));
+    @GetMapping("/{account}")
+    public Page<AddressResponse> getByAccount(AddressRequest request){
+        return addressService.getByAccount(request);
     }
 
     @PostMapping

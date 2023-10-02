@@ -3,6 +3,7 @@ package com.poly.beeshoes.controller;
 import com.poly.beeshoes.entity.Sole;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
+import com.poly.beeshoes.infrastructure.request.SoleRequest;
 import com.poly.beeshoes.infrastructure.response.SoleResponse;
 import com.poly.beeshoes.service.SoleService;
 import jakarta.validation.Valid;
@@ -24,10 +25,8 @@ public class SoleController {
     private SoleService soleService;
 
     @GetMapping
-    public PageableObject<SoleResponse> getAll(@RequestParam(required = false, defaultValue = "") String name,
-                                               @RequestParam(required = false, defaultValue = "1") Integer page,
-                                               @RequestParam(required = false) Boolean status) {
-        return soleService.getAll(name, page, status);
+    public PageableObject<SoleResponse> getAll(SoleRequest request) {
+        return soleService.getAll(request);
     }
 
     @GetMapping("/{id}")
@@ -36,13 +35,13 @@ public class SoleController {
     }
 
     @PostMapping
-    public ResponseObject create(@RequestBody @Valid Sole sole) {
-        return new ResponseObject(soleService.create(sole));
+    public ResponseObject create(@RequestBody @Valid SoleRequest request) {
+        return new ResponseObject(soleService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid Sole sole) {
-        return new ResponseObject(soleService.update(id, sole));
+    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid SoleRequest request) {
+        return new ResponseObject(soleService.update(id, request));
     }
 
     @DeleteMapping("/{id}")

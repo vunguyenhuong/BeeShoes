@@ -1,11 +1,12 @@
 package com.poly.beeshoes.infrastructure.request;
 
+import com.poly.beeshoes.infrastructure.common.PageableRequest;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AddressRequest {
+public class AddressRequest extends PageableRequest {
     private Long account;
     private String name;
     private String phoneNumber;
@@ -14,4 +15,5 @@ public class AddressRequest {
     private String district;
     private String province;
     private Boolean defaultAddress;
+    private Boolean status;
 }

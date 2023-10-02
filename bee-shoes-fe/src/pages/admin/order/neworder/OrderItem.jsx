@@ -7,6 +7,8 @@ import QrCode from "~/components/QrCode";
 import FormatCurrency from "~/utils/FormatCurrency";
 import * as request from "~/utils/httpRequest";
 import CustomerInfo from "./CustomerInfo";
+import ChooseAddress from "./ChooseAddress";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Title from "antd/es/typography/Title";
 import TextArea from "antd/es/input/TextArea";
@@ -363,9 +365,7 @@ function OrderItem({ index, props, onSuccess }) {
           </div>
           <div className="">
             {customer !== null && (
-              <>
-                <Button type="text" icon={<i className="fas fa-location-dot"></i>} className="text-success fw-semibold">Chọn địa chỉ</Button>
-              </>
+                <ChooseAddress idCustomer={customer.id}/>
             )}
           </div>
         </div>

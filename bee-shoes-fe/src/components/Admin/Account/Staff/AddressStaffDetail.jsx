@@ -9,9 +9,11 @@ import { useState } from "react";
 function AddressStaffDetail({ idStaff }) {
   const [listAddress, setListAddress] = useState([]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     loadData(idStaff);
   }, [idStaff])
+  
   const loadData = (id) => {
     setLoading(true);
     const timeout = setTimeout(() => {

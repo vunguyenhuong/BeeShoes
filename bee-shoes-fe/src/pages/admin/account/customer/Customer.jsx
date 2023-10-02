@@ -54,8 +54,8 @@ function Customer() {
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'deteted',
-      key: 'createAt',
+      dataIndex: 'deleted',
+      key: 'deleted',
       render: (x) => (
         <span className={x ? "fw-semibold text-danger" : "fw-semibold text-success"}>
           {x ? "Đã nghỉ" : "Đang làm"}
@@ -67,7 +67,7 @@ function Customer() {
       dataIndex: 'id',
       key: 'action',
       render: (x) => (
-        <Link to={`/admin/staff/${x}`} className="btn btn-sm text-warning">
+        <Link to={`/admin/customer/${x}`} className="btn btn-sm text-warning">
           <i className="fas fa-edit"></i>
         </Link>
       )

@@ -3,6 +3,7 @@ package com.poly.beeshoes.controller;
 import com.poly.beeshoes.entity.Color;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
+import com.poly.beeshoes.infrastructure.request.ColorRequest;
 import com.poly.beeshoes.infrastructure.response.ColorResponse;
 import com.poly.beeshoes.service.ColorService;
 import jakarta.validation.Valid;
@@ -24,10 +25,8 @@ public class ColorController {
     private ColorService colorService;
 
     @GetMapping
-    public PageableObject<ColorResponse> getAll(@RequestParam(required = false, defaultValue = "") String name,
-                                                @RequestParam(required = false, defaultValue = "1") Integer page,
-                                                @RequestParam(required = false) Boolean status) {
-        return colorService.getAll(name, page, status);
+    public PageableObject<ColorResponse> getAll(ColorRequest request) {
+        return colorService.getAll(request);
     }
 
     @GetMapping("/{id}")
@@ -36,13 +35,13 @@ public class ColorController {
     }
 
     @PostMapping
-    public ResponseObject create(@RequestBody @Valid Color color) {
-        return new ResponseObject(colorService.create(color));
+    public ResponseObject create(@RequestBody @Valid ColorRequest request) {
+        return new ResponseObject(colorService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid Color color) {
-        return new ResponseObject(colorService.update(id, color));
+    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid ColorRequest request) {
+        return new ResponseObject(colorService.update(id, request));
     }
 
     @DeleteMapping("/{id}")

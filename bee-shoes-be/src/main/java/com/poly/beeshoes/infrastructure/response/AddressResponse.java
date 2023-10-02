@@ -1,19 +1,29 @@
 package com.poly.beeshoes.infrastructure.response;
 
-import com.poly.beeshoes.entity.Color;
+import com.poly.beeshoes.entity.Address;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 
-import java.time.LocalDateTime;
-
-@Projection(types = {Color.class})
-public interface ColorResponse {
+@Projection(types = {Address.class})
+public interface AddressResponse {
     @Value("#{target.indexs}")
     Integer getIndex();
     Long getId();
 
     String getName();
 
+    String getPhoneNumber();
+
+    String getWard();
+
+    String getDistrict();
+
+    String getProvince();
+
+    String getSpecificAddress();
+
+    Boolean getDefaultAddress();
+
     Boolean getStatus();
-    LocalDateTime getCreateAt();
+
 }

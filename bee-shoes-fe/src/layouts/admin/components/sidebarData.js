@@ -45,19 +45,19 @@ const sidebarData = [
                         "key": "kichCo",
                         "title": "Kích cỡ",
                         "icon": "fa-maximize",
-                        "path": "/admin/product"
+                        "path": "/admin/size"
                     },
                     {
                         "key": "mauSac",
                         "title": "Màu sắc",
                         "icon": "fa-droplet",
-                        "path": "/services/service2"
+                        "path": "/admin/color"
                     },
                     {
                         "key": "deGiay",
                         "title": "Đế giày",
                         "icon": "fa-shoe-prints",
-                        "path": "/admin/product"
+                        "path": "/admin/sole"
                     },
                 ]
             }

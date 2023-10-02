@@ -16,6 +16,11 @@ import CustomerDetail from './pages/admin/account/customer/CustomerDetail';
 import Customer from './pages/admin/account/customer/Customer';
 import ImageGallery from './pages/admin/ImageGallery';
 import DetailProduct from './pages/client/DetailProduct';
+import Size from './pages/admin/product/attribute/Size';
+import Color from './pages/admin/product/attribute/Color';
+import Sole from './pages/admin/product/attribute/Sole';
+
+
 const publicRouters = [
     { path: "/", element: BaseUI },
     // { path: "/admin/dashboard", element: Dashboard },
@@ -39,6 +44,10 @@ const publicRouters = [
     { path: "/admin/customer/:id", element: CustomerDetail },
     { path: "/admin/image-gallery", element: ImageGallery },
     { path: "/admin/product/detail/:id", element: DetailProduct },
+
+    { path: "/admin/size", element: Size },
+    { path: "/admin/color", element: Color },
+    { path: "/admin/sole", element: Sole },
     // { path: '*', element: NotFound}
 ];
 

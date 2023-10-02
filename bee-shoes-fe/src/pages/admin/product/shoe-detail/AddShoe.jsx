@@ -67,21 +67,21 @@ function AddProduct() {
     });
   }, [searchProduct])
   useEffect(() => {
-    request.get("/size", { params: { name: searchSize } }).then((response) => {
+    request.get("/size", { params: { name: searchSize, status: false }}).then((response) => {
       setSize(response.data);
     }).catch((error) => {
       console.log(error);
     });
   }, [searchSize])
   useEffect(() => {
-    request.get("/color", { params: { name: searchColor } }).then((response) => {
+    request.get("/color", { params: { name: searchColor, status: false  }}).then((response) => {
       setColor(response.data);
     }).catch((error) => {
       console.log(error);
     });
   }, [searchColor])
   useEffect(() => {
-    request.get("/sole", { params: { name: searchSole } }).then((response) => {
+    request.get("/sole", { params: { name: searchSole, status: false }}).then((response) => {
       setSole(response.data);
     }).catch((error) => {
       console.log(error);

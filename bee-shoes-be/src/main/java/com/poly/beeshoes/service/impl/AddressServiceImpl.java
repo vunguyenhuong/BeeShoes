@@ -4,7 +4,7 @@ import com.poly.beeshoes.entity.Address;
 import com.poly.beeshoes.infrastructure.converter.AddressConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.infrastructure.request.AddressRequest;
-import com.poly.beeshoes.repository.IAccountRepository;
+import com.poly.beeshoes.infrastructure.response.AddressResponse;
 import com.poly.beeshoes.repository.IAddressRepository;
 import com.poly.beeshoes.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,9 @@ public class AddressServiceImpl implements AddressService {
     private AddressConvert addressConvert;
 
     @Override
-    public Page<Address> getByAccount(Long idAccount, Pageable pageable) {
-        return addressRepository.findByAccountIdAndDeleted(idAccount, false, pageable);
+    public Page<AddressResponse> getByAccount(AddressRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
+        return addressRepository.getAddress(request, pageable);
     }
 
     @Override

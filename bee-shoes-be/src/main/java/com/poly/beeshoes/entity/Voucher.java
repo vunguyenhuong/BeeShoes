@@ -4,10 +4,7 @@ import com.poly.beeshoes.entity.base.PrimaryEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
@@ -17,13 +14,13 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 
 @Entity
 @Table(name = "voucher")
 public class Voucher extends PrimaryEntity {
     @Column(name = "code", unique = true, length = 20)
     private String code;
-
     @Nationalized
     @Column(name = "name", length = 50)
     private String name;
@@ -37,4 +34,6 @@ public class Voucher extends PrimaryEntity {
     private Date startDate;
     @Column(name = "end_date")
     private Date endDate;
+    @Column(name = "status")
+    private Integer status;
 }

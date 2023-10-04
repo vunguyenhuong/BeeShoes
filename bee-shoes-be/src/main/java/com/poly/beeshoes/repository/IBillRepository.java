@@ -1,6 +1,9 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.Bill;
+import com.poly.beeshoes.infrastructure.request.bill.BillRequest;
+import com.poly.beeshoes.infrastructure.request.bill.BillSearchRequest;
+import com.poly.beeshoes.infrastructure.response.BillResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,28 +11,52 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 @Repository
 public interface IBillRepository extends JpaRepository<Bill, Long> {
 
+    Boolean existsByCodeIgnoreCase(String code);
+
+    @Query(value = """
+            SELECT  b.id AS id,
+            ROW_NUMBER() OVER(ORDER BY b.create_at DESC) AS indexs,
+            b.code AS code, b.create_at AS createAt,
+            cus.name AS customer,emp.name AS employee,
+            b.address AS address,
+            b.phone_number AS phoneNumber,
+            b.total_money AS totalMoney,
+            b.money_ship AS moneyShip,
+            b.money_reduce AS moneyReduce,
+            b.pay_date AS payDate,
+            b.ship_date AS shipDate,
+            b.desired_date AS desiredDate,
+            b.receive_date AS receiveDate,
+            b.type AS type,
+            b.status AS status,
+            b.note AS note,
+            v.code AS voucher
+            FROM bill b
+            LEFT JOIN account emp ON emp.id = b.account_id
+            LEFT JOIN account cus ON cus.id = b.customer_id
+            LEFT JOIN voucher v ON v.id = b.voucher_id
+            WHERE (:#{#req.code} IS NULL OR b.code LIKE %:#{#req.code}%)
+            AND (:#{#req.idStaff} IS NULL OR b.account_id = :#{#req.idStaff})
+            AND (:#{#req.status} IS NULL OR b.status = :#{#req.status})
+            AND b.deleted = FALSE 
+            """, nativeQuery = true)
+    Page<BillResponse> getAll(@Param("req") BillSearchRequest request, Pageable pageable);
+
     @Query("""
-            SELECT b FROM Bill b
-            WHERE b.deleted = false 
-            AND (:value IS NULL OR :value = '' OR b.customerName LIKE %:value%
-            OR b.phoneNumber LIKE %:value%
-            OR b.code LIKE %:value%)
-            AND b.totalMoney >= :minPrice AND b.totalMoney <= :maxPrice
-            ORDER BY b.updateAt DESC
+            SELECT b
+            FROM Bill b
+            WHERE (:#{#req.code} IS NULL OR b.code LIKE %:#{#req.code}%)
+            AND (:#{#req.idStaff} IS NULL OR b.account.id = :#{#req.idStaff})
+            AND (:#{#req.status} IS NULL OR b.status = :#{#req.status})
+            AND b.deleted = FALSE 
+            ORDER BY b.createAt DESC
             """)
-    Page<Bill> getAllBill(
-            @Param("value") String value,
-            @Param("minPrice") BigDecimal minPrice,
-            @Param("maxPrice") BigDecimal maxPrice,
-            Pageable pageable);
+    Page<Bill> getAllBill(@Param("req") BillSearchRequest request, Pageable pageable);
 
     Boolean existsByCode(String code);
 
-    List<Bill> findByAccountIdAndStatusAndDeletedFalse(Long idAccount, Integer status);
+    Page<Bill> findByAccountIdAndStatusAndDeletedFalse(Long idAccount, Integer status, Pageable pageable);
 }

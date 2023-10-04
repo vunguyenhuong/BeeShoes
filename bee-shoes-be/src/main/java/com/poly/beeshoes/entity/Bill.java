@@ -1,15 +1,9 @@
 package com.poly.beeshoes.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poly.beeshoes.entity.base.PrimaryEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
@@ -20,18 +14,23 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
+@ToString
 
 @Entity
 @Table(name = "bill")
 public class Bill extends PrimaryEntity {
     @ManyToOne
+    @JsonIgnoreProperties(value = {"createAt", "updateAt", "createBy", "updateBy", "deleted"})
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
     @ManyToOne
     @JoinColumn(name = "account_id")
+    @JsonIgnoreProperties(value = {"createAt", "updateAt", "createBy", "updateBy", "deleted", "addresses", "password", "role"})
     private Account account;
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonIgnoreProperties(value = {"createAt", "updateAt", "createBy", "updateBy", "deleted", "addresses", "password", "role"})
     private Account customer;
     @Column(name = "code")
     private String code;
@@ -61,4 +60,6 @@ public class Bill extends PrimaryEntity {
     private Date receiveDate;
     @Column(name = "status")
     private Integer status;
+    @Column(name = "note")
+    private String note;
 }

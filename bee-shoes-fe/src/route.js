@@ -7,8 +7,6 @@ import BillDetail from './pages/admin/bill/BillDetail';
 
 import Order from './pages/admin/order/Order';
 import AddProduct from './pages/admin/product/shoe-detail/AddShoe';
-import ShoeDetail from './pages/admin/product/shoe-detail/ShoeDetail';
-import ShoeDetailUpdate from './pages/admin/product/shoe-detail/ShoeDetailUpdate';
 import ProductAttribute from './pages/admin/product/attribute/ProductAttribute';
 import Voucher from './pages/admin/voucher/Voucher';
 import ShoeInfo from './pages/admin/product/shoe/ShoeInfo';
@@ -28,7 +26,6 @@ const publicRouters = [
     { path: "/admin/bill/:id", element: BillDetail },
     // { path: "/admin/bill/create", element: CreateBill },
     { path: "/admin/product", element: Shoe },
-    { path: "/admin/product-list", element: ShoeDetail },
     { path: "/admin/product/add", element: AddProduct },
     { path: "/admin/product/attribute", element: ProductAttribute },
     { path: "/admin/product/:id", element: ShoeInfo },

@@ -45,4 +45,7 @@ public class Shoe extends PrimaryEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "shoe")
     List<ShoeDetail> shoeDetails;
+
+    @Column(name = "description")
+    private String description;
 }

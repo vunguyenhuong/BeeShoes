@@ -1,20 +1,33 @@
 package com.poly.beeshoes.infrastructure.response;
 
 import com.poly.beeshoes.entity.Shoe;
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @Projection(types = {Shoe.class})
 public interface ShoeResponse {
+    @Value("#{target.indexs}")
+    Integer getIndex();
+
     Long getId();
 
     String getName();
 
-    BrandResponse getBrand();
+    String getSize();
 
-    CategoryResponse getCategory();
+    String getColor();
+
+    String getBrand();
+
+    String getCategory();
+
     Integer getQuantity();
+
+    Boolean getStatus();
+    BigDecimal getMaxPrice();
+    BigDecimal getMinPrice();
+    String getDescription();
+    String getImages();
 }

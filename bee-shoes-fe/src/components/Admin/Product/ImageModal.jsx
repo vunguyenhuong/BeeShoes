@@ -26,10 +26,15 @@ function ImageModal({ colorName, sttModal, handleChange }) {
   const handleImageSelect = (event) => {
     const imageUrl = event.target.value;
     if (event.target.checked) {
-      setSelectedImages((prevSelectedImages) => [
-        ...prevSelectedImages,
-        imageUrl,
-      ]);
+      if (selectedImages.length >= 5) {
+        toast.error("Chỉ được chọn tối đa 5 hình ảnh!");
+        event.target.checked = false;
+      } else {
+        setSelectedImages((prevSelectedImages) => [
+          ...prevSelectedImages,
+          imageUrl,
+        ]);
+      }
     } else {
       setSelectedImages((prevSelectedImages) =>
         prevSelectedImages.filter((url) => url !== imageUrl)
@@ -39,7 +44,7 @@ function ImageModal({ colorName, sttModal, handleChange }) {
 
   useEffect(() => {
     handleChange(colorName, sttModal, selectedImages);
-    
+
   }, [selectedImages]);
 
   const handleUploadImage = (event) => {

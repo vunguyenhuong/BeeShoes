@@ -4,7 +4,6 @@ import { FloatButton } from "antd";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 function App() {
-  console.log(process.env.API_KEY);
   return (
     <BrowserRouter>
     <Routes>

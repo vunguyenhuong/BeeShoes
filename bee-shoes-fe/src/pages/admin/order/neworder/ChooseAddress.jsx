@@ -4,7 +4,7 @@ import { useState } from "react";
 import DetailAddress from "~/components/DetailAddress";
 import * as request from "~/utils/httpRequest";
 
-function ChooseAddress({ props, handleChooe }) {
+function ChooseAddress({ props, handleChoose }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -18,21 +18,40 @@ function ChooseAddress({ props, handleChooe }) {
   };
 
   const handleChooseAddress = (item) => {
-    handleChooe(item)
+    handleChoose(item)
     setIsModalOpen(false);
   }
+
+  const [isModalAddOpen, setIsModalAddOpen] = useState(false);
+  const showModalAdd = () => {
+    setIsModalAddOpen(true);
+  };
+  const handleOkAdd = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancelAdd = () => {
+    setIsModalAddOpen(false);
+  };
   return (
     <>
       <span className="text-primary fw-semibold" onClick={showModal}>
         <i className="fas fa-location-dot"></i> Chọn địa chỉ
       </span>
       <Modal
-        title="Chọn địa chỉ khác"
+        title={
+          <div className="d-flex">
+            <div className="flex-grow-1">Chọn địa chỉ khác</div>
+            <div onClick={showModalAdd} className="me-5 text-success focus">
+              <i className="fas fa-location-dot"></i> Thêm mới
+            </div>
+          </div>
+        }
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
         centered
         width={1000}
+        footer=""
       >
         <div class="table-responsive">
           <table class="table">
@@ -54,10 +73,10 @@ function ChooseAddress({ props, handleChooe }) {
                   <td>{item.phoneNumber}</td>
                   <td>
                     {item.specificAddress},{" "}
-                    <DetailAddress distr={item.district} prov={item.province} war={item.ward}/>
+                    <DetailAddress distr={item.district} prov={item.province} war={item.ward} />
                   </td>
                   <td>
-                  <input class="form-check-input" type="checkbox" checked={item.defaultAddress}/>
+                    <input class="form-check-input" type="checkbox" checked={item.defaultAddress} />
                   </td>
                   <td>
                     <Button onClick={() => handleChooseAddress(item)} type="primary">
@@ -69,6 +88,11 @@ function ChooseAddress({ props, handleChooe }) {
             </tbody>
           </table>
         </div>
+        <Modal centered title="Thêm địa chỉ" open={isModalAddOpen} onOk={handleOkAdd} onCancel={handleCancelAdd} footer="">
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+        </Modal>
       </Modal>
     </>
   );

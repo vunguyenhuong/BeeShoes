@@ -31,7 +31,6 @@ public class ShoeDetailRequest extends PageableRequest {
     @NotNull(message = "Cân nặng không được để trống!")
     private Double weight;
     @NotEmpty(message = "Hình ảnh không được để trống!")
-    @Size(max = 6, message = "Chỉ được thêm tối đa 6 hình ảnh!")
     private List<String> listImages;
 
     //    filter

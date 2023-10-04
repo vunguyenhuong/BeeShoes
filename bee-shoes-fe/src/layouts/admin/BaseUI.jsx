@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined, BellOutlined, } from "@ant-design/icons";
-import { Layout, Button, Badge, Space, Switch, } from "antd";
+import { Layout, Button, Badge, Space, } from "antd";
 import Footer from "./Footer";
 import Sidebar from "./components/Menu/Menu";
 const { Header, Sider, Content } = Layout;
@@ -10,19 +10,21 @@ const BaseUI = ({ children }) => {
 
   return (
     <>
-      <Layout>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Layout style={{ minHeight: '100vh' }}>
+        <Sider trigger={null} collapsible collapsed={collapsed} style={{ position: 'fixed', height: '100vh', overflowY: 'auto' }}>
+          {/* Sidebar content */}
           <div className="demo-logo-vertical" />
           <Sidebar />
         </Sider>
-        <Layout>
-          <Header className="bg-body px-3 d-flex">
+        <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
+          <Header className="bg-body px-3 d-flex" style={{ position: 'fixed', width: '100%', zIndex: 1 }}>
             <div className="flex-grow-1">
-              <Button
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              <button
                 onClick={() => setCollapsed(!collapsed)}
                 className="btn border-0 px-4"
-              />
+              >
+                {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              </button>
             </div>
             <div className="">
               <Space size="middle">
@@ -35,9 +37,15 @@ const BaseUI = ({ children }) => {
               <UserOutlined />
             </div>
           </Header>
-          <Content className="m-3 p-3 bg-body" style={{ minHeight: "100vh" }}>
-            {children}
-          </Content>
+          <div style={{ marginTop: "54px" }}>
+            <Content
+              className="m-3 p-3 bg-body mt-4"
+              style={{ minHeight: 'calc(100vh - 64px)', overflowY: 'auto' }}
+            >
+              {/* Content */}
+              {children}
+            </Content>
+          </div>
           <Footer />
         </Layout>
       </Layout>

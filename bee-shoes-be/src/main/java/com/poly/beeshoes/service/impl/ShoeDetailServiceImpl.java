@@ -7,6 +7,7 @@ import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.converter.ShoeDetailConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
+import com.poly.beeshoes.infrastructure.response.ShoeDetailResponse;
 import com.poly.beeshoes.repository.IImagesRepository;
 import com.poly.beeshoes.repository.IShoeDetailRepository;
 import com.poly.beeshoes.repository.IShoeRepository;
@@ -36,9 +37,9 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
 
 
     @Override
-    public PageableObject<ShoeDetail> getAll(ShoeDetailRequest request) {
+    public PageableObject<ShoeDetailResponse> getAll(ShoeDetailRequest request) {
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
-        return new PageableObject<>(shoeDetailRepository.getAllShoeDetail(request, pageable));
+        return new PageableObject<>(shoeDetailRepository.getAll(request, pageable));
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
     @Transactional
     public ShoeDetail create(ShoeDetailRequest request) {
         ShoeDetail convert = shoeDetailConvert.convertRequestToEntity(request);
-        ShoeDetail check = shoeDetailRepository.findByShoeIdAndColorIdAndSizeIdAndSoleId(request.getShoe(), request.getColor(), request.getSize(), request.getSole());
+        ShoeDetail check = shoeDetailRepository.findByShoeIdAndColorIdAndSizeId(request.getShoe(), request.getColor(), request.getSize());
         if (check!= null) {
             check.setQuantity(request.getQuantity());
             shoeDetailRepository.save(check);
@@ -59,6 +60,8 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
         Shoe shoe = shoeDetailSave.getShoe();
         shoe.setUpdateAt(LocalDateTime.now());
         shoeRepository.save(shoe);
+        if(request.getListImages().size()>=5)
+            throw new RestApiException("Chỉ được thêm tối đa 5 hình ảnh!");
         if (shoeDetailSave != null) {
             for (String x : request.getListImages()) {
                 imagesRepository.save(Images.builder().shoeDetail(shoeDetailSave).name(x).build());
@@ -68,11 +71,19 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
     }
 
     @Override
+    @Transactional
     public ShoeDetail update(Long id, ShoeDetailRequest request) {
+        ShoeDetail shoeDetailSave = new ShoeDetail();
         ShoeDetail old = shoeDetailRepository.findById(id).get();
-        if (shoeDetailRepository.findByShoeIdAndColorIdAndSizeIdAndSoleId(request.getShoe(), request.getColor(), request.getSize(), request.getSole()) != null) {
+        if (shoeDetailRepository.findByShoeIdAndColorIdAndSizeId(request.getShoe(), request.getColor(), request.getSize()) != null) {
             if (old.getSize().getId() == request.getSize() && old.getShoe().getId() == request.getShoe() && old.getColor().getId() == request.getColor() && old.getSole().getId() == request.getSole()) {
-                return shoeDetailRepository.save(shoeDetailConvert.convertRequestToEntity(old, request));
+                shoeDetailSave = shoeDetailRepository.save(shoeDetailConvert.convertRequestToEntity(old, request));
+                if(shoeDetailSave!=null){
+                    for (String x: request.getListImages()) {
+                        imagesRepository.save(Images.builder().shoeDetail(shoeDetailSave).name(x).build());
+                    }
+                }
+                return shoeDetailSave;
             }
             throw new RestApiException("Phiên bản này đã tồn tại!");
         }

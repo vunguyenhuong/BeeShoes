@@ -1,22 +1,25 @@
 package com.poly.beeshoes.infrastructure.response;
 
 import com.poly.beeshoes.entity.ShoeDetail;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Projection(types = {ShoeDetail.class})
 public interface ShoeDetailResponse {
     Long getId();
+    @Value("#{target.indexs}")
+    Integer getIndex();
 
     String getCode();
-
     String getName();
 
-    SoleResponse getSole();
+    String getSole();
+
+    String getColor();
+
+    String getSize();
 
     Integer getQuantity();
 
@@ -24,5 +27,6 @@ public interface ShoeDetailResponse {
 
     Double getWeight();
 
-    List<ImageResponse> getImages();
+    String getImages();
+    Boolean getStatus();
 }

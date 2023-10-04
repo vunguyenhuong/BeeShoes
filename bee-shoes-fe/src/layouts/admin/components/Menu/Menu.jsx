@@ -12,9 +12,9 @@ const Sidebar = () => {
     console.log(sessionStorage.getItem('theme'))
   };
   return (
-    <Menu mode="vertical" className="h-100" theme={sessionStorage.getItem('theme') === "true" ? 'light' : 'dark'}>
+    <Menu mode="vertical" className="h-100" theme={sessionStorage.getItem('theme') === "true" ? 'dark' : 'light'}>
       <Link className="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-        <img src={sessionStorage.getItem('theme') === "true" ? `/logo.png` : `/logodark.png`} alt="" width="100%" onClick={() => changeTheme()}/>
+        <img src={sessionStorage.getItem('theme') === "true" ? `/logodark.png` : `/logo.png`} alt="" width="100%" onClick={() => changeTheme()}/>
       </Link>
       {sidebarData.map((item) => {
         if (item.children) {
@@ -26,7 +26,6 @@ const Sidebar = () => {
             >
               {item.children.map((childItem) => {
                 if (childItem.children) {
-                  // Nếu có menu con thì thêm menu con lồng vào submenu
                   return (
                     <Menu.SubMenu
                       key={childItem.key}

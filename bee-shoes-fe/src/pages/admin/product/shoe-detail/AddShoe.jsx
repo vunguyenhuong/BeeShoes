@@ -1,8 +1,8 @@
 /* eslint-disable eqeqeq */
-import { Breadcrumb, Button, Col, Collapse, Form, Input, Row, Select, Space } from "antd";
+import { Breadcrumb, Button, Col, Collapse, Row, Select, Space } from "antd";
 import { Option } from "antd/es/mentions";
 import React, { useEffect, useState } from "react";
-import { FaHome, FaPlus } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AddProperties from "~/components/Admin/Product/AddProperties";

@@ -9,6 +9,8 @@ import Order from './pages/admin/order/Order';
 import AddProduct from './pages/admin/product/shoe-detail/AddShoe';
 import ProductAttribute from './pages/admin/product/attribute/ProductAttribute';
 import Voucher from './pages/admin/voucher/Voucher';
+import AddVoucherForm from "./pages/admin/voucher/AddVoucher";
+import VoucherDetail from "./pages/admin/voucher/VoucherDetail";
 import ShoeInfo from './pages/admin/product/shoe/ShoeInfo';
 import Shoe from './pages/admin/product/shoe/Shoe';
 import AddCustomer from './pages/admin/account/customer/AddCustomer';
@@ -30,6 +32,9 @@ const publicRouters = [
     { path: "/admin/product/attribute", element: ProductAttribute },
     { path: "/admin/product/:id", element: ShoeInfo },
     { path: "/admin/voucher", element: Voucher },
+    { path: "/admin/voucher", element: Voucher },
+    { path: "/admin/voucher/add", element: AddVoucherForm },
+    { path: "/admin/voucher/:id", element: VoucherDetail },
     { path: "/admin/voucher/:id", element: Voucher },
     { path: "/admin/staff", element: Staff },
     { path: "/admin/staff/add", element: AddStaff },

@@ -86,7 +86,7 @@ const sidebarData = [
         "key": "qlVoucher",
         "title": "Quản lý Voucher",
         "icon": "fa-gift",
-        "path": "/admin/product"
+        "path": "/admin/voucher"
     },
     {
         "key": "imagesGallery",

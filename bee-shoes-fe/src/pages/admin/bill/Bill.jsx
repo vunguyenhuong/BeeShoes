@@ -2,9 +2,10 @@ import React from "react";
 import BaseUI from "~/layouts/admin/BaseUI";
 import { useState, useEffect } from "react";
 import * as request from "~/utils/httpRequest";
-import { Badge, Button, Form, Input, Radio, Table, Tabs } from "antd";
+import { Badge, Button, Form, Input, Radio, Table, Tabs, Tag } from "antd";
 import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
+import { Link } from "react-router-dom";
 
 const Bill = () => {
   const [listOrder, setListOrder] = useState([]);
@@ -21,7 +22,7 @@ const Bill = () => {
         params: {
           idStaff: 1,
           page: currentPage,
-          sizePage: pageSize, 
+          sizePage: pageSize,
           status: status
         }
       }).then((response) => {
@@ -105,7 +106,14 @@ const Bill = () => {
       title: 'Loại đơn hàng',
       dataIndex: 'type',
       key: 'type',
-      render: (x) => x === null ? "Đơn mới" : x === 1 ? "Giao hàng" : "Tại quầy"
+      render: (x) => (
+        <Tag
+          color={x === 0 ? "#87d068" : x === 1 ? "#108ee9" : "#2db7f5"}
+          icon={x === 0 ? <i class="fas fa-shop me-1"></i> : x === 1 ? <i class="fas fa-truck-fast me-1"></i> : <i class="fas fa-plus me-1"></i>}
+        >
+          {x === 0 ? "Tại quầy" : x === 1 ? "Giao hàng" : "Đơn mới"}
+        </Tag>
+      )
     },
     {
       title: 'Ngày tạo',
@@ -119,8 +127,8 @@ const Bill = () => {
       key: '',
       render: (x) => (
         <>
-        <Button type="text" icon={<i className="fas fa-eye"></i>}/>
-        <Button type="text" icon={<i class="fas fa-ellipsis"></i>}/>
+          <Button type="text" icon={<i className="fas fa-eye"></i>} />
+          <Link to={`/admin/bill/${x}`}><Button type="text" icon={<i class="fas fa-ellipsis"></i>} /></Link>
         </>
       )
     },

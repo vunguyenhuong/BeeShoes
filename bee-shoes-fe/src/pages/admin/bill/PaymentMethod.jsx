@@ -3,7 +3,7 @@ import TextArea from "antd/es/input/TextArea";
 import React from "react";
 import { useState } from "react";
 
-function PaymentMethod({bill}) {
+function PaymentMethod({bill, paymentMethod}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -16,7 +16,7 @@ function PaymentMethod({bill}) {
   };
   return (
     <>
-      {bill.status === 0 ? (
+      {paymentMethod.length === 0 ? (
         <>
         <Button type="primary" onClick={showModal}>Xác nhận thanh toán</Button>
       <Modal

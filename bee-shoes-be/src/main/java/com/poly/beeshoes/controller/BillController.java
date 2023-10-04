@@ -19,7 +19,7 @@ public class BillController {
     private BillService billService;
 
     @GetMapping
-    public PageableObject getAll(BillSearchRequest request){
+    public PageableObject getAll(BillSearchRequest request) {
         return billService.getAll(request);
     }
 
@@ -34,8 +34,12 @@ public class BillController {
     }
 
     @PutMapping("/{id}")
-    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid BillRequest request){
-        return new ResponseObject(billService.update(id,request));
+    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid BillRequest request) {
+        return new ResponseObject(billService.update(id, request));
     }
 
+    @GetMapping("/change-status/{id}")
+    public ResponseObject changeStatus(@PathVariable Long id, @RequestParam String note) {
+        return new ResponseObject(billService.changeStatus(id, note));
+    }
 }

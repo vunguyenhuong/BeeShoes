@@ -67,7 +67,7 @@ function Customer() {
       dataIndex: 'id',
       key: 'action',
       render: (x) => (
-        <Link to={`/admin/staff/${x}`} className="btn btn-sm text-warning">
+        <Link to={`/admin/customer/${x}`} className="btn btn-sm text-warning">
           <i className="fas fa-edit"></i>
         </Link>
       )

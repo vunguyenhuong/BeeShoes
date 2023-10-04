@@ -26,4 +26,5 @@ public class BillRequest extends PageableRequest {
     private BigDecimal totalMoney;
     private String note;
     private Integer status;
+    private Integer paymentMethod;
 }

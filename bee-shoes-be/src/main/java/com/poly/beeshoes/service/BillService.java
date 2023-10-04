@@ -12,4 +12,5 @@ public interface BillService {
     Bill create();
     Bill update(Long id,BillRequest request);
     Bill delete(Long id);
+    Bill changeStatus(Long id, String status);
 }

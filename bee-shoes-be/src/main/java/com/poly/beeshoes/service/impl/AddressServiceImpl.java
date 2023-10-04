@@ -40,7 +40,7 @@ public class AddressServiceImpl implements AddressService {
                 addressDefault.setDefaultAddress(false);
                 addressRepository.save(addressDefault);
             }
-        }
+         }
         return addressRepository.save(addressUpdate);
     }
 

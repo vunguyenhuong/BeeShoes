@@ -19,9 +19,10 @@ import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
 import "./timeline.css";
 import InfoBill from "./InfoBill";
-import { Button, Carousel, Empty, message } from "antd";
+import { Button, Carousel, Empty, Form, Modal, message } from "antd";
 import PaymentMethod from "./PaymentMethod";
 import BillHistory from "./BillHistory";
+import TextArea from "antd/es/input/TextArea";
 
 const BillDetail = () => {
   const [bill, setBill] = useState([]);
@@ -29,6 +30,8 @@ const BillDetail = () => {
   const [listBillDetail, setListBillDetail] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState([]);
   const { id } = useParams();
+  const [form] = Form.useForm();
+
   const loadBill = () => {
     request
       .get(`/bill/${id}`)
@@ -51,7 +54,7 @@ const BillDetail = () => {
   };
   const loadPaymentMethod = () => {
     request
-      .get(`/payment-method/bill/${id}`)
+      .get(`/payment-method/${id}`)
       .then((response) => {
         setPaymentMethod(response);
       })
@@ -77,31 +80,31 @@ const BillDetail = () => {
     loadBillHistory();
   }, [id]);
 
-  const changeStatusBill = () => {
-    const data = { ...bill };
-    data.status = bill.status + 1;
-    request
-      .put(`/bill/change-status/${bill.id}`, data)
-      .then((response) => {
-        if (response.status === 229) {
-          message.error(response.data);
-        } else {
-          message.success("Đã cập nhật trạng thái đơn hàng");
-          loadBill();
-          request
-            .post(`/bill-history`, {
-              idBill: data.id,
-            })
-            .then((response) => {
-              console.log(response);
-              loadBillHistory();
-            });
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
   };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = (data) => {
+    request.get(`/bill/change-status/${bill.id}`, {
+      params: {
+        note: data.note
+      }
+    }).then((response) => {
+      loadBill();
+      loadBillDetail();
+      loadPaymentMethod();
+      loadBillHistory();
+      form.resetFields();
+    }).catch((e) => {
+      console.log(e);
+    });
+    setIsModalOpen(false);
+  }
 
   return (
     <>
@@ -124,20 +127,20 @@ const BillDetail = () => {
                   item.status === 0
                     ? FaRegFileAlt
                     : item.status === 1
-                    ? FaRegFileAlt
-                    : item.status === 2
-                    ? MdOutlineConfirmationNumber
-                    : item.status === 3
-                    ? FaRegCalendar
-                    : item.status === 4
-                    ? FaRegCalendarCheck
-                    : item.status === 5
-                    ? FaTruck
-                    : item.status === 6
-                    ? GiConfirmed
-                    : item.status === 7
-                    ? FaBug
-                    : FaBug
+                      ? FaRegFileAlt
+                      : item.status === 2
+                        ? MdOutlineConfirmationNumber
+                        : item.status === 3
+                          ? FaRegCalendar
+                          : item.status === 4
+                            ? FaRegCalendarCheck
+                            : item.status === 5
+                              ? FaTruck
+                              : item.status === 6
+                                ? GiConfirmed
+                                : item.status === 7
+                                  ? FaBug
+                                  : FaBug
                 }
                 color="#2DC255"
                 title={
@@ -145,23 +148,29 @@ const BillDetail = () => {
                     {item.status === 1
                       ? "Tạo đơn hàng"
                       : item.status === 0
-                      ? "Chờ thanh toán"
-                      : item.status === 2
-                      ? "Chờ xác nhận"
-                      : item.status === 3
-                      ? "Xác nhận thông tin thanh toán"
-                      : item.status === 4
-                      ? "Chờ giao"
-                      : item.status === 5
-                      ? "Đang giao"
-                      : item.status === 6
-                      ? "Hoàn thành"
-                      : item.status === 7
-                      ? "Hủy"
-                      : ""}
+                        ? "Chờ thanh toán"
+                        : item.status === 2
+                          ? "Chờ xác nhận"
+                          : item.status === 3
+                            ? "Xác nhận thông tin thanh toán"
+                            : item.status === 4
+                              ? "Chờ giao"
+                              : item.status === 5
+                                ? "Đang giao"
+                                : item.status === 6
+                                  ? "Hoàn thành"
+                                  : item.status === 7
+                                    ? "Hủy"
+                                    : ""}
                   </h6>
                 }
-                subtitle={<FormatDate date={item.createAt} />}
+                subtitle={
+                  <>
+                    {item.note}
+                    <br />
+                    <FormatDate date={item.createAt} />
+                  </>
+                }
               />
             ))}
           </Timeline>
@@ -171,10 +180,7 @@ const BillDetail = () => {
             {bill.status !== 6 ? (
               <>
                 <Button className="bg-danger text-white me-1">Hủy</Button>
-                <Button
-                  className="bg-primary text-white"
-                  onClick={() => changeStatusBill()}
-                >
+                <Button type="primary" onClick={showModal}>
                   Xác nhận
                 </Button>
               </>
@@ -183,7 +189,7 @@ const BillDetail = () => {
             )}
           </div>
           <div className="">
-            <BillHistory props={billHistory}/>
+            <BillHistory props={billHistory} />
           </div>
         </div>
         {/* Thông tin đơn hàng */}
@@ -195,7 +201,7 @@ const BillDetail = () => {
               <h6 className="text-uppercase">LỊCH SỬ THANH TOÁN</h6>
             </div>
             <div className="">
-              <PaymentMethod bill={bill} />
+              <PaymentMethod bill={bill} paymentMethod={paymentMethod} />
             </div>
           </div>
           <div class="table-responsive">
@@ -287,6 +293,13 @@ const BillDetail = () => {
           </div>
         </div>
       </BaseUI>
+      <Modal title="Nhập ghi chú" open={isModalOpen} onCancel={handleCancel} footer={<Button form="formNote" type="primary" htmlType="submit">Xác nhận</Button>}>
+        <Form id="formNote" onFinish={handleSubmit} form={form}>
+          <Form.Item name={"note"} rules={[{ required: true, message: "Ghi chú không được để trống!" }]}>
+            <TextArea placeholder="Nhập ghi chú..." />
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 };

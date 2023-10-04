@@ -1,9 +1,11 @@
-import { Button, Col, Form, Input, Row } from 'antd'
+import { Button, Col, Form, Input, Modal, Row } from 'antd'
 import React from 'react'
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import GHNInfo from '~/components/GhnInfo';
 import * as request from "~/utils/httpRequest";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+
 
 function ItemAddress({ props, onSuccess }) {
     const [dataAddress, setDataAddress] = useState(null);
@@ -12,13 +14,29 @@ function ItemAddress({ props, onSuccess }) {
         data.district = dataAddress != null ? dataAddress.district : props.district
         data.ward = dataAddress != null ? dataAddress.ward : props.ward
         data.defaultAddress = true;
-        request.put(`/address/${props.id}`, data).then(response => {
-            console.log(response);
-            toast.success('Cập nhật địa chỉ thành công!');
-            onSuccess();
-        }).catch(e => {
-            console.log(e);
-        })
+        const { confirm } = Modal;
+
+        confirm({
+            title: "Xác nhận ",
+            icon: <ExclamationCircleFilled />,
+            content: "Bạn có chắc muốn cập nhật địa chỉ này? ",
+            okText: "OK",
+            okType: "danger",
+            cancelText: "Đóng",
+            onOk() {
+                request.put(`/address/${props.id}`, data).then(response => {
+                    console.log(response);
+                    toast.success('Cập nhật địa chỉ thành công!');
+                    onSuccess();
+                }).catch(e => {
+                    console.log(e);
+                });
+            },
+            onCancel() {
+              console.log("Cancel");
+            },
+        });
+        
     }
     return (
         <>

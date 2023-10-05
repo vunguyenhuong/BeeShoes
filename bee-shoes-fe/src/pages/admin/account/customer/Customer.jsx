@@ -58,7 +58,7 @@ function Customer() {
       key: 'createAt',
       render: (x) => (
         <span className={x ? "fw-semibold text-danger" : "fw-semibold text-success"}>
-          {x ? "Đã nghỉ" : "Đang làm"}
+          {x ? "Hủy kích hoạt" : "Kích hoạt"}
         </span>
       )
     },
@@ -92,8 +92,8 @@ function Customer() {
             onChange={(event) => setCustomerStatus(event.target.value)}
           >
             <Radio value={""}>Tất cả</Radio>
-            <Radio value={false}>Hoạt động</Radio>
-            <Radio value={true}>Không hoạt động</Radio>
+            <Radio value={false}>Kích hoạt</Radio>
+            <Radio value={true}>Hủy kích hoạt</Radio>
           </Radio.Group>
         </Col>
         <Col span={4}>

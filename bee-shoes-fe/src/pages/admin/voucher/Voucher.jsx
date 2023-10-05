@@ -85,7 +85,58 @@ function Voucher() {
     if (pageNumber < 1) pageNumber = 1;
     setCurrentPage(pageNumber);
   };
+  const columns = [
+    {
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
+      render: (text, record, index) => indexOfFirstItem + index + 1 ,
+    },
+    {
+      title: 'Mã',
+      dataIndex: 'code',
+      key: 'code',
+    },
+    {
+      title: 'Tên',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Đơn tối thiểu',
+      dataIndex: 'minBillValue',
+      key: 'minBillValue',
+      render: (x) => <FormatCurrency value={x} />
+    },
+    {
+      title: 'Giảm',
+      dataIndex: 'percentReduce',
+      key: 'percentReduce',
+      render: (x) => `${x}%`
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      key: 'status',
+      render: (x) => <VoucherSatus status={x} />
+    },
 
+    {
+      title: 'Thao tác',
+      dataIndex: 'id',
+      key: 'action',
+      render: (x) => (
+        <Link to={`/admin/voucher/${x}`} className="btn btn-sm text-warning">
+          <i className="fas fa-edit"></i>
+        </Link>
+      )
+    },
+  ];
  
   return (
     <BaseUI>
@@ -98,7 +149,7 @@ function Voucher() {
           ]}
         />
         <Row gutter={12}>
-          <Col span={8}>
+          <Col span={11}>
             <label className="mb-1">Nhập mã, tên Voucher </label>
             <Input
               onChange={(event) => setSearchValue(event.target.value)}
@@ -106,7 +157,7 @@ function Voucher() {
               //
             />
           </Col>
-          <Col span={26}>
+          <Col span={9}>
             <div className="mb-1">Trạng thái</div>
             <label className="mb-1">ㅤ</label>
             <Radio.Group
@@ -122,14 +173,14 @@ function Voucher() {
               <Radio value={2}>Đã kết thúc</Radio>
             </Radio.Group>
           </Col>
-          <Col span={2}>
+          {/* <Col span={2}>
             <div className="mb-1">Số bản ghi</div>
             <Select
               defaultValue={5}
               onChange={(value) => setPageSize(value)}
               options={[{ value: 5 }, { value: 10 }, { value: 15 }]}
             />
-          </Col>
+          </Col> */}
 
           <Col span={4}>
             <div className="mb-1">‍</div>
@@ -155,79 +206,89 @@ function Voucher() {
         ]}
       />
       {selectedOption === "voucher" && (
-          <div className="table-responsive mt-3">
-          <table className="table table-hover table-striped table-bordered text-nowrap">
-            <thead className="">
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Mã</th>
-                <th scope="col" style={{ width: "40%" }}>
-                  Tên
-                </th>
-                <th scope="col">Đơn tối thiểu</th>
-                <th scope="col">Giảm</th>
-                <th scope="col">Số lượng</th>
-                {/* <th scope="col">Thời gian diễn ra</th> */}
-                <th scope="col">Trạng thái</th>
-                <th scope="col">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {totalPages === 0 ? (
-                <tr className="text-center fw-semibold">
-                  <td colSpan={8}>
-                    <Empty />
-                  </td>
-                </tr>
-              ) : (
-                voucherList.map((item, index) => (
-                  <tr key={item.id}>
-                    <td> {indexOfFirstItem + index + 1}</td>
-                    <td>{item.code}</td>
-                    <td>{item.name}</td>
-                    <td>
-                      <FormatCurrency value={item.minBillValue} />
-                    </td>
+        //   <div className="table-responsive mt-3">
+        //   <table className="table table-hover table-striped table-bordered text-nowrap">
+        //     <thead className="">
+        //       <tr>
+        //         <th scope="col">#</th>
+        //         <th scope="col">Mã</th>
+        //         <th scope="col" style={{ width: "40%" }}>
+        //           Tên
+        //         </th>
+        //         <th scope="col">Đơn tối thiểu</th>
+        //         <th scope="col">Giảm</th>
+        //         <th scope="col">Số lượng</th>
+        //         {/* <th scope="col">Thời gian diễn ra</th> */}
+        //         <th scope="col">Trạng thái</th>
+        //         <th scope="col">Thao tác</th>
+        //       </tr>
+        //     </thead>
+        //     <tbody>
+        //       {totalPages === 0 ? (
+        //         <tr className="text-center fw-semibold">
+        //           <td colSpan={8}>
+        //             <Empty />
+        //           </td>
+        //         </tr>
+        //       ) : (
+        //         voucherList.map((item, index) => (
+        //           <tr key={item.id}>
+        //             <td> {indexOfFirstItem + index + 1}</td>
+        //             <td>{item.code}</td>
+        //             <td>{item.name}</td>
+        //             <td>
+        //               <FormatCurrency value={item.minBillValue} />
+        //             </td>
 
-                    <td>{item.percentReduce}%</td>
-                    <td>{item.quantity}</td>
+        //             <td>{item.percentReduce}%</td>
+        //             <td>{item.quantity}</td>
 
-                    <td className="text-center">
-                      <VoucherSatus
-                         status={item.status}
-                      />
-                      {/* <VoucherSatus
-                        startDate={item.startDate}
-                        endDate={item.endDate}
-                      /> */}
-                    </td>
+        //             <td className="text-center">
+        //               <VoucherSatus
+        //                  status={item.status}
+        //               />
+        //               {/* <VoucherSatus
+        //                 startDate={item.startDate}
+        //                 endDate={item.endDate}
+        //               /> */}
+        //             </td>
 
-                    <td className="text-center">
-                      <Link to={`/admin/voucher/${item.id}`}>
-                        <i className="fa-solid fa-circle-info text-secondary "></i>
-                      </Link>
-                      {/* <i className="fas fa-edit text-danger"> </i> */}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-          <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          handleChange={handlePageChange}
-        />
-        </div>
+        //             <td className="text-center">
+        //               <Link to={`/admin/voucher/${item.id}`}>
+        //                 <i className="fa-solid fa-circle-info text-secondary "></i>
+        //               </Link>
+        //               {/* <i className="fas fa-edit text-danger"> </i> */}
+        //             </td>
+        //           </tr>
+        //         ))
+        //       )}
+        //     </tbody>
+        //   </table>
+        //   <Pagination
+        //   totalPages={totalPages}
+        //   currentPage={currentPage}
+        //   handleChange={handlePageChange}
+        // />
+        // </div>
+        <Table dataSource={voucherList} columns={columns} className="mt-3"
+        pagination={{
+          showSizeChanger: true,
+          current: currentPage,
+          pageSize: pageSize,
+          pageSizeOptions: [5, 10, 20, 50, 100],
+          showQuickJumper: true,
+          total: totalPages * pageSize,
+          onChange: (page, pageSize) => {
+            setCurrentPage(page);
+            setPageSize(pageSize);
+          },
+        }} />
       )}
       {selectedOption === "khuyenmai" && (
         // Hiển thị nội dung khuyến mãi tại đây
         <div>Bảng hiển thị khuyến mãi</div>
+
       )}
-
-  
-
-     
       </div>
     </BaseUI>
   );

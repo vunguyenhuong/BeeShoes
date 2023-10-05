@@ -14,20 +14,30 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import BaseUI from "~/layouts/admin/BaseUI";
-import * as request from "~/utils/httpRequest";
+import Loading from "~/components/Loading/Loading";
 import { FaHome, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import * as request from "~/utils/httpRequest";
 
 function VoucherDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
+  const [loading, setLoading] = useState(true);
+
   const [voucher, setVoucher] = useState({});
   const onChange = (value) => {
     console.log("changed", value);
   };
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      loadVoucher(form,id);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [form, id]);
+  const loadVoucher = (form,id) => {
+    
     request
       .get(`/voucher/${id}`)
       .then((response) => {
@@ -53,7 +63,8 @@ function VoucherDetail() {
       .catch((error) => {
         console.log(error);
       });
-  }, [id]);
+      setLoading(false);
+  };
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -72,12 +83,14 @@ function VoucherDetail() {
       okText: "Ok",
       cancelText: "Cancel",
       onOk: () => {
+        setLoading(true);
         request
-          .put(`/voucher/update/${id}`, formData)
-          .then((response) => {
+          .put(`/voucher/update/${id}`, formData, { headers: { "Content-Type": "multipart/form-data", }, }).then((response) => {
+            console.log(response);
+            setLoading(true);
             if (response.status === 200) {
               toast.success("Cập nhật thành công!");
-              navigate("/admin/voucher");
+              loadVoucher(form,id);
             }
           })
           .catch((e) => {
@@ -86,11 +99,21 @@ function VoucherDetail() {
             if (e.response.data.message != null) {
               toast.error(e.response.data.message);
             }
+            setLoading(false);
           });
       },
     });
   };
 
+  if (loading) {
+    return (
+      <>
+        <BaseUI>
+          <Loading />
+        </BaseUI>
+      </>
+    );
+  }
   return (
     <BaseUI>
       {/* <Breadcrumb

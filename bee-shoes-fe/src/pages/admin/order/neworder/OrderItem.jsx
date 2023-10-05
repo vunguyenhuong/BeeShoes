@@ -240,9 +240,43 @@ function OrderItem({ index, props, onSuccess }) {
     data.totalMoney = totalMoney;
     data.moneyReduce = moneyReduce;
     data.note = note;
-    if (typeOrder === 0) {
-      if (extraMoney !== null && extraMoney >= 0) {
-        data.status = waitPay ? 0 : 6;
+    data.paymentMethod = paymentMethod;
+    if (waitPay) {
+      data.status = 0;
+      request.put(`/bill/${props.id}`, data).then(response => {
+        toast.success("Đơn hàng đã chuyển sang trạng thái chờ thanh toán!");
+        onSuccess();
+      }).catch(e => {
+        console.log(e);
+      })
+    } else {
+      if (typeOrder === 0) {
+        if (extraMoney !== null && extraMoney >= 0) {
+          data.status = 6;
+          Modal.confirm({
+            title: "Xác nhận",
+            maskClosable: true,
+            content: "Xác nhận thêm khách hàng ?",
+            okText: "Ok",
+            cancelText: "Cancel",
+            onOk: () => {
+              request.put(`/bill/${props.id}`, data).then(response => {
+                toast.success("Tạo đơn hàng thành công!");
+                onSuccess();
+              }).catch(e => {
+                console.log(e);
+              })
+            },
+          });
+        } else {
+          toast.error("Vui lòng nhập đủ tiền khách đưa!");
+          return;
+        }
+      } else {
+        data.phoneNumber = autoFillAddress.phoneNumber;
+        data.address = typeOrder === 0 ? null : `${autoFillAddress.specificAddress}##${autoFillAddress.ward}##${autoFillAddress.district}##${autoFillAddress.province}`;
+        data.moneyShip = feeShip;
+        data.status = 2;
         Modal.confirm({
           title: "Xác nhận",
           maskClosable: true,
@@ -250,6 +284,7 @@ function OrderItem({ index, props, onSuccess }) {
           okText: "Ok",
           cancelText: "Cancel",
           onOk: () => {
+            console.log(data.customer);
             request.put(`/bill/${props.id}`, data).then(response => {
               toast.success("Tạo đơn hàng thành công!");
               onSuccess();
@@ -258,31 +293,7 @@ function OrderItem({ index, props, onSuccess }) {
             })
           },
         });
-      } else {
-        toast.error("Vui lòng nhập đủ tiền khách đưa!");
-        return;
       }
-    } else {
-      data.phoneNumber = autoFillAddress.phoneNumber;
-      data.address = typeOrder === 0 ? null : `${autoFillAddress.specificAddress}##${autoFillAddress.ward}##${autoFillAddress.district}##${autoFillAddress.province}`;
-      data.moneyShip = feeShip;
-      data.status = waitPay ? 0 : 2;
-      Modal.confirm({
-        title: "Xác nhận",
-        maskClosable: true,
-        content: "Xác nhận thêm khách hàng ?",
-        okText: "Ok",
-        cancelText: "Cancel",
-        onOk: () => {
-          console.log(data.customer);
-          request.put(`/bill/${props.id}`, data).then(response => {
-            toast.success("Tạo đơn hàng thành công!");
-            onSuccess();
-          }).catch(e => {
-            console.log(e);
-          })
-        },
-      });
     }
   }
 
@@ -473,7 +484,7 @@ function OrderItem({ index, props, onSuccess }) {
                 <TextArea placeholder="Nhập ghi chú..." onChange={(e) => setNote(e.target.value)} />
               </li>
               <li className="mb-2 float-end">
-                <Switch onChange={(value) => setWaitPay(value ? 1 : 0)} /> Chờ thanh toán
+                <Switch onChange={(value) => setWaitPay(value)} /> Chờ thanh toán
               </li>
               <li>
                 <Button type="primary" className="bg-warning text-dark w-100" onClick={() => handleCreate()}>Tạo hóa đơn</Button>

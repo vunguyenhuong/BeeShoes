@@ -50,7 +50,7 @@ function ChooseAddress({ idCustomer }) {
 
   useEffect(() => {
     loadDataAddress();
-  });
+  }, []);
 
   const loadDataAddress = () => {
     request

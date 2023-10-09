@@ -32,6 +32,10 @@ function AddProduct() {
 
   const [productDetail, setProductDetail] = useState([]);
 
+  const [reloadInterval, setReloadInterval] = useState(null);
+  const [reloadSole, setReloadSole] = useState(false);
+  const [pageSize, setPageSize] = useState(100);
+
   useEffect(() => {
     const options = [];
     selectedColors.forEach((colorItem) => {
@@ -65,20 +69,72 @@ function AddProduct() {
     }).catch((error) => {
       console.log(error);
     });
+     // Khởi tạo interval khi component được tạo
+     const intervalId = setInterval(() => {
+      request.get("/shoe", { params: { name: searchProduct } }).then((response) => {
+        setProduct(response.data);
+      }).catch((error) => {
+        console.log(error);
+      });
+      console.log("test");
+    }, 1000);
+
+    // Lưu intervalId vào state để sau này có thể xóa interval
+    setReloadInterval(intervalId);
+
+    // Hủy interval khi component unmount
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [searchProduct])
   useEffect(() => {
-    request.get("/size", { params: { name: searchSize } }).then((response) => {
+    request.get("/size", { params: { name: searchSize, pageSize: pageSize } }).then((response) => {
       setSize(response.data);
     }).catch((error) => {
       console.log(error);
     });
-  }, [searchSize])
+       // Khởi tạo interval khi component được tạo
+       const intervalId = setInterval(() => {
+        request.get("/size", { params: { name: searchSize, pageSize: pageSize } }).then((response) => {
+          setSize(response.data);
+        }).catch((error) => {
+          console.log(error);
+        });
+        console.log("test");
+      }, 1000);
+  
+      // Lưu intervalId vào state để sau này có thể xóa interval
+      setReloadInterval(intervalId);
+  
+      // Hủy interval khi component unmount
+      return () => {
+        clearInterval(intervalId);
+      };
+    
+  }, [searchSize, pageSize])
   useEffect(() => {
     request.get("/color", { params: { name: searchColor } }).then((response) => {
       setColor(response.data);
     }).catch((error) => {
       console.log(error);
     });
+       // Khởi tạo interval khi component được tạo
+       const intervalId = setInterval(() => {
+        request.get("/color", { params: { name: searchColor } }).then((response) => {
+          setColor(response.data);
+        }).catch((error) => {
+          console.log(error);
+        });
+        console.log("test");
+      }, 1000);
+  
+      // Lưu intervalId vào state để sau này có thể xóa interval
+      setReloadInterval(intervalId);
+  
+      // Hủy interval khi component unmount
+      return () => {
+        clearInterval(intervalId);
+      };
   }, [searchColor])
   useEffect(() => {
     request.get("/sole", { params: { name: searchSole } }).then((response) => {
@@ -86,6 +142,23 @@ function AddProduct() {
     }).catch((error) => {
       console.log(error);
     });
+         // Khởi tạo interval khi component được tạo
+         const intervalId = setInterval(() => {
+          request.get("/sole/findAll", { params: { name: searchSole } }).then((response) => {
+            setSole(response.data);
+          }).catch((error) => {
+            console.log(error);
+          });
+          console.log("test");
+        }, 1000);
+    
+        // Lưu intervalId vào state để sau này có thể xóa interval
+        setReloadInterval(intervalId);
+    
+        // Hủy interval khi component unmount
+        return () => {
+          clearInterval(intervalId);
+        };
   }, [searchSole])
 
   const handleCreate = () => {
@@ -148,6 +221,7 @@ function AddProduct() {
                   <Col xl={24}>
                     <label className="mb-1">Loại đế</label>
                     <Select
+                      key={reloadSole} 
                       className="me-2 w-100 mb-3" size="large"
                       showSearch
                       onChange={(value) => {
@@ -160,7 +234,7 @@ function AddProduct() {
                         <>
                           {menu}
                           <Space className="my-2 ms-2">
-                            <AddProperties placeholder={"đế giày"} name={"sole"} />
+                            <AddProperties onClick={() => setReloadSole(!reloadSole)} placeholder={"đế giày"} name={"sole"} />
                           </Space>
                         </>
                       )}

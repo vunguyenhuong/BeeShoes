@@ -5,11 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 @NoArgsConstructor
@@ -17,6 +13,7 @@ import org.hibernate.annotations.Nationalized;
 @Getter
 @Setter
 @ToString
+@Builder
 
 @Entity
 @Table(name = "size")

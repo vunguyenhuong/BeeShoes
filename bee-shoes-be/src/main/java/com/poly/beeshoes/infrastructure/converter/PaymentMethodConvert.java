@@ -19,7 +19,7 @@ public class PaymentMethodConvert {
                 .totalMoney(request.getTotalMoney())
                 .note(request.getNote())
                 .tradingCode(request.getTradingCode())
-                .bill(billRepository.findById(request.getBill()).get())
+                .bill(billRepository.findById(request.getBill()).orElse(null))
                 .build();
     }
 }

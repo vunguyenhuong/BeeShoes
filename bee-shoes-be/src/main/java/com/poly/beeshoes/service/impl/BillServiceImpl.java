@@ -122,12 +122,17 @@ public class BillServiceImpl implements BillService {
         history.setBill(bill);
         history.setNote(note);
         history.setStatus(bill.getStatus()+1);
-        bill.setStatus(bill.getStatus()+1);
+        if(bill.getStatus() == BillStatusConstant.CHO_THANH_TOAN){
+            if(bill.getType() == 0){
+                bill.setStatus(BillStatusConstant.HOAN_THANH);
+            }
+        }else {
+            bill.setStatus(bill.getStatus()+1);
+        }
         Bill billSave = billRepository.save(bill);
         if(billSave!=null){
             billHistoryRepository.save(history);
         }
         return billSave;
     }
-
 }

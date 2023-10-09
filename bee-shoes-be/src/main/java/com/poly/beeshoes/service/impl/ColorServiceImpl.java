@@ -3,7 +3,9 @@ package com.poly.beeshoes.service.impl;
 import com.poly.beeshoes.entity.Color;
 import com.poly.beeshoes.entity.Size;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
+import com.poly.beeshoes.infrastructure.converter.ColorConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
+import com.poly.beeshoes.infrastructure.request.ColorRequest;
 import com.poly.beeshoes.infrastructure.response.ColorResponse;
 import com.poly.beeshoes.repository.IColorRepository;
 import com.poly.beeshoes.service.ColorService;
@@ -16,11 +18,13 @@ import org.springframework.stereotype.Service;
 public class ColorServiceImpl implements ColorService {
     @Autowired
     private IColorRepository repository;
+    @Autowired
+    private ColorConvert colorConvert;
 
     @Override
-    public PageableObject<ColorResponse> getAll(String name, Integer page, Boolean status) {
-        Pageable pageable = PageRequest.of(page-1,5);
-        return new PageableObject<>(repository.getAll(name,status, pageable));
+    public PageableObject<ColorResponse> getAll(ColorRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
+        return new PageableObject<>(repository.getAllColor(request, pageable));
     }
 
     @Override
@@ -29,21 +33,25 @@ public class ColorServiceImpl implements ColorService {
     }
 
     @Override
-    public Color create(Color color) {
-        if (repository.existsByNameIgnoreCaseAndNameNot(color.getName(), "")) {
-            throw new RestApiException("Thuộc tính " + color.getName() + " đã tồn tại!");
+    public Color create(ColorRequest request) {
+        if (repository.existsByNameIgnoreCase(request.getName())) {
+            throw new RestApiException("Màu " + request.getName() + " đã tồn tại!");
         }
+        Color color = colorConvert.convertRequestToEntity(request);
         return repository.save(color);
     }
 
     @Override
-    public Color update(Long id, Color color) {
-        Color old = this.getOne(id);
-        if (repository.existsByNameIgnoreCaseAndNameNot(color.getName(), old.getName())) {
-            throw new RestApiException("Thuộc tính " + color.getName() + " đã tồn tại!");
+    public Color update(Long id, ColorRequest request) {
+        Color oldColor = repository.findById(id).get();
+        if (repository.existsByNameIgnoreCase(request.getName())) {
+            if (oldColor.getName().equals(request.getName())) {
+                return repository.save(colorConvert.convertRequestToEntity(oldColor, request));
+            }
+            throw new RestApiException("Màu " + request.getName() + " đã tồn tại!");
+        } else {
+            return repository.save(colorConvert.convertRequestToEntity(oldColor, request));
         }
-        old.setName(color.getName());
-        return repository.save(old);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.poly.beeshoes.service.impl;
 
+import com.poly.beeshoes.infrastructure.common.ResponseObject;
+import com.poly.beeshoes.infrastructure.converter.PaymentMethodConvert;
+import com.poly.beeshoes.infrastructure.request.PaymentMethodRequest;
 import com.poly.beeshoes.infrastructure.response.PaymentMethodResponse;
 import com.poly.beeshoes.repository.IPaymentMethodRepository;
 import com.poly.beeshoes.service.PaymentMethodService;
@@ -12,9 +15,16 @@ import java.util.List;
 public class PaymentMethodServiceImpl implements PaymentMethodService {
     @Autowired
     private IPaymentMethodRepository repository;
+    @Autowired
+    private PaymentMethodConvert paymentMethodConvert;
 
     @Override
     public List<PaymentMethodResponse> getByBill(Long idBill) {
         return repository.getByBill(idBill);
+    }
+
+    @Override
+    public ResponseObject create(PaymentMethodRequest request) {
+        return new ResponseObject(repository.save(paymentMethodConvert.convertRequestToEntity(request)));
     }
 }

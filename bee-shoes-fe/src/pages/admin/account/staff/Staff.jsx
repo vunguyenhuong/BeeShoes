@@ -97,8 +97,8 @@ function Staff() {
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'deteted',
-      key: 'createAt',
+      dataIndex: 'deleted',
+      key: 'deleted',
       render: (x) => (
         <span className={x ? "fw-semibold text-danger" : "fw-semibold text-success"}>
           {x ? "Đã nghỉ" : "Đang làm"}
@@ -148,7 +148,10 @@ function Staff() {
           </Link>
         </Col>
       </Row>
-      <Table dataSource={staffList} columns={columns} className="mt-3"
+      <Table 
+        dataSource={staffList} 
+        columns={columns} 
+        className="mt-3"
         pagination={{
           showSizeChanger: true,
           current: currentPage,

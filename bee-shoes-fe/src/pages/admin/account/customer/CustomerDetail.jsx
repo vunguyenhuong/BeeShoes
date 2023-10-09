@@ -1,4 +1,14 @@
-import { Breadcrumb, Button, Col, Divider, Form, Input, Modal, Radio, Row } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Col,
+  Divider,
+  Form,
+  Input,
+  Modal,
+  Radio,
+  Row,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import { FaHome, FaTrash } from "react-icons/fa";
 import { useParams } from "react-router-dom";
@@ -7,6 +17,8 @@ import AddressCustomerDetail from "~/components/Admin/Account/Customer/AddressCu
 import Loading from "~/components/Loading/Loading";
 import BaseUI from "~/layouts/admin/BaseUI";
 import * as request from "~/utils/httpRequest";
+import GHNInfo from "~/components/GhnInfo";
+import CreateAddressModal from "~/components/Admin/Account/Customer/CreateAddressModal";
 
 function CustomerDetail() {
   const { id } = useParams();
@@ -17,6 +29,10 @@ function CustomerDetail() {
   const [loading, setLoading] = useState(true);
   const [customer, setCustomer] = useState({});
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [autoFillAddress, setAutoFillAddress] = useState([]);
+  const [dataAddress, setDataAddress] = useState(null);
+
   const handleImageSelect = (event) => {
     try {
       const file = event.target.files[0];
@@ -27,6 +43,16 @@ function CustomerDetail() {
       setPreviewUrl(null);
     }
   };
+  const [isModalAddOpen, setIsModalAddOpen] = useState(false);
+  const showModalAdd = () => {
+    setIsModalAddOpen(true);
+  };
+  const handleOkAdd = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancelAdd = () => {
+    setIsModalAddOpen(false);
+  };
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -36,22 +62,25 @@ function CustomerDetail() {
   }, [form, id]);
 
   const loadCustomer = () => {
-    request.get(`/customer/${id}`).then((response) => {
-      setCustomer(response);
-      form.setFieldsValue({
-        username: response.username,
-        cccd: response.cccd,
-        name: response.name,
-        birthday: response.birthday,
-        gender: response.gender,
-        email: response.email,
-        phoneNumber: response.phoneNumber
+    request
+      .get(`/customer/${id}`)
+      .then((response) => {
+        setCustomer(response);
+        form.setFieldsValue({
+          username: response.username,
+          cccd: response.cccd,
+          name: response.name,
+          birthday: response.birthday,
+          gender: response.gender,
+          email: response.email,
+          phoneNumber: response.phoneNumber,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
       });
-    }).catch((e) => {
-      console.log(e);
-    });
     setLoading(false);
-  }
+  };
 
   const handleUpdate = (data) => {
     const formData = new FormData();
@@ -73,23 +102,28 @@ function CustomerDetail() {
       cancelText: "Cancel",
       onOk: () => {
         setLoading(true);
-        request.put(`/customer/${id}`, formData, { headers: { "Content-Type": "multipart/form-data", }, }).then((response) => {
-          console.log(response);
-          setLoading(true);
-          if (response.data.success) {
-            toast.success("Cập nhật thành công!");
-            setAvatar(null);
-            setPreviewUrl(null);
-            loadCustomer();
-          }
-        }).catch((e) => {
-          console.log(e);
-          toast.error(e.response.data);
-          setLoading(false);
-        });
+        request
+          .put(`/customer/${id}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          })
+          .then((response) => {
+            console.log(response);
+            setLoading(true);
+            if (response.data.success) {
+              toast.success("Cập nhật thành công!");
+              setAvatar(null);
+              setPreviewUrl(null);
+              loadCustomer();
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+            toast.error(e.response.data);
+            setLoading(false);
+          });
       },
     });
-  }
+  };
 
   if (loading) {
     return (
@@ -103,8 +137,13 @@ function CustomerDetail() {
   return (
     <>
       <BaseUI>
-        <Breadcrumb className="mb-3"
-          items={[{ href: "/", title: <FaHome /> }, { href: "/admin/customer", title: "Danh sách khách hàng" }, { title: `${customer.name} - ${customer.cccd}` },]}
+        <Breadcrumb
+          className="mb-3"
+          items={[
+            { href: "/", title: <FaHome /> },
+            { href: "/admin/customer", title: "Danh sách khách hàng" },
+            { title: `${customer.name} - ${customer.cccd}` },
+          ]}
         />
         <Row gutter={24}>
           <Col span={8}>
@@ -113,22 +152,55 @@ function CustomerDetail() {
             <Form layout="vertical" form={form} onFinish={handleUpdate}>
               {previewUrl !== null ? (
                 <div className="text-center">
-                  <img src={previewUrl} alt="Preview" style={{ width: "162px", height: "162px" }} className="mt-2 border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain" />
-                  <Button className="position-absolute border-0" onClick={() => { setPreviewUrl(null); setAvatar(null); }}><FaTrash className="text-danger" /></Button>
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    style={{ width: "162px", height: "162px" }}
+                    className="mt-2 border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain"
+                  />
+                  <Button
+                    className="position-absolute border-0"
+                    onClick={() => {
+                      setPreviewUrl(null);
+                      setAvatar(null);
+                    }}
+                  >
+                    <FaTrash className="text-danger" />
+                  </Button>
                 </div>
               ) : (
                 <div className="d-flex align-items-center justify-content-center">
-                  <div className="position-relative rounded-circle border border-warning mt-2 d-flex align-items-center justify-content-center" style={{ width: "162px", height: "162px" }}>
-                    <Input type="file" accept="image/*" onChange={handleImageSelect} className="position-absolute opacity-0 py-5" />
+                  <div
+                    className="position-relative rounded-circle border border-warning mt-2 d-flex align-items-center justify-content-center"
+                    style={{ width: "162px", height: "162px" }}
+                  >
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      className="position-absolute opacity-0 py-5"
+                    />
                     <div className="text-center text-secondary">
-                      <img src={customer.avatar} alt="Preview" style={{ width: "162px", height: "162px" }} className="border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain" />
+                      <img
+                        src={customer.avatar}
+                        alt="Preview"
+                        style={{ width: "162px", height: "162px" }}
+                        className="border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain"
+                      />
                     </div>
                   </div>
                 </div>
               )}
-              <Form.Item label={"Username"} name={"username"} rules={[{ required: true, message: "Username không được để trống!" },]}>
+              <Form.Item
+                label={"Username"}
+                name={"username"}
+                rules={[
+                  { required: true, message: "Username không được để trống!" },
+                ]}
+              >
                 <Input placeholder="Nhập username..." />
               </Form.Item>
+<<<<<<< HEAD
               <Form.Item label={"Mã định danh (Số CMT/CCCD)"} name={"cccd"} rules={[{ required: true, message: "Mã định danh không được để trống!", },{ pattern: '^([0-9]{9}|[0-9]{12})$', message: "Mã định danh phải có 9 hoặc 12 kí tự!" }]}>
                   <Input placeholder="Nhập mã định danh..." />
                 </Form.Item>
@@ -136,18 +208,80 @@ function CustomerDetail() {
               <Input placeholder="Nhập tên khách hàng..." />
             </Form.Item>
               <Form.Item label={"Ngày sinh"} name={"birthday"} rules={[{ required: true, message: "Ngày sinh không được để trống!", },]} >
+=======
+              <Form.Item
+                label={"Mã định danh"}
+                name={"cccd"}
+                rules={[
+                  {
+                    required: true,
+                    message: "Mã định danh không được để trống!",
+                  },
+                ]}
+              >
+                <Input placeholder="Nhập mã định danh..." />
+              </Form.Item>
+              <Form.Item
+                label={"Tên khách hàng"}
+                name={"name"}
+                rules={[
+                  { required: true, message: "Tên không được để trống!" },
+                ]}
+              >
+                <Input placeholder="Nhập tên khách hàng..." />
+              </Form.Item>
+              <Form.Item
+                label={"Ngày sinh"}
+                name={"birthday"}
+                rules={[
+                  { required: true, message: "Ngày sinh không được để trống!" },
+                ]}
+              >
+>>>>>>> 448621b02acc965bf8dd68ba8b999a72ace49703
                 <Input type="date" />
               </Form.Item>
-              <Form.Item label={"Giới tính"} name={"gender"} rules={[{ required: true, message: "Giới tính không được để trống!", },]}>
+              <Form.Item
+                label={"Giới tính"}
+                name={"gender"}
+                rules={[
+                  { required: true, message: "Giới tính không được để trống!" },
+                ]}
+              >
                 <Radio.Group>
                   <Radio value={"Nam"}>Nam</Radio>
                   <Radio value={"Nữ"}>Nữ</Radio>
                 </Radio.Group>
               </Form.Item>
+<<<<<<< HEAD
               <Form.Item label={"Email"} name={"email"} rules={[{ required: true, message: "Email không được để trống!" },{ pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$$', message: "Email không đúng định dạng!" }]} >
                   <Input placeholder="Nhập email ..." />
                 </Form.Item>
               <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", }, { pattern: '^0[0-9]{9}$', message: "SDT không đúng định dạng!" }]} >
+=======
+              <Form.Item
+                label={"Email"}
+                name={"email"}
+                rules={[
+                  { required: true, message: "Email không được để trống!" },
+                ]}
+              >
+                <Input placeholder="Nhập email ..." />
+              </Form.Item>
+              <Form.Item
+                label={"Số điện thoại"}
+                name={"phoneNumber"}
+                rules={[
+                  {
+                    required: true,
+                    message: "Số điện thoại không được để trống!",
+                  },
+                  {
+                    pattern: "^0[0-9]{9}$",
+                    message: "SDT không đúng định dạng!",
+                  },
+                ]}
+              >
+>>>>>>> 448621b02acc965bf8dd68ba8b999a72ace49703
                 <Input placeholder="Nhập số điện thoại ..." />
               </Form.Item>
               <Form.Item className="float-end">
@@ -157,8 +291,12 @@ function CustomerDetail() {
               </Form.Item>
             </Form>
           </Col>
-          <Col span={16} style={{borderLeft: "1px solid #F0F0F0"}}>
-            <h6>Thông tin địa chỉ</h6>
+          <Col span={16} style={{ borderLeft: "1px solid #F0F0F0" }}>
+            <Row>
+              <Col span={24}>
+                <h6>Thông tin địa chỉ</h6>
+              </Col>  
+            </Row>
             <Divider />
             <AddressCustomerDetail idCustomer={id} />
           </Col>

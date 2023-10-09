@@ -8,10 +8,18 @@ import java.time.LocalDateTime;
 public interface PaymentMethodResponse {
     @Value("#{target.indexs}")
     Integer getIndex();
+
     Long getId();
+
     Integer getMethod();
+
     BigDecimal getTotalMoney();
+
     String getNote();
+
     String getTradingCode();
+
     LocalDateTime getCreateAt();
+
+    String getCreateBy();
 }

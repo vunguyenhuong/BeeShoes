@@ -54,8 +54,8 @@ function Customer() {
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'deteted',
-      key: 'createAt',
+      dataIndex: 'deleted',
+      key: 'deleted',
       render: (x) => (
         <span className={x ? "fw-semibold text-danger" : "fw-semibold text-success"}>
           {x ? "Hủy kích hoạt" : "Kích hoạt"}

@@ -19,16 +19,20 @@ import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
 import "./timeline.css";
 import InfoBill from "./InfoBill";
-import { Button, Carousel, Empty, Form, Modal, message } from "antd";
+import { Button, Carousel, Empty, Form, Modal, Table, message } from "antd";
 import PaymentMethod from "./PaymentMethod";
 import BillHistory from "./BillHistory";
 import TextArea from "antd/es/input/TextArea";
+import Title from "antd/es/typography/Title";
 
 const BillDetail = () => {
   const [bill, setBill] = useState([]);
   const [billHistory, setBillHistory] = useState([]);
   const [listBillDetail, setListBillDetail] = useState([]);
-  const [paymentMethod, setPaymentMethod] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [pageSize, setPageSize] = useState(3);
   const { id } = useParams();
   const [form] = Form.useForm();
 
@@ -42,26 +46,22 @@ const BillDetail = () => {
         console.error(error);
       });
   };
-  const loadBillDetail = () => {
-    request
-      .get(`/bill/detail/${id}`)
-      .then((response) => {
-        setListBillDetail(response);
-      })
-      .catch((error) => {
-        console.error(error);
+  const loadBillDetail = async () => {
+    await request.get(`/bill-detail`, {
+      params: {
+        bill: id,
+        page: currentPage,
+        sizePage: pageSize,
+      }
+    }).then((response) => {
+      setListBillDetail(response.data);
+      setTotalPages(response.totalPages);
+    })
+      .catch((e) => {
+        console.log(e);
       });
   };
-  const loadPaymentMethod = () => {
-    request
-      .get(`/payment-method/${id}`)
-      .then((response) => {
-        setPaymentMethod(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+
   const loadBillHistory = () => {
     request
       .get(`/bill-history/${id}`)
@@ -76,9 +76,14 @@ const BillDetail = () => {
   useEffect(() => {
     loadBill();
     loadBillDetail();
-    loadPaymentMethod();
     loadBillHistory();
   }, [id]);
+
+  useEffect(() => {
+    loadBillDetail();
+  }, [currentPage, pageSize])
+
+
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -97,7 +102,6 @@ const BillDetail = () => {
     }).then((response) => {
       loadBill();
       loadBillDetail();
-      loadPaymentMethod();
       loadBillHistory();
       form.resetFields();
     }).catch((e) => {
@@ -105,6 +109,62 @@ const BillDetail = () => {
     });
     setIsModalOpen(false);
   }
+
+  const columns = [
+    {
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
+    },
+    {
+      title: <i className="fas fa-image"></i>,
+      dataIndex: 'images',
+      key: 'images',
+      render: (item) => (
+        <>
+          <Carousel autoplay autoplaySpeed={1500} dots={false} arrows={false} style={{ width: "150px" }}>
+            {item !== undefined && item.split(',').map((image, index) => (
+              <div className="" style={{ height: "150px" }}>
+                <img src={image} alt="images" style={{ width: "150px", height: "150px" }} className="object-fit-cover" />
+              </div>
+            ))}
+          </Carousel>
+        </>
+      )
+    },
+    {
+      title: 'Sản phẩm',
+      dataIndex: 'name',
+      key: 'name',
+      render: (name, record) => (
+        <>
+          <ul className="list-unstyled ">
+            <li className="fw-semibold">{name}</li>
+            <li><small>{record.shoeCode}</small></li>
+            <li>Đơn giá: <span className="text-danger"><FormatCurrency value={record.price} /></span></li>
+          </ul>
+        </>
+      )
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (quantity, record) => (
+        <>{quantity}</>
+      )
+    },
+    {
+      title: 'Tổng tiền',
+      dataIndex: 'quantity',
+      key: 'total',
+      render: (quantity, record) => (
+        <div className="text-center text-danger fw-semibold">
+          <FormatCurrency value={record.price * record.quantity} />
+        </div>
+      )
+    },
+  ]
 
   return (
     <>
@@ -179,7 +239,9 @@ const BillDetail = () => {
           <div className="flex-grow-1">
             {bill.status !== 6 ? (
               <>
-                <Button className="bg-danger text-white me-1">Hủy</Button>
+                {bill.status <= 4 && (
+                  <Button type="primary" danger className="me-1">Hủy</Button>
+                )}
                 <Button type="primary" onClick={showModal}>
                   Xác nhận
                 </Button>
@@ -195,103 +257,24 @@ const BillDetail = () => {
         {/* Thông tin đơn hàng */}
         <InfoBill props={bill} />
         {/* Lịch sử thanh toán */}
-        <div className="mt-3">
-          <div className="d-flex bg-secondary-subtle p-2 pt-3">
-            <div className="flex-grow-1">
-              <h6 className="text-uppercase">LỊCH SỬ THANH TOÁN</h6>
-            </div>
-            <div className="">
-              <PaymentMethod bill={bill} paymentMethod={paymentMethod} />
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table class="table table-borderless table-striped">
-              <thead>
-                <tr>
-                  <th scope="col">Số tiền</th>
-                  <th scope="col">Thời gian</th>
-                  <th scope="col">Phương thức thanh toán</th>
-                  <th scope="col">Ghi chú</th>
-                  <th scope="col">Nhân viên xác nhận</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paymentMethod.length === 0 ? (
-                  <td colSpan={5}>
-                    <Empty description={"Chưa có lịch sử thanh toán"} />
-                  </td>
-                ) : (
-                  paymentMethod.map((item, index) => (
-                    <tr class="">
-                      <td className="text-danger fw-semibold">
-                        <FormatCurrency value={item.totalMoney} />
-                      </td>
-                      <td>
-                        <FormatDate date={item.createAt} />
-                      </td>
-                      <td>{item.method === 0 ? "Tiền mặt" : "Chuyển khoản"}</td>
-                      <td>
-                        {item.note === null ? "Không có ghi chú" : item.note}
-                      </td>
-                      <td>{item.createBy}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <PaymentMethod bill={bill} />
         {/* Thông tin đơn hàng */}
-        <div className="mt-3">
-          <h6 className="text-uppercase bg-secondary-subtle p-3">sản phẩm</h6>
-          <div class="table-responsive">
-            <table class="table table-borderless align-middle">
-              <thead>
-                <th>#</th>
-                <th>Ảnh</th>
-                <th>Tên</th>
-                <th>Số lượng</th>
-                <th>Đơn giá</th>
-                <th>Tạm tính</th>
-              </thead>
-              <tbody>
-                {listBillDetail.map((item, index) => (
-                  <tr class="" key={index}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <Carousel
-                        autoplay
-                        autoplaySpeed={1500}
-                        dots={false}
-                        arrows={false}
-                        style={{ width: "150px", height: "150px" }}
-                      >
-                        {item.imagesList.map((image, index) => (
-                          <div key={index}>
-                            <img
-                              src={image.name}
-                              alt="images"
-                              style={{ width: "150px", height: "150px" }}
-                              className="object-fit-cover"
-                            />
-                          </div>
-                        ))}
-                      </Carousel>
-                    </td>
-                    <td>{`${item.shoeDetail.shoe.name} - [${item.shoeDetail.size.name} - ${item.shoeDetail.color.name}]`}</td>
-                    <td>{item.quantity}</td>
-                    <td>
-                      <FormatCurrency value={item.price} />
-                    </td>
-                    <td>
-                      <FormatCurrency value={item.price * item.quantity} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="bg-secondary-subtle d-flex align-items-center mt-3">
+          <Title level={5} className="text-uppercase p-0 m-0 flex-grow-1 p-2">Sản phẩm</Title>
         </div>
+        <Table dataSource={listBillDetail} columns={columns}
+          pagination={{
+            showSizeChanger: true,
+            current: currentPage,
+            pageSize: pageSize,
+            pageSizeOptions: [3, 5, 10, 20,],
+            showQuickJumper: true,
+            total: totalPages * pageSize,
+            onChange: (page, pageSize) => {
+              setCurrentPage(page);
+              setPageSize(pageSize);
+            },
+          }} />
       </BaseUI>
       <Modal title="Nhập ghi chú" open={isModalOpen} onCancel={handleCancel} footer={<Button form="formNote" type="primary" htmlType="submit">Xác nhận</Button>}>
         <Form id="formNote" onFinish={handleSubmit} form={form}>

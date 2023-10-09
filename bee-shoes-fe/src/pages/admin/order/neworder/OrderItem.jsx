@@ -78,7 +78,7 @@ function OrderItem({ index, props, onSuccess }) {
     await request.get(`/bill-detail`, {
       params: {
         bill: props.id,
-        page: currentPage,
+        page: 1,
         sizePage: 1_000_000,
       }
     }).then((response) => {
@@ -158,6 +158,39 @@ function OrderItem({ index, props, onSuccess }) {
     }
   }, [voucher])
 
+  const handleChangeQuantity = (id, quantity) => {
+    request.get(`/bill-detail/update-quantity/${id}`, {
+      params: {
+        newQuantity: quantity
+      }
+    }).then(response => {
+      toast.success("Cập nhật thành công!");
+      loadListOrderDetail();
+    }).catch(e => {
+      console.log(e);
+      toast.error(e.response.data);
+    })
+  }
+
+  const handleDeleteBillDetail = (id) => {
+    Modal.confirm({
+      title: "Xác nhận",
+      maskClosable: true,
+      content: "Xác nhận xóa khỏi giỏ hàng ?",
+      okText: "Ok",
+      cancelText: "Cancel",
+      onOk: () => {
+        request.remove(`/bill-detail/${id}`).then(response => {
+          toast.success("Xóa thành công!");
+          loadListOrderDetail();
+        }).catch(e => {
+          console.log(e);
+          toast.error(e.response.data);
+        })
+      },
+    });
+  }
+
   const columns = [
     {
       title: '#',
@@ -201,7 +234,7 @@ function OrderItem({ index, props, onSuccess }) {
       render: (quantity, record) => (
         <Form key={record.id}>
           <Form.Item initialValue={quantity} name={"quantity"} className="m-0 p-0">
-            <Input className="text-center" type="number" style={{ width: "64px" }} />
+            <Input className="text-center" type="number" style={{ width: "64px" }} onPressEnter={(e) => handleChangeQuantity(record.id, e.target.value)} />
           </Form.Item>
         </Form>
       )
@@ -222,11 +255,8 @@ function OrderItem({ index, props, onSuccess }) {
       key: 'action',
       render: (id, record) => (
         <>
-          <Tooltip placement="top" title="Cập nhật">
-            <Button type="text" className="text-warning me-1"><i className="fas fa-edit"></i></Button>
-          </Tooltip>
           <Tooltip placement="top" title="Xóa">
-            <Button type="text" className="text-danger me-1"><i className="fas fa-trash"></i></Button>
+            <Button onClick={() => handleDeleteBillDetail(id)} type="text" className="text-danger me-1"><i className="fas fa-trash"></i></Button>
           </Tooltip>
         </>
       )
@@ -243,18 +273,45 @@ function OrderItem({ index, props, onSuccess }) {
     data.moneyReduce = moneyReduce;
     data.note = note;
     data.paymentMethod = paymentMethod;
-    if (waitPay) {
-      data.status = 0;
-      request.put(`/bill/${props.id}`, data).then(response => {
-        toast.success("Đơn hàng đã chuyển sang trạng thái chờ thanh toán!");
-        onSuccess();
-      }).catch(e => {
-        console.log(e);
-      })
+    if (listOrderDetail.length === 0) {
+      toast.error("Hãy thêm gì đó vào giỏ hàng!");
     } else {
-      if (typeOrder === 0) {
-        if (extraMoney !== null && extraMoney >= 0) {
-          data.status = 6;
+      if (waitPay) {
+        data.status = 0;
+        request.put(`/bill/${props.id}`, data).then(response => {
+          toast.success("Đơn hàng đã chuyển sang trạng thái chờ thanh toán!");
+          onSuccess();
+        }).catch(e => {
+          console.log(e);
+        })
+      } else {
+        if (typeOrder === 0) {
+          if (extraMoney !== null && extraMoney >= 0) {
+            data.status = 6;
+            Modal.confirm({
+              title: "Xác nhận",
+              maskClosable: true,
+              content: "Xác nhận thêm khách hàng ?",
+              okText: "Ok",
+              cancelText: "Cancel",
+              onOk: () => {
+                request.put(`/bill/${props.id}`, data).then(response => {
+                  toast.success("Tạo đơn hàng thành công!");
+                  onSuccess();
+                }).catch(e => {
+                  console.log(e);
+                })
+              },
+            });
+          } else {
+            toast.error("Vui lòng nhập đủ tiền khách đưa!");
+            return;
+          }
+        } else {
+          data.phoneNumber = autoFillAddress.phoneNumber;
+          data.address = typeOrder === 0 ? null : `${autoFillAddress.specificAddress}##${autoFillAddress.ward}##${autoFillAddress.district}##${autoFillAddress.province}`;
+          data.moneyShip = feeShip;
+          data.status = 2;
           Modal.confirm({
             title: "Xác nhận",
             maskClosable: true,
@@ -262,6 +319,7 @@ function OrderItem({ index, props, onSuccess }) {
             okText: "Ok",
             cancelText: "Cancel",
             onOk: () => {
+              console.log(data.customer);
               request.put(`/bill/${props.id}`, data).then(response => {
                 toast.success("Tạo đơn hàng thành công!");
                 onSuccess();
@@ -270,31 +328,7 @@ function OrderItem({ index, props, onSuccess }) {
               })
             },
           });
-        } else {
-          toast.error("Vui lòng nhập đủ tiền khách đưa!");
-          return;
         }
-      } else {
-        data.phoneNumber = autoFillAddress.phoneNumber;
-        data.address = typeOrder === 0 ? null : `${autoFillAddress.specificAddress}##${autoFillAddress.ward}##${autoFillAddress.district}##${autoFillAddress.province}`;
-        data.moneyShip = feeShip;
-        data.status = 2;
-        Modal.confirm({
-          title: "Xác nhận",
-          maskClosable: true,
-          content: "Xác nhận thêm khách hàng ?",
-          okText: "Ok",
-          cancelText: "Cancel",
-          onOk: () => {
-            console.log(data.customer);
-            request.put(`/bill/${props.id}`, data).then(response => {
-              toast.success("Tạo đơn hàng thành công!");
-              onSuccess();
-            }).catch(e => {
-              console.log(e);
-            })
-          },
-        });
       }
     }
   }
@@ -317,6 +351,7 @@ function OrderItem({ index, props, onSuccess }) {
         {listOrderDetail.length === 0 ? <Empty description={"Chưa có sản phẩm"} className="py-5" /> : (
           <>
             {loading ? <Loading /> : <Table dataSource={listOrderDetail} columns={columns} className="mt-3"
+              loading={loading}
               pagination={{
                 showSizeChanger: true,
                 current: currentPage,
@@ -376,7 +411,7 @@ function OrderItem({ index, props, onSuccess }) {
           </div>
           <div className="">
             {customer !== null && (
-                <ChooseAddress idCustomer={customer.id}/>
+              <ChooseAddress idCustomer={customer.id} />
             )}
           </div>
         </div>

@@ -64,6 +64,24 @@ public class BillDetailServiceImpl implements BillDetailService {
 
     @Override
     public BillDetail delete(Long id) {
-        return null;
+        BillDetail billDetail = billDetailRepository.findById(id).get();
+        ShoeDetail shoeDetail = billDetail.getShoeDetail();
+        shoeDetail.setQuantity(shoeDetail.getQuantity()+billDetail.getQuantity());
+        billDetailRepository.delete(billDetail);
+        return billDetail;
+    }
+
+    @Override
+    public BillDetail updateQuantity(Long id, Integer newQuantity) {
+        BillDetail billDetail = billDetailRepository.findById(id).get();
+        ShoeDetail shoeDetail = billDetail.getShoeDetail();
+        if(newQuantity > (shoeDetail.getQuantity()+billDetail.getQuantity())){
+            throw new RestApiException("Quá số lượng cho phép!");
+        }
+        shoeDetail.setQuantity(shoeDetail.getQuantity()+billDetail.getQuantity()-newQuantity);
+        billDetail.setQuantity(newQuantity);
+        billDetailRepository.save(billDetail);
+        shoeDetailRepository.save(shoeDetail);
+        return billDetail;
     }
 }

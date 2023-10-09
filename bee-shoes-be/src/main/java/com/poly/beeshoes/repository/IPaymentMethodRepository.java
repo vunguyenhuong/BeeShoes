@@ -14,6 +14,7 @@ public interface IPaymentMethodRepository extends JpaRepository<PaymentMethod, L
             pm.id AS id,
             pm.method AS method, pm.total_money AS totalMoney,
             pm.note AS note,pm.trading_code AS tradingCode,
+            pm.create_by AS createBy,
             pm.create_at AS createAt
             FROM payment_method pm
             WHERE pm.bill_id = :idBill

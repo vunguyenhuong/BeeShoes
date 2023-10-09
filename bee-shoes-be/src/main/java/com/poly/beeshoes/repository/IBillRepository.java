@@ -18,7 +18,7 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
 
     @Query(value = """
             SELECT  b.id AS id,
-            ROW_NUMBER() OVER(ORDER BY b.create_at DESC) AS indexs,
+            ROW_NUMBER() OVER(ORDER BY b.update_at DESC) AS indexs,
             b.code AS code, b.create_at AS createAt,
             cus.name AS customer,emp.name AS employee,
             b.address AS address,

@@ -12,4 +12,6 @@ public interface BillDetailService {
     BillDetail create(BillDetailRequest request);
     BillDetail update(Long id,BillDetailRequest request);
     BillDetail delete(Long id);
+
+    BillDetail updateQuantity(Long id, Integer newQuantity);
 }

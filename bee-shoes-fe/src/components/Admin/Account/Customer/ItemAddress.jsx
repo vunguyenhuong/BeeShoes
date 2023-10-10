@@ -132,46 +132,6 @@ function ItemAddress({ props, onSuccess }) {
               name={"phoneNumber"}
               rules={[
                 {
-<<<<<<< HEAD
-                    name: props.name,
-                    phoneNumber: props.phoneNumber,
-                    specificAddress: props.specificAddress,
-                    defaultAddress: props.defaultAddress
-                }
-            } onFinish={handleUpdate}>
-                <Row gutter={24}>
-                    <Col span={12}>
-                        <Form.Item label={"Tên"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!", },{  pattern: /^[^\d!@#$%^&*()_+={}\\:;"'<>,.?/`~|-]+$/, message: "Tên phải là chữ"}]} >
-                            <Input placeholder="Nhập tên ..." />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", },{ pattern: '^0[0-9]{9}$', message: "SDT không đúng định dạng!" }]} >
-                            <Input placeholder="Nhập số điện thoại ..." />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item label={"Địa chỉ cụ thể"} name={"specificAddress"} rules={[{ required: true, message: "Địa chỉ cụ thể không được để trống!", },]} >
-                            <Input placeholder="Nhập địa chỉ cụ thể..." />
-                        </Form.Item>
-                    </Col>
-                    <GHNInfo prov={props.province} distr={props.district} war={props.ward} dataAddress={setDataAddress} />
-                    <Col span={24} className="d-flex mt-3 align-items-center">
-                        <div className='flex-grow-1'>
-                            <Switch defaultChecked={props.defaultAddress} onChange={(value) => setDefaultAddress(value)} size='small' className='me-1'/>Địa chỉ mặc định
-                        </div>
-                        <Button type="primary" className="bg-danger me-1" htmlType="button">
-                            <i className="fas fa-trash"></i>
-                        </Button>
-                        <Button type="primary" className="bg-warning" htmlType="submit">
-                            <i className="fas fa-edit"></i>
-                        </Button>
-                    </Col>
-                </Row>
-            </Form>
-        </>
-    )
-=======
                   required: true,
                   message: "Số điện thoại không được để trống!",
                 },
@@ -228,7 +188,6 @@ function ItemAddress({ props, onSuccess }) {
       </Form>
     </>
   );
->>>>>>> 448621b02acc965bf8dd68ba8b999a72ace49703
 }
 
 export default ItemAddress;

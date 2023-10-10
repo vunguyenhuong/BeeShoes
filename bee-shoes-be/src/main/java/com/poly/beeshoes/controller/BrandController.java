@@ -3,6 +3,7 @@ package com.poly.beeshoes.controller;
 import com.poly.beeshoes.entity.Brand;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
+import com.poly.beeshoes.infrastructure.request.BrandRequest;
 import com.poly.beeshoes.infrastructure.response.BrandResponse;
 import com.poly.beeshoes.service.BrandService;
 import jakarta.validation.Valid;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,11 +24,10 @@ public class BrandController {
     private BrandService brandService;
 
     @GetMapping
-    public PageableObject<BrandResponse> getAll(@RequestParam(required = false, defaultValue = "") String name,
-                                                @RequestParam(required = false, defaultValue = "1") Integer page,
-                                                @RequestParam(required = false) Boolean status) {
-        return brandService.getAll(name, page, status);
+    public PageableObject<BrandResponse> getAll(BrandRequest request) {
+        return brandService.getAll(request);
     }
+
 
     @GetMapping("/{id}")
     public Brand getOne(@PathVariable Long id) {
@@ -36,13 +35,13 @@ public class BrandController {
     }
 
     @PostMapping
-    public ResponseObject create(@RequestBody @Valid Brand brand) {
-        return new ResponseObject(brandService.create(brand));
+    public ResponseObject create(@RequestBody @Valid BrandRequest request) {
+        return new ResponseObject(brandService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid Brand brand) {
-        return new ResponseObject(brandService.update(id, brand));
+    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid BrandRequest request) {
+        return new ResponseObject(brandService.update(id, request));
     }
 
     @DeleteMapping("/{id}")

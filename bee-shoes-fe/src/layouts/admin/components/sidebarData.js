@@ -59,6 +59,18 @@ const sidebarData = [
                         "icon": "fa-shoe-prints",
                         "path": "/admin/sole"
                     },
+                    {
+                        "key": "danhMuc",
+                        "title": "Danh Mục",
+                        "icon": "fa-solid fa-bezier-curve",
+                        "path": "/admin/category"
+                    },
+                    {
+                        "key": "thuongHieu",
+                        "title": "Thương hiệu",
+                        "icon": "fa-brands fa-airbnb",
+                        "path": "/admin/brand"
+                    },
                 ]
             }
         ]

@@ -21,6 +21,8 @@ import DetailProduct from './pages/client/DetailProduct';
 import Size from './pages/admin/product/attribute/Size';
 import Color from './pages/admin/product/attribute/Color';
 import Sole from './pages/admin/product/attribute/Sole';
+import Brand from './pages/admin/product/attribute/Brand';
+import Category from './pages/admin/product/attribute/Category';
 
 
 const publicRouters = [
@@ -53,6 +55,8 @@ const publicRouters = [
     { path: "/admin/size", element: Size },
     { path: "/admin/color", element: Color },
     { path: "/admin/sole", element: Sole },
+    { path: "/admin/brand", element: Brand },
+    { path: "/admin/category", element: Category },
     // { path: '*', element: NotFound}
 ];
 

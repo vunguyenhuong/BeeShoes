@@ -71,7 +71,9 @@ function AddStaff() {
         okText: "Ok",
         cancelText: "Cancel",
         onOk: () => {
-          request.post("/staff", formData, { headers: { "Content-Type": "multipart/form-data", }, }).then((response) => {
+          request
+          .post("/staff", formData, { headers: { "Content-Type": "multipart/form-data", }, })
+          .then((response) => {
             console.log(response);
             setLoading(true);
             if (response.data.success) {

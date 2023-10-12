@@ -21,12 +21,12 @@ public interface IAccountRepository extends JpaRepository<Account, Long> {
 
     @Query("""
             SELECT a FROM Account a
-            WHERE (:#{#req.name} IS NULL 
+            WHERE (:#{#req.name} IS NULL
             OR a.name LIKE %:#{#req.name}% OR a.email LIKE %:#{#req.name}%
             OR a.username LIKE %:#{#req.name}% OR a.phoneNumber LIKE %:#{#req.name}%)
             AND (:#{#req.deleted} IS NULL OR a.deleted = :#{#req.deleted})
             AND a.role.name = :#{#req.roleName}
-            ORDER BY a.createAt DESC 
+            ORDER BY a.createAt DESC
             """)
     Page<Account> getAll(@Param("req") AccountRequest request, Pageable pageable);
 

@@ -5,6 +5,7 @@ import {
   Button,
   Col,
   Collapse,
+  Divider,
   Form,
   Input,
   Modal,
@@ -74,6 +75,9 @@ function CreateAddressModal({ idCustomer, onSuccess }) {
           <i className="fas fa-plus-circle"></i> Thêm địa chỉ mới
         </span>
       </div>
+
+       
+
       <Modal
         centered
         title="Thêm địa chỉ"

@@ -11,7 +11,7 @@ function Customer() {
   const [totalPages, setTotalPages] = useState(0);
 
   const [searchValue, setSearchValue] = useState("");
-  const [customerStatus, setCustomerStatus] = useState("");
+  const [customerStatus, setCustomerStatus] = useState(null);
   const [pageSize, setPageSize] = useState(5);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ function Customer() {
         name: searchValue,
         page: currentPage,
         sizePage: pageSize,
-        deleted: customerStatus,
+        status: customerStatus,
       },
     }).then(response => {
       setCustomerList(response.data);
@@ -31,6 +31,12 @@ function Customer() {
   }, [searchValue, pageSize, customerStatus, currentPage]);
 
   const columns = [
+    {
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
+      className: "text-center",
+    },
     {
       title: 'Tên',
       dataIndex: 'name',
@@ -58,7 +64,7 @@ function Customer() {
       key: 'deleted',
       render: (x) => (
         <span className={x ? "fw-semibold text-danger" : "fw-semibold text-success"}>
-          {x ? "Đã nghỉ" : "Đang làm"}
+          {x ? "Hủy kích hoạt" : "Kích hoạt"}
         </span>
       )
     },
@@ -78,22 +84,22 @@ function Customer() {
     <BaseUI>
       <h6>Danh sách khách hàng</h6>
       <Row gutter={10}>
-        <Col span={12}>
+        <Col span={15}>
           <label className="mb-1">Nhập tên, email, số điện thoại</label>
           <Input
             onChange={(event) => setSearchValue(event.target.value)}
             placeholder="Tìm kiếm khách hàng theo tên, email, sdt ..."
           />
         </Col>
-        <Col span={8} className="text-nowrap">
+        <Col span={5} className="text-nowrap">
           <div className="mb-1">Trạng thái</div>
           <Radio.Group
-            defaultValue={""} className="align-middle"
+            defaultValue={null} className="align-middle"
             onChange={(event) => setCustomerStatus(event.target.value)}
           >
-            <Radio value={""}>Tất cả</Radio>
-            <Radio value={false}>Hoạt động</Radio>
-            <Radio value={true}>Không hoạt động</Radio>
+            <Radio value={null}>Tất cả</Radio>
+            <Radio value={false}>Kích hoạt</Radio>
+            <Radio value={true}>Hủy kích hoạt</Radio>
           </Radio.Group>
         </Col>
         <Col span={4}>

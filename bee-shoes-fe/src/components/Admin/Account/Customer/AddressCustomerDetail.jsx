@@ -1,4 +1,15 @@
-import { Collapse, Pagination } from "antd";
+import {
+  Button,
+  Col,
+  Collapse,
+  Divider,
+  Form,
+  Input,
+  Modal,
+  Pagination,
+  Row,
+  Switch,
+} from "antd";
 import React from "react";
 import Loading from "~/components/Loading/Loading";
 import ItemAddress from "./ItemAddress";
@@ -8,6 +19,9 @@ import * as request from "~/utils/httpRequest";
 // import Pagination from "~/components/Pagination";
 import CreateAddressModal from "./CreateAddressModal";
 import { useParams } from "react-router-dom";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { toast } from "react-toastify";
+import GHNInfo from "~/components/GhnInfo";
 
 function AddressCustomerDetail() {
   const [listAddress, setListAddress] = useState([]);
@@ -16,6 +30,10 @@ function AddressCustomerDetail() {
   const [totalPages, setTotalPages] = useState(0);
   const [pageSize, setPageSize] = useState(2);
   const { id } = useParams();
+  const { confirm } = Modal;
+  const [form] = Form.useForm();
+  const [dataAddress, setDataAddress] = useState(null);
+  const [autoFillAddress, setAutoFillAddress] = useState([]);
 
   useEffect(() => {
     loadData(id, currentPage, pageSize);
@@ -41,7 +59,7 @@ function AddressCustomerDetail() {
         .catch((e) => {
           console.log(e);
         });
-    }, 800);
+    });
     return () => clearTimeout(timeout);
   };
 
@@ -49,12 +67,119 @@ function AddressCustomerDetail() {
     return <Loading />;
   }
 
+  const handleAdd = (data) => {
+    data.account = id;
+    confirm({
+      title: "Xác nhận ",
+      icon: <ExclamationCircleFilled />,
+      content: "Bạn có chắc muốn thêm địa chỉ mới? ",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "Đóng",
+      onOk() {
+        request
+          .post("/address", data)
+          .then((response) => {
+            loadData(id, 1, pageSize);
+            form.resetFields();
+            toast.success("Thêm mới thành công!");
+          })
+          .catch((e) => console.log(e));
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
   return (
     <>
-      <CreateAddressModal
-        idCustomer={id}
-        onSuccess={() => loadData(id, currentPage, pageSize)}
+      <Collapse
+        expandIcon={({ isActive }) => (
+          <span>
+            {isActive ? (
+              <i class="fa-solid fa-xmark text-danger fw-bold"></i>
+            ) : (
+              <i class="fa-solid fa-plus text-success fw-bold"></i>
+            )}
+          </span>
+        )}
+        size="small"
+        items={[
+          {
+            key: "0",
+            label: (
+              <span className="fw-bold text-success">Tạo địa chỉ mới</span>
+            ),
+            children: (
+              <Form onFinish={handleAdd} layout="vertical" form={form}>
+                <Row gutter={10}>
+                  <Col xl={12}>
+                    <Form.Item
+                      label={"Tên"}
+                      name={"name"}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Tên không được để trống!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Nhập tên người nhận..." />
+                    </Form.Item>
+                  </Col>
+                  <Col xl={12}>
+                    <Form.Item
+                      label={"Số điện thoại"}
+                      name={"phoneNumber"}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Số điện thoại không được để trống!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Nhập số điện thoại..." />
+                    </Form.Item>
+                  </Col>
+                  <Col xl={24}>
+                    <Form.Item
+                      label={"Địa chỉ cụ thể"}
+                      name={"specificAddress"}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Địa chỉ cụ thể không được để trống!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Nhập địa chỉ cụ thể ..." />
+                    </Form.Item>
+                  </Col>
+
+                  <GHNInfo
+                    dataAddress={setDataAddress}
+                    distr={autoFillAddress.district}
+                    prov={autoFillAddress.province}
+                    war={autoFillAddress.ward}
+                  />
+                </Row>
+                <div className="d-flex justify-content-end">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="bg-success"
+                  >
+                    <i className="fas fa-plus-circle me-1"></i> Thêm
+                  </Button>
+                </div>
+              </Form>
+            ),
+          },
+        ]}
       />
+      <Divider orientation="left" />
+
       {listAddress.map((item) => (
         <>
           <Collapse
@@ -64,12 +189,14 @@ function AddressCustomerDetail() {
             items={[
               {
                 key: `${item.index}`,
-                label: <span className="fw-semibold">Địa chỉ {item.index}</span>,
+                label: (
+                  <span className="fw-semibold">Địa chỉ {item.index}</span>
+                ),
                 children: (
                   <ItemAddress
                     props={item}
                     onSuccess={() => loadData(id, currentPage, pageSize)}
-                  />  
+                  />
                 ),
                 className: "border-bottom-0",
               },

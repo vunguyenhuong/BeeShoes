@@ -146,10 +146,10 @@ function CustomerDetail() {
           ]}
         />
         <Row gutter={24}>
-          <Col span={8}>
+          <Col span={8} className="shadow p-3 mb-5 bg-body rounded">
             <h6>Thông tin khách hàng</h6>
             <Divider />
-            <Form layout="vertical" form={form} onFinish={handleUpdate}>
+            <Form layout="vertical" form={form} onFinish={handleUpdate} >
               {previewUrl !== null ? (
                 <div className="text-center">
                   <img
@@ -200,34 +200,13 @@ function CustomerDetail() {
               >
                 <Input placeholder="Nhập username..." />
               </Form.Item>
-              <Form.Item
-                label={"Mã định danh"}
-                name={"cccd"}
-                rules={[
-                  {
-                    required: true,
-                    message: "Mã định danh không được để trống!",
-                  },
-                ]}
-              >
-                <Input placeholder="Nhập mã định danh..." />
-              </Form.Item>
-              <Form.Item
-                label={"Tên khách hàng"}
-                name={"name"}
-                rules={[
-                  { required: true, message: "Tên không được để trống!" },
-                ]}
-              >
-                <Input placeholder="Nhập tên khách hàng..." />
-              </Form.Item>
-              <Form.Item
-                label={"Ngày sinh"}
-                name={"birthday"}
-                rules={[
-                  { required: true, message: "Ngày sinh không được để trống!" },
-                ]}
-              >
+              <Form.Item label={"Mã định danh (Số CMT/CCCD)"} name={"cccd"} rules={[{ required: true, message: "Mã định danh không được để trống!", },{ pattern: '^([0-9]{9}|[0-9]{12})$', message: "Mã định danh phải có 9 hoặc 12 kí tự!" }]}>
+                  <Input placeholder="Nhập mã định danh..." />
+                </Form.Item>
+                <Form.Item label={"Tên khách hàng"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!" },  {  pattern: /^[^\d!@#$%^&*()_+={}\\:;"'<>,.?/`~|-]+$/, message: "Tên phải là chữ"}]}>
+              <Input placeholder="Nhập tên khách hàng..." />
+            </Form.Item>
+              <Form.Item label={"Ngày sinh"} name={"birthday"} rules={[{ required: true, message: "Ngày sinh không được để trống!", },]} >
                 <Input type="date" />
               </Form.Item>
               <Form.Item
@@ -242,29 +221,10 @@ function CustomerDetail() {
                   <Radio value={"Nữ"}>Nữ</Radio>
                 </Radio.Group>
               </Form.Item>
-              <Form.Item
-                label={"Email"}
-                name={"email"}
-                rules={[
-                  { required: true, message: "Email không được để trống!" },
-                ]}
-              >
-                <Input placeholder="Nhập email ..." />
-              </Form.Item>
-              <Form.Item
-                label={"Số điện thoại"}
-                name={"phoneNumber"}
-                rules={[
-                  {
-                    required: true,
-                    message: "Số điện thoại không được để trống!",
-                  },
-                  {
-                    pattern: "^0[0-9]{9}$",
-                    message: "SDT không đúng định dạng!",
-                  },
-                ]}
-              >
+              <Form.Item label={"Email"} name={"email"} rules={[{ required: true, message: "Email không được để trống!" },{ pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$$', message: "Email không đúng định dạng!" }]} >
+                  <Input placeholder="Nhập email ..." />
+                </Form.Item>
+              <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", }, { pattern: '^0[0-9]{9}$', message: "SDT không đúng định dạng!" }]} >
                 <Input placeholder="Nhập số điện thoại ..." />
               </Form.Item>
               <Form.Item className="float-end">
@@ -274,7 +234,7 @@ function CustomerDetail() {
               </Form.Item>
             </Form>
           </Col>
-          <Col span={16} style={{ borderLeft: "1px solid #F0F0F0" }}>
+          <Col span={16} style={{ borderLeft: "1px solid #F0F0F0" }} >
             <Row>
               <Col span={24}>
                 <h6>Thông tin địa chỉ</h6>

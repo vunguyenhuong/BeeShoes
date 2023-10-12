@@ -49,12 +49,12 @@ function ItemAddress({ props, onSuccess }) {
             } onFinish={handleUpdate}>
                 <Row gutter={24}>
                     <Col span={12}>
-                        <Form.Item label={"Tên"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!", },]} >
+                        <Form.Item label={"Tên"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!", },{  pattern: /^[^\d!@#$%^&*()_+={}\\:;"'<>,.?/`~|-]+$/, message: "Tên phải là chữ"}]} >
                             <Input placeholder="Nhập tên ..." />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", },]} >
+                        <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", },{ pattern: '^0[0-9]{9}$', message: "SDT không đúng định dạng!" }]} >
                             <Input placeholder="Nhập số điện thoại ..." />
                         </Form.Item>
                     </Col>

@@ -34,6 +34,7 @@ function ItemAddress({ props, onSuccess }) {
             console.log(response);
             toast.success("Cập nhật địa chỉ thành công!");
             onSuccess();
+            
           })
           .catch((e) => {
             console.log(e);
@@ -164,7 +165,7 @@ function ItemAddress({ props, onSuccess }) {
             <div className="flex-grow-1">
               <span className="m-2">Địa chỉ mặc định</span>
               <Switch
-                // className={props.defaultAddress ? "bg-warning  " :  ""}    
+                className={""}
                 checkedChildren={<i class="fa-solid fa-check"></i>}
                 unCheckedChildren={<i class="fa-solid fa-xmark"></i>}
                 defaultChecked={props.defaultAddress}

@@ -38,4 +38,6 @@ public class AccountRequest extends PageableRequest {
     //    filter
     private Boolean deleted;
     private String roleName;
+    private Boolean status;
+
 }

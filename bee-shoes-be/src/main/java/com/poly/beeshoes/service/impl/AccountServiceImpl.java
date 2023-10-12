@@ -8,6 +8,7 @@ import com.poly.beeshoes.infrastructure.converter.AccountConvert;
 import com.poly.beeshoes.infrastructure.converter.AddressConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.infrastructure.request.AccountRequest;
+import com.poly.beeshoes.infrastructure.response.AccountResponse;
 import com.poly.beeshoes.repository.IAccountRepository;
 import com.poly.beeshoes.repository.IAddressRepository;
 import com.poly.beeshoes.repository.IRoleRepository;
@@ -38,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
     private CloudinaryUtils cloudinaryUtils;
 
     @Override
-    public PageableObject<Account> getAll(AccountRequest request) {
+    public PageableObject<AccountResponse> getAll(AccountRequest request) {
         Pageable pageable = PageRequest.of(request.getPage()-1, request.getSizePage());
         return new PageableObject<>(accountRepository.getAll(request, pageable));
     }

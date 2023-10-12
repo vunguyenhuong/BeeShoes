@@ -2,16 +2,17 @@ package com.poly.beeshoes.service;
 
 import com.poly.beeshoes.entity.Category;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
+import com.poly.beeshoes.infrastructure.request.CategoryRequest;
 import com.poly.beeshoes.infrastructure.response.CategoryResponse;
 
 public interface CategoryService {
-    PageableObject<CategoryResponse> getAll(String name, Integer page, Boolean status);
+    PageableObject<CategoryResponse> getAll(CategoryRequest request);
 
     Category getOne(Long id);
 
-    Category create(Category category);
+    Category create(CategoryRequest request);
 
-    Category update(Long id, Category category);
+    Category update(Long id, CategoryRequest request);
 
     Category delete(Long id);
 }

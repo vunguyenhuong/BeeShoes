@@ -16,8 +16,10 @@ public class AccountConvert {
     public Account convertRequestToEntity(AccountRequest request){
         return Account.builder()
                 .username(request.getUsername())
-                .name(request.getName()).gender(request.getGender())
-                .email(request.getEmail()).cccd(request.getCccd())
+                .name(request.getName())
+                .gender(request.getGender())
+                .email(request.getEmail())
+                .cccd(request.getCccd())
                 .phoneNumber(request.getPhoneNumber())
                 .birthday(request.getBirthday())
                 .build();

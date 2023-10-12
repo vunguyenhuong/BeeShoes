@@ -146,10 +146,10 @@ function CustomerDetail() {
           ]}
         />
         <Row gutter={24}>
-          <Col span={8}>
+          <Col span={8} className="shadow p-3 mb-5 bg-body rounded">
             <h6>Thông tin khách hàng</h6>
             <Divider />
-            <Form layout="vertical" form={form} onFinish={handleUpdate}>
+            <Form layout="vertical" form={form} onFinish={handleUpdate} >
               {previewUrl !== null ? (
                 <div className="text-center">
                   <img
@@ -274,7 +274,7 @@ function CustomerDetail() {
               </Form.Item>
             </Form>
           </Col>
-          <Col span={16} style={{ borderLeft: "1px solid #F0F0F0" }}>
+          <Col span={16} style={{ borderLeft: "1px solid #F0F0F0" }} >
             <Row>
               <Col span={24}>
                 <h6>Thông tin địa chỉ</h6>

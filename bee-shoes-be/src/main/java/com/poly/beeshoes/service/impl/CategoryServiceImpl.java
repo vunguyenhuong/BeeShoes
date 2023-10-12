@@ -1,24 +1,29 @@
 package com.poly.beeshoes.service.impl;
 
-import com.poly.beeshoes.entity.Brand;
 import com.poly.beeshoes.entity.Category;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
+import com.poly.beeshoes.infrastructure.converter.CategoryConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
+import com.poly.beeshoes.infrastructure.request.CategoryRequest;
 import com.poly.beeshoes.infrastructure.response.CategoryResponse;
 import com.poly.beeshoes.repository.ICategoryRepository;
 import com.poly.beeshoes.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private ICategoryRepository repository;
+    @Autowired
+    private CategoryConvert categoryConvert;
 
     @Override
-    public PageableObject<CategoryResponse> getAll(String name, Integer page, Boolean status) {
-        return new PageableObject<>(repository.getAll(name, status, PageRequest.of(page - 1, 5)));
+    public PageableObject<CategoryResponse> getAll(CategoryRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
+        return new PageableObject<>(repository.getAllCategory(request, pageable));
     }
 
     @Override
@@ -27,21 +32,25 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category create(Category category) {
-        if(repository.existsByNameIgnoreCaseAndNameNot(category.getName(),"")){
-            throw new RestApiException(category.getName() + " đã tồn tại!");
+    public Category create(CategoryRequest request) {
+        if (repository.existsByNameIgnoreCase(request.getName())) {
+            throw new RestApiException("Danh mục " + request.getName() + " đã tồn tại!");
         }
+        Category category = categoryConvert.convertRequestToEntity(request);
         return repository.save(category);
     }
 
     @Override
-    public Category update(Long id, Category category) {
-        Category old = repository.findById(id).get();
-        if(repository.existsByNameIgnoreCaseAndNameNot(category.getName(),old.getName())){
-            throw new RestApiException(category.getName() + " đã tồn tại!");
+    public Category update(Long id, CategoryRequest request) {
+        Category oldCategory = repository.findById(id).get();
+        if (repository.existsByNameIgnoreCase(request.getName())) {
+            if (oldCategory.getName().equals(request.getName())) {
+                return repository.save(categoryConvert.convertRequestToEntity(oldCategory, request));
+            }
+            throw new RestApiException("Danh mục  " + request.getName() + " đã tồn tại!");
+        } else {
+            return repository.save(categoryConvert.convertRequestToEntity(oldCategory, request));
         }
-        old.setName(category.getName());
-        return repository.save(old);
     }
 
     @Override

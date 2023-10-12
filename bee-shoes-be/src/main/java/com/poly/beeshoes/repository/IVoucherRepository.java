@@ -20,8 +20,21 @@ public interface IVoucherRepository extends JpaRepository<Voucher, Long> {
             v.min_bill_value AS minBillValue,
             v.status AS status
             FROM voucher v
-            WHERE (:#{#req.name} IS NULL OR :#{#req.name} = '' OR v.name LIKE %:#{#req.name}%)
+            WHERE (:#{#req.name} IS NULL OR :#{#req.name} = '' OR v.name LIKE %:#{#req.name}% OR v.code LIKE %:#{#req.name}%)
             AND (:#{#req.deleted} IS NULL OR v.deleted = :#{#req.deleted})
+            AND (:#{#req.status} IS NULL OR v.status = :#{#req.status})
+      
             """, nativeQuery = true)
     Page<VoucherResponse> getAllVoucher(@Param("req") VoucherRequest request, Pageable pageable);
+    @Query("""
+            SELECT a FROM Voucher a 
+            WHERE (:#{#req.name} IS NULL 
+            OR a.name LIKE %:#{#req.name}% OR a.code LIKE %:#{#req.name}%)
+                        
+            AND (:#{#req.deleted} IS NULL OR a.deleted = :#{#req.deleted})
+            AND (:#{#req.status} IS NULL OR a.status = :#{#req.status})
+            ORDER BY a.createAt DESC 
+            """)
+    Page<Voucher> getAll(@Param("req") VoucherRequest request, Pageable pageable);
+    Boolean existsByCode(String code);
 }

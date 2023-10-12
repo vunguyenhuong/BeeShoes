@@ -134,7 +134,7 @@ function AddStaff() {
             <Form.Item label={"Username"} name={"username"} rules={[{ required: true, message: "Username không được để trống!" },]}>
               <Input placeholder="Nhập username..." />
             </Form.Item>
-            <Form.Item label={"Tên nhân viên"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!" }]}>
+            <Form.Item label={"Tên nhân viên"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!" },{  pattern: /^[^\d!@#$%^&*()_+={}\\:;"'<>,.?/`~|-]+$/, message: "Tên phải là chữ"}]}>
               <Input placeholder="Nhập tên nhân viên..." />
             </Form.Item>
           </Col>
@@ -143,7 +143,7 @@ function AddStaff() {
             <Divider />
             <Row gutter={10}>
               <Col span={12}>
-                <Form.Item label={"Mã định danh"} name={"cccd"} rules={[{ required: true, message: "Mã định danh không được để trống!", },]}>
+              <Form.Item label={"Mã định danh (Số CMT/CCCD)"} name={"cccd"} rules={[{ required: true, message: "Mã định danh không được để trống!", },{ pattern: '^([0-9]{9}|[0-9]{12})$', message: "Mã định danh phải có 9 hoặc 12 kí tự!" }]}>
                   <Input placeholder="Nhập mã định danh..." />
                 </Form.Item>
               </Col>
@@ -166,7 +166,7 @@ function AddStaff() {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", },]} >
+                <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", },{ pattern: '^0[0-9]{9}$', message: "SDT không đúng định dạng!" }]} >
                   <Input placeholder="Nhập số điện thoại ..." />
                 </Form.Item>
               </Col>

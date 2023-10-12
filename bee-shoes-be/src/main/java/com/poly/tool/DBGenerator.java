@@ -11,6 +11,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Date;
 
 @SpringBootApplication
@@ -298,8 +300,8 @@ public class DBGenerator implements CommandLineRunner {
         Voucher voucher1 = new Voucher();
         voucher1.setName("Voucher for you");
         voucher1.setCode("VC01");
-        voucher1.setStartDate(new Date(123, 9, 10));
-        voucher1.setEndDate(new Date(133, 9, 10));
+        voucher1.setStartDate(LocalDateTime.of(2023, Month.OCTOBER, 10, 23, 58, 0));
+        voucher1.setEndDate(LocalDateTime.of(2033, Month.OCTOBER, 10, 23, 58, 0));
         voucher1.setQuantity(25);
         voucher1.setPercentReduce(5.5F);
         voucher1.setMinBillValue(BigDecimal.valueOf(1000));

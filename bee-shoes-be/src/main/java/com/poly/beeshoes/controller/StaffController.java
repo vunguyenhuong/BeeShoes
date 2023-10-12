@@ -4,6 +4,7 @@ import com.poly.beeshoes.entity.Account;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.request.AccountRequest;
+import com.poly.beeshoes.infrastructure.response.AccountResponse;
 import com.poly.beeshoes.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class StaffController {
     private AccountService accountService;
 
     @GetMapping
-    public PageableObject<Account> getAll(AccountRequest request) {
+    public PageableObject<AccountResponse> getAll(AccountRequest request) {
         request.setRoleName(ROLE);
         return accountService.getAll(request);
     }

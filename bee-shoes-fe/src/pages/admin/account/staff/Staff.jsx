@@ -11,7 +11,7 @@ function Staff() {
   const [totalPages, setTotalPages] = useState(0);
 
   const [searchValue, setSearchValue] = useState("");
-  const [staffStatus, setStaffStatus] = useState("");
+  const [staffStatus, setStaffStatus] = useState(null);
   const [pageSize, setPageSize] = useState(5);
   useEffect(() => {
     request.get("/staff", {
@@ -19,7 +19,7 @@ function Staff() {
         name: searchValue,
         page: currentPage,
         sizePage: pageSize,
-        deleted: staffStatus,
+        status: staffStatus,
       },
     }).then(response => {
       setStaffList(response.data);
@@ -75,6 +75,12 @@ function Staff() {
 
   const columns = [
     {
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
+      className: "text-center",
+    },
+    {
       title: 'Tên',
       dataIndex: 'name',
       key: 'name',
@@ -121,20 +127,20 @@ function Staff() {
     <BaseUI>
       <h6>Danh sách nhân viên</h6>
       <Row gutter={10}>
-        <Col span={12}>
+        <Col span={15}>
           <label className="mb-1">Nhập tên, email, số điện thoại</label>
           <Input
             onChange={(event) => setSearchValue(event.target.value)}
             placeholder="Tìm kiếm nhân viên theo tên, email, sdt ..."
           />
         </Col>
-        <Col span={8}>
+        <Col span={5}>
           <div className="mb-1">Trạng thái</div>
           <Radio.Group
-            defaultValue={""}
+            defaultValue={null}
             onChange={(event) => setStaffStatus(event.target.value)}
           >
-            <Radio value={""}>Tất cả</Radio>
+            <Radio value={null}>Tất cả</Radio>
             <Radio value={false}>Đang làm</Radio>
             <Radio value={true}>Đã nghỉ</Radio>
           </Radio.Group>

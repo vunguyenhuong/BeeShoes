@@ -135,20 +135,38 @@ function ShoeInfo() {
               <Tooltip placement="top" title="Xóa">
                 <Button type="primary" className="bg-danger me-1"><i className="fas fa-trash"></i></Button>
               </Tooltip>
-              {/* <UpdateShoe props={product} onSuccess={() => loadData(id)} /> */}
+              <UpdateShoe props={product} onSuccess={() => { loadData(id); loadShoeDetail(id, currentPage, pageSize) }} />
             </div>
           </Col>
           <Col xl={8}>
-            {/* <p><strong>Danh mục: </strong> {product.category}</p>
-            <p><strong>Thương hiệu: </strong> {product.brand}</p> */}
+            <ul className="list-unstyled">
+              <li>
+                Danh mục: <span className="float-end fw-semibold">{product.category.name}</span>
+              </li>
+              <li>
+                Thương hiệu: <span className="float-end fw-semibold">{product.brand.name}</span>
+              </li>
+            </ul>
           </Col>
           <Col xl={8}>
-            {/* <p><strong>Người tạo: </strong> {product.createBy}</p>
-            <p><strong>Người chỉnh sửa: </strong> {product.updateBy}</p> */}
+            <ul className="list-unstyled">
+              <li>
+                Người tạo: <span className="float-end fw-semibold">{product.createBy === null ? 'abc' : product.createBy}</span>
+              </li>
+              <li>
+                Người chỉnh sửa: <span className="float-end fw-semibold">{product.updateBy}</span>
+              </li>
+            </ul>
           </Col>
           <Col xl={8}>
-            {/* <p><strong>Ngày tạo: </strong> <FormatDate date={product.createAt} /></p>
-            <p><strong>Ngày cập nhật cuối: </strong> <FormatDate date={product.updateAt} /></p> */}
+            <ul className="list-unstyled">
+              <li>
+                Ngày tạo: <span className="float-end fw-semibold"><FormatDate date={product.createAt} /></span>
+              </li>
+              <li>
+                Ngày cập nhật cuối: <span className="float-end fw-semibold"><FormatDate date={product.updateAt} /></span>
+              </li>
+            </ul>
           </Col>
           <Divider />
         </Row>

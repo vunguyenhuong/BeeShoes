@@ -22,9 +22,9 @@ function UpdateShoeDetail({ props, onSuccess }) {
 
     const showModal = () => {
         setIsModalOpen(true);
-        setSearchSize(props.size.name);
-        setSearchColor(props.color.name);
-        setSearchSole(props.sole.name);
+        setSearchSize(props.size);
+        setSearchColor(props.color);
+        setSearchSole(props.sole);
         form.setFieldsValue({
             size: props.size.id,
             color: props.color.id,
@@ -84,7 +84,7 @@ function UpdateShoeDetail({ props, onSuccess }) {
             <Tooltip placement="top" title="Chỉnh sửa">
                 <Button type="text" onClick={showModal}><i className="fas fa-edit text-warning"></i></Button>
             </Tooltip>
-            <Modal title={`${props.shoe.name} [${props.size.name} - ${props.color.name}]`} open={isModalOpen} onCancel={handleCancel} footer="" width={800}>
+            <Modal title={props.name} open={isModalOpen} onCancel={handleCancel} footer="" width={800}>
                 <Form layout='vertical' form={form}>
                     <Row gutter={24}>
                         <Col xl={8}>
@@ -171,9 +171,9 @@ function UpdateShoeDetail({ props, onSuccess }) {
                         <Col xl={18}>
                             Hình ảnh sản phẩm:
                             <div className="d-flex flex-wrap">
-                                {props.images.map((image, index) => (
+                                {props.images.split(',').map((image, index) => (
                                     <div className="position-relative me-2 mt-2">
-                                        <img src={image.name} alt="images" width={100} height={100} className="object-fit-cover border border-warning" />
+                                        <img src={image} alt="images" width={100} height={100} className="object-fit-cover border border-warning" />
                                         <div className="position-absolute end-0 top-0">
                                             <button type="button" class="btn btn-sm border-0 text-danger">
                                                 <i className="fas fa-trash"></i>

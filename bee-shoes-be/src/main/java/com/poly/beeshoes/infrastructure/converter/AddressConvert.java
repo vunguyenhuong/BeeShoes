@@ -15,7 +15,7 @@ public class AddressConvert {
     private IAccountRepository accountRepository;
     public Address convertRequestToEntity(AddressRequest request) {
         return Address.builder()
-                .account(accountRepository.findById(request.getAccount()).get())
+                .account(request.getAccount() != null ? accountRepository.findById(request.getAccount()).orElse(null) : null)
                 .name(request.getName())
                 .defaultAddress(false)
                 .ward(request.getWard())

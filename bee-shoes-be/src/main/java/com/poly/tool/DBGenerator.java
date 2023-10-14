@@ -191,6 +191,11 @@ public class DBGenerator implements CommandLineRunner {
         images2.setShoeDetail(shoeDetail2);
         images2.setId(imagesRepository.save(images2).getId());
 
+        Images images3 = new Images();
+        images3.setName("http://res.cloudinary.com/beeshoes/image/upload/v1696179651/account/dkx9yf7dfvbammb5ipg3.jpg");
+        images3.setShoeDetail(shoeDetail3);
+        images3.setId(imagesRepository.save(images3).getId());
+
         // Cart
         // CartDetail
 

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class ShoeDetailRequest extends PageableRequest {
     private Long id;
     private String code;

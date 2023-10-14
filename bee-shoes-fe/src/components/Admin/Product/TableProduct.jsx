@@ -167,8 +167,8 @@ function TableProduct({ props, handleChange }) {
                                 <Input defaultValue={option.weight} onChange={(value) =>
                                   handleChangeWeight(value, key, idx)} />
                               </td>
-                              <td>{option.shoe.category.name}</td>
-                              <td>{option.shoe.brand.name}</td>
+                              <td>{option.shoe.category}</td>
+                              <td>{option.shoe.brand}</td>
                               <td>{option.sole == null ? "" : option.sole.name}</td>
                               <td>
                                 <button

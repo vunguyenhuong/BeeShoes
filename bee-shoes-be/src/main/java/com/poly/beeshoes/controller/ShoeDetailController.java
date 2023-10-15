@@ -35,8 +35,9 @@ public class ShoeDetailController {
     }
 
     @PostMapping
-    public ResponseObject create(@RequestBody ShoeDetailRequest request) {
-        return new ResponseObject(shoeDetailService.create(request));
+    public ResponseObject create(@RequestBody List<ShoeDetailRequest> list) {
+        list.forEach(request -> System.out.println(request));
+        return new ResponseObject(shoeDetailService.create(list));
     }
 
     @PutMapping("/{id}")

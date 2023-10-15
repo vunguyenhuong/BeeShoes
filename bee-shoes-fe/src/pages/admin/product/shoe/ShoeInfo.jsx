@@ -66,6 +66,11 @@ function ShoeInfo() {
 
   const columns = [
     {
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
+    },
+    {
       title: 'Tên',
       dataIndex: 'name',
       key: 'name',

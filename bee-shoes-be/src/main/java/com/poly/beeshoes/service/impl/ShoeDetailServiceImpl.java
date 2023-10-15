@@ -49,25 +49,28 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
 
     @Override
     @Transactional
-    public ShoeDetail create(ShoeDetailRequest request) {
-        ShoeDetail convert = shoeDetailConvert.convertRequestToEntity(request);
-        ShoeDetail check = shoeDetailRepository.findByShoeIdAndColorIdAndSizeId(request.getShoe(), request.getColor(), request.getSize());
-        if (check!= null) {
-            check.setQuantity(request.getQuantity());
-            shoeDetailRepository.save(check);
-        }
-        ShoeDetail shoeDetailSave = shoeDetailRepository.save(convert);
-        Shoe shoe = shoeDetailSave.getShoe();
-        shoe.setUpdateAt(LocalDateTime.now());
-        shoeRepository.save(shoe);
-        if(request.getListImages().size()>=5)
-            throw new RestApiException("Chỉ được thêm tối đa 5 hình ảnh!");
-        if (shoeDetailSave != null) {
-            for (String x : request.getListImages()) {
-                imagesRepository.save(Images.builder().shoeDetail(shoeDetailSave).name(x).build());
+    public String create(List<ShoeDetailRequest> list) {
+        for (ShoeDetailRequest request: list) {
+            ShoeDetail convert = shoeDetailConvert.convertRequestToEntity(request);
+            ShoeDetail check = shoeDetailRepository.findByShoeIdAndColorIdAndSizeId(request.getShoe(), request.getColor(), request.getSize());
+            if (check!= null) {
+                check.setQuantity(check.getQuantity() + request.getQuantity());
+                shoeDetailRepository.save(check);
+            }else {
+                ShoeDetail shoeDetailSave = shoeDetailRepository.save(convert);
+                Shoe shoe = shoeDetailSave.getShoe();
+                shoe.setUpdateAt(LocalDateTime.now());
+                shoeRepository.save(shoe);
+                if(request.getListImages().size()>=5)
+                    throw new RestApiException("Chỉ được thêm tối đa 5 hình ảnh!");
+                if (shoeDetailSave != null) {
+                    for (String x : request.getListImages()) {
+                        imagesRepository.save(Images.builder().shoeDetail(shoeDetailSave).name(x).build());
+                    }
+                }
             }
         }
-        return shoeDetailSave;
+        return "Thêm thành công!";
     }
 
     @Override

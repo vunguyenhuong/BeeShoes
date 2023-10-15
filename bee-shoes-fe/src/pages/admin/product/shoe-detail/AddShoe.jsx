@@ -67,31 +67,32 @@ function AddProduct() {
     });
   }, [searchProduct])
   useEffect(() => {
-    request.get("/size", { params: { name: searchSize, status: false }}).then((response) => {
+    request.get("/size", { params: { name: searchSize, status: false } }).then((response) => {
       setSize(response.data);
     }).catch((error) => {
       console.log(error);
     });
   }, [searchSize])
   useEffect(() => {
-    request.get("/color", { params: { name: searchColor, status: false  }}).then((response) => {
+    request.get("/color", { params: { name: searchColor, status: false } }).then((response) => {
       setColor(response.data);
     }).catch((error) => {
       console.log(error);
     });
   }, [searchColor])
   useEffect(() => {
-    request.get("/sole", { params: { name: searchSole, status: false }}).then((response) => {
+    request.get("/sole", { params: { name: searchSole, status: false } }).then((response) => {
       setSole(response.data);
     }).catch((error) => {
       console.log(error);
     });
   }, [searchSole])
 
-  const handleCreate = () => {
-    console.log(productDetail)
+  const handleCreate = async () => {
+    // console.log(productDetail)
+    const data = [];
     productDetail.forEach((item) => {
-      const data = {
+      const x = {
         shoe: item.shoe.id,
         color: item.color.id,
         size: item.size.id,
@@ -101,14 +102,16 @@ function AddProduct() {
         weight: item.weight,
         listImages: item.images
       }
-      request.post('/shoe-detail', data).then(response => {
-        console.log(response);
-      }).catch(e => {
-        console.log(e);
-      })
+      data.push(x);
     })
-    toast.success("Thêm thành công!");
-    navigate("/admin/product");
+    await request.post('/shoe-detail', data).then(response => {
+      console.log(response);
+    }).catch(e => {
+      console.log(e);
+    })
+    console.log(data);
+    // toast.success("Thêm thành công!");
+    // navigate("/admin/product");
   }
 
   return (

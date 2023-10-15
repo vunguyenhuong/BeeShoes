@@ -3,19 +3,21 @@ import { publicRouters } from "./route";
 import { FloatButton } from "antd";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import BaseUI from "./layouts/admin/BaseUI";
+import CoreUI from "./layouts/admin/CoreUI";
 function App() {
   return (
     <BrowserRouter>
-    <Routes>
-      {publicRouters.map((route, index) => {
-        const Page = route.element
-        return <Route exact key={index} path={route.path} element={<Page />}></Route>
-      })
-      }
-    </Routes>
-    <FloatButton.BackTop/>
-    <ToastContainer autoClose={3000}/>
-  </BrowserRouter>
+      <Routes>
+        {publicRouters.map((route, index) => {
+          const Page = route.element
+          return <Route exact key={index} path={route.path} element={<CoreUI><Page /></CoreUI>}></Route>
+        })
+        }
+      </Routes>
+      <FloatButton.BackTop />
+      <ToastContainer autoClose={3000} />
+    </BrowserRouter>
   );
 }
 

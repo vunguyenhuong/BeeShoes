@@ -26,8 +26,8 @@ function ImageModal({ colorName, sttModal, handleChange }) {
   const handleImageSelect = (event) => {
     const imageUrl = event.target.value;
     if (event.target.checked) {
-      if (selectedImages.length >= 5) {
-        toast.error("Chỉ được chọn tối đa 5 hình ảnh!");
+      if (selectedImages.length >= 3) {
+        toast.error("Chỉ được chọn tối đa 3 hình ảnh!");
         event.target.checked = false;
       } else {
         setSelectedImages((prevSelectedImages) => [

@@ -3,7 +3,7 @@ const sidebarData = [
         "key": "tongQuan",
         "title": "Tổng quan",
         "icon": "fa-gauge",
-        "path": "/admin/product-list"
+        "path": "/admin/product"
     },
     {
         "key": "qlgiaodich",
@@ -93,6 +93,12 @@ const sidebarData = [
                 "path": "/admin/customer"
             }
         ]
+    },
+    {
+        "key": "qlkhuyenmai",
+        "title": "Quản lý khuyến mại",
+        "icon": "fa-gift",
+        "path": "/admin/promotion"
     },
     {
         "key": "qlVoucher",

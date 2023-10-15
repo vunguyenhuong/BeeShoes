@@ -23,26 +23,21 @@ import Color from './pages/admin/product/attribute/Color';
 import Sole from './pages/admin/product/attribute/Sole';
 import Brand from './pages/admin/product/attribute/Brand';
 import Category from './pages/admin/product/attribute/Category';
+import Promotion from './pages/admin/promotion/Promotion';
 
 
 const publicRouters = [
     { path: "/", element: BaseUI },
-    // { path: "/admin/dashboard", element: Dashboard },
-    // { path: "/admin/profile", element: Profile },
-    // { path: "/admin/thong-ke", element: Dashboard },
     { path: "/admin/order", element: Order },
     { path: "/admin/bill", element: Bill },
     { path: "/admin/bill/:id", element: BillDetail },
-    // { path: "/admin/bill/create", element: CreateBill },
     { path: "/admin/product", element: Shoe },
     { path: "/admin/product/add", element: AddProduct },
     { path: "/admin/product/attribute", element: ProductAttribute },
     { path: "/admin/product/:id", element: ShoeInfo },
     { path: "/admin/voucher", element: Voucher },
-    { path: "/admin/voucher", element: Voucher },
     { path: "/admin/voucher/add", element: AddVoucherForm },
     { path: "/admin/voucher/:id", element: VoucherDetail },
-    { path: "/admin/voucher/:id", element: Voucher },
     { path: "/admin/staff", element: Staff },
     { path: "/admin/staff/add", element: AddStaff },
     { path: "/admin/staff/:id", element: StaffDetail },
@@ -57,6 +52,8 @@ const publicRouters = [
     { path: "/admin/sole", element: Sole },
     { path: "/admin/brand", element: Brand },
     { path: "/admin/category", element: Category },
+
+    { path: "/admin/promotion", element: Promotion },
     // { path: '*', element: NotFound}
 ];
 

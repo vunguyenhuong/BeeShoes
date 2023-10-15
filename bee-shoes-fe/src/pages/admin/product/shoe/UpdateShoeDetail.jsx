@@ -3,9 +3,9 @@ import { Option } from 'antd/es/mentions';
 import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 import AddProperties from '~/components/Admin/Product/AddProperties';
 import ImageModalUpdate from '~/components/Admin/Product/ImageModalUpdate';
+import * as format from '~/utils/format';
 import * as request from "~/utils/httpRequest";
 
 function UpdateShoeDetail({ props, onSuccess }) {
@@ -26,27 +26,28 @@ function UpdateShoeDetail({ props, onSuccess }) {
         setSearchColor(props.color);
         setSearchSole(props.sole);
         form.setFieldsValue({
-            size: props.size.id,
-            color: props.color.id,
-            sole: props.sole.id,
+            size: props.size,
+            color: props.color,
+            sole: props.sole,
             quantity: props.quantity,
-            price: props.price,
+            price: format.formatCurrency(props.price),
             weight: props.weight
         })
     };
     const handleOk = (data) => {
         console.log(data);
-        request.put(`/shoe/${props.id}`, data).then(response => {
-            toast.success('Cập nhật thành công!');
-            setIsModalOpen(false);
-            onSuccess();
-        }).catch(e => {
-            console.log(e)
-            if (e.response.status === 500) {
-                toast.error(e.response.data);
-            }
-            toast.error(e.response.data.message);
-        })
+
+        // request.put(`/shoe/${props.id}`, data).then(response => {
+        //     toast.success('Cập nhật thành công!');
+        //     setIsModalOpen(false);
+        //     onSuccess();
+        // }).catch(e => {
+        //     console.log(e)
+        //     if (e.response.status === 500) {
+        //         toast.error(e.response.data);
+        //     }
+        //     toast.error(e.response.data.message);
+        // })
         // setIsModalOpen(false);
     };
     const handleCancel = () => {
@@ -84,8 +85,12 @@ function UpdateShoeDetail({ props, onSuccess }) {
             <Tooltip placement="top" title="Chỉnh sửa">
                 <Button type="text" onClick={showModal}><i className="fas fa-edit text-warning"></i></Button>
             </Tooltip>
-            <Modal title={props.name} open={isModalOpen} onCancel={handleCancel} footer="" width={800}>
-                <Form layout='vertical' form={form}>
+            <Modal title={props.name} open={isModalOpen} onCancel={handleCancel} footer={
+                <>
+                    <Button type='primary' className='bg-warning' form={form}>Cập nhật</Button>
+                </>
+            } width={800}>
+                <Form layout='vertical' form={form} onFinish={handleOk}>
                     <Row gutter={24}>
                         <Col xl={8}>
                             <Form.Item label={"Kích cỡ"} name={"size"} rules={[{ required: true, message: "Kích cỡ không được để trống!" }]}>

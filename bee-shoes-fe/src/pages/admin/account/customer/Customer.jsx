@@ -84,14 +84,14 @@ function Customer() {
     <BaseUI>
       <h6>Danh sách khách hàng</h6>
       <Row gutter={10}>
-        <Col span={15}>
+        <Col span={10}>
           <label className="mb-1">Nhập tên, email, số điện thoại</label>
           <Input
             onChange={(event) => setSearchValue(event.target.value)}
             placeholder="Tìm kiếm khách hàng theo tên, email, sdt ..."
           />
         </Col>
-        <Col span={5} className="text-nowrap">
+        <Col span={10} className="text-nowrap">
           <div className="mb-1">Trạng thái</div>
           <Radio.Group
             defaultValue={null} className="align-middle"

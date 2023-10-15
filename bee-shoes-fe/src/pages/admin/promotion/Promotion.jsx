@@ -96,7 +96,7 @@ function Promotion() {
 
                 <Col span={4}>
                     <div className="mb-1">‍</div>
-                    <Link to={"/admin/promotion/add"}>
+                    <Link to={"/admin/promotion/create"}>
                         <Button
                             type="primary"
                             className="bg-warning"
@@ -120,6 +120,7 @@ function Promotion() {
                         // setPageSize(pageSize);
                     },
                 }} />
+
         </>
     )
 }

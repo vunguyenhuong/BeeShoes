@@ -81,7 +81,7 @@ function AddCustomer() {
             }
           }).catch((e) => {
             console.log(e);
-            toast.error(e.response.data);
+            toast.error(e.response.id);
           });
         },
       });

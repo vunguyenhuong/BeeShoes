@@ -146,7 +146,7 @@ function CustomerDetail() {
           ]}
         />
         <Row gutter={24}>
-          <Col span={8} className="shadow p-3 mb-5 bg-body rounded">
+          <Col span={8} >
             <h6>Thông tin khách hàng</h6>
             <Divider />
             <Form layout="vertical" form={form} onFinish={handleUpdate} >

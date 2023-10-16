@@ -43,7 +43,6 @@ function CreateAddressModal({ idCustomer, onSuccess }) {
           .then((response) => {
             form.resetFields();
             setIsModalAddOpen(false);
-            console.log(response);
             toast.success("Thêm mới thành công!");
             onSuccess();
           })
@@ -76,8 +75,6 @@ function CreateAddressModal({ idCustomer, onSuccess }) {
         </span>
       </div>
 
-       
-
       <Modal
         centered
         title="Thêm địa chỉ"
@@ -85,55 +82,59 @@ function CreateAddressModal({ idCustomer, onSuccess }) {
         onOk={handleAdd}
         onCancel={handleCancelAdd}
         footer=""
-        width={500}
+        width={800}
       >
         <Form onFinish={handleAdd} layout="vertical" form={form}>
-          <Form.Item
-            label={"Tên"}
-            name={"name"}
-            rules={[{ required: true, message: "Tên không được để trống!" }]}
-          >
-            <Input placeholder="Nhập tên người nhận..." />
-          </Form.Item>
-
-          <Form.Item
-            label={"Số điện thoại"}
-            name={"phoneNumber"}
-            rules={[
-              {
-                required: true,
-                message: "Số điện thoại không được để trống!",
-              },
-            ]}
-          >
-            <Input placeholder="Nhập số điện thoại..." />
-          </Form.Item>
-          <GHNInfo
-            dataAddress={setDataAddress}
-            distr={autoFillAddress.district}
-            prov={autoFillAddress.province}
-            war={autoFillAddress.ward}
-          />
-
-          <Form.Item
-            label={"Địa chỉ cụ thể"}
-            name={"specificAddress"}
-            rules={[
-              {
-                required: true,
-                message: "Địa chỉ cụ thể không được để trống!",
-              },
-            ]}
-          >
-            <Input placeholder="Nhập địa chỉ cụ thể ..." />
-          </Form.Item>
-          {/* <Form.Item name={"defaultAddress"}>
-            <Switch defaultChecked={false} className="me-2 " />
-            Địa chỉ mặc định
-          </Form.Item> */}
+          <Row gutter={10}>
+            <Col xl={12}>
+              <Form.Item
+                label={"Tên"}
+                name={"name"}
+                rules={[
+                  { required: true, message: "Tên không được để trống!" },
+                ]}
+              >
+                <Input placeholder="Nhập tên người nhận..." />
+              </Form.Item>
+            </Col>
+            <Col xl={12}>
+              <Form.Item
+                label={"Số điện thoại"}
+                name={"phoneNumber"}
+                rules={[
+                  {
+                    required: true,
+                    message: "Số điện thoại không được để trống!",
+                  },
+                ]}
+              >
+                <Input placeholder="Nhập số điện thoại..." />
+              </Form.Item>
+            </Col>
+            <Col xl={24}>
+              <Form.Item
+                label={"Địa chỉ cụ thể"}
+                name={"specificAddress"}
+                rules={[
+                  {
+                    required: true,
+                    message: "Địa chỉ cụ thể không được để trống!",
+                  },
+                ]}
+              >
+                <Input placeholder="Nhập địa chỉ cụ thể ..." />
+              </Form.Item>
+            </Col>
+            <GHNInfo
+              dataAddress={setDataAddress}
+              distr={autoFillAddress.district}
+              prov={autoFillAddress.province}
+              war={autoFillAddress.ward}
+            />
+          </Row>
 
           <div className="d-flex justify-content-end">
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" className="bg-success">
               <i className="fas fa-plus-circle me-1"></i> Thêm
             </Button>
           </div>

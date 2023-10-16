@@ -80,7 +80,8 @@ function AddressCustomerDetail() {
         request
           .post("/address", data)
           .then((response) => {
-            loadData(id, 1, pageSize);
+            setCurrentPage(1);
+            loadData(id, currentPage, pageSize);
             form.resetFields();
             toast.success("Thêm mới thành công!");
           })

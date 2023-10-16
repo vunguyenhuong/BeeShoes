@@ -15,18 +15,15 @@ import {
 import React, { useEffect, useState } from "react";
 import * as request from "~/utils/httpRequest";
 import { FaHome } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import FormatCurrency from "~/utils/FormatCurrency";
+import TableShoeDetail from "./TableShoeDetail";
+import TableShoe from "./TableShoe";
 const { RangePicker } = DatePicker;
 
 function AddPromotion() {
   const [form] = Form.useForm();
   const [discountType, setDiscountType] = useState(true);
-  const [productList, setProductList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
-  const [listProductDetail, setListProductDetail] = useState([]);
+  const [idShoe, setIdShoe] = useState(1);
+
 
   const handleSwitchChange = (checked) => {
     setDiscountType(checked ? true : false);
@@ -44,80 +41,9 @@ function AddPromotion() {
   };
 
   useEffect(() => {
-    loadShoe();
-  }, []);
 
-  const loadShoe = () => {
-    request
-      .get("/shoe", {
-        // params: { name: searchValue, page: currentPage, sizePage: pageSize, category: selectedCate, brand: selectedBrand, status: statusProduct },
-      })
-      .then((response) => {
-        setProductList(response.data);
-        setTotalPages(response.totalPages);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  });
 
-  const SP = [
-    {
-      title: <Checkbox />,
-      key: "checkbox",
-      render: (x) => <Checkbox />,
-    },
-    {
-      title: "#",
-      dataIndex: "index",
-      key: "index",
-    },
-    {
-      title: "Tên",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Danh mục",
-      dataIndex: "category",
-      key: "category",
-    },
-    {
-      title: "Thương hiệu",
-      dataIndex: "brand",
-      key: "brand",
-    },
-  ];
-
-  const CTSP = [
-    {
-      title: <Checkbox />,
-      key: "checkbox",
-      render: (x) => <Checkbox />,
-    },
-    {
-      title: "#",
-      dataIndex: "index",
-      key: "index",
-    },
-    {
-      title: "Tên",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Số lượng",
-      dataIndex: "quantity",
-      key: "quantity",
-      render: (x) => (x == null ? 0 : x),
-    },
-    {
-      title: "Đơn giá",
-      dataIndex: "price",
-      key: "price",
-      render: (x) => <FormatCurrency value={x} />,
-    },
-  ];
 
   return (
     <>
@@ -136,7 +62,7 @@ function AddPromotion() {
       <Form onFinish={handleCreatePromotion} layout="vertical" form={form}>
         <Row gutter={16}>
           <Col xl={24}>
-            <h6>Thông tin khuyến mại</h6>
+            <h6>Thêm khuyến mại</h6>
             <Divider />
           </Col>
           <Col xl={12}>
@@ -251,45 +177,13 @@ function AddPromotion() {
           <Col xl={12}>
             <h6>Danh sách sản phẩm</h6>
             <Divider />
-            <Table
-              dataSource={productList}
-              columns={SP}
-              className="mt-3"
-              pagination={{
-                showSizeChanger: true,
-                current: currentPage,
-                pageSize: pageSize,
-                pageSizeOptions: [5, 10, 20, 50, 100],
-                showQuickJumper: true,
-                total: totalPages * pageSize,
-                onChange: (page, pageSize) => {
-                  setCurrentPage(page);
-                  setPageSize(pageSize);
-                },
-              }}
-            />
+            <TableShoe />
           </Col>
 
           <Col xl={12}>
             <h6>Chi tiết sản phẩm</h6>
             <Divider />
-            <Table
-              dataSource={listProductDetail}
-              columns={CTSP}
-              className="mt-3"
-              pagination={{
-                showSizeChanger: true,
-                current: currentPage,
-                pageSize: pageSize,
-                pageSizeOptions: [5, 10, 20, 50, 100],
-                showQuickJumper: true,
-                total: totalPages * pageSize,
-                onChange: (page, pageSize) => {
-                  setCurrentPage(page);
-                  setPageSize(pageSize);
-                },
-              }}
-            />
+            <TableShoeDetail idShoe={""}/>
           </Col>
           <Divider />
           <Col xl={24}>

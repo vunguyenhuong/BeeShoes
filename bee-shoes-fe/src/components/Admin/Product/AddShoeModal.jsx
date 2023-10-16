@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import SelectField from "./SelectField";
 import * as request from "~/utils/httpRequest";
 import { toast } from "react-toastify";
-import swal from "sweetalert";
-import { Button, Col, Collapse, Form, Input, Modal, Row, Select, message } from "antd";
-import { FaPlus, FaPlusCircle } from "react-icons/fa";
+import { Button, Form, Input, Modal, Select, Space } from "antd";
+import { FaPlusCircle } from "react-icons/fa";
 import { Option } from "antd/es/mentions";
-import { Link } from "react-router-dom";
+
+import AddProperties from "./AddProperties";
 
 
 function AddShoeModal({ onAddSuccess }) {
@@ -23,10 +22,11 @@ function AddShoeModal({ onAddSuccess }) {
   const handleOk = (data) => {
     console.log(data);
     request.post('/shoe', data).then(response => {
-
+      toast.success("Thêm thành công!");
+      setIsModalOpen(false);
     }).catch(e => {
       console.log(e)
-      if(e.response.status===500){
+      if (e.response.status === 500) {
         toast.error(e.response.data);
       }
       toast.error(e.response.data.message);
@@ -60,7 +60,16 @@ function AddShoeModal({ onAddSuccess }) {
             <Input placeholder="Nhập tên giày..." />
           </Form.Item>
           <Form.Item label={"Danh mục"} name={"category"} rules={[{ required: true, message: "Danh mục không được để trống!" }]}>
-            <Select className="me-2" showSearch optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchCate} placeholder="Chọn danh mục...">
+            <Select className="me-2" showSearch optionFilterProp="children"
+              style={{ width: '100%' }} onSearch={setSearchCate} placeholder="Chọn danh mục..."
+              dropdownRender={(menu) => (
+                <>
+                  {menu}
+                  <Space className="my-2 ms-2">
+                    <AddProperties placeholder={"danh mục"} name={"category"} />
+                  </Space>
+                </>
+              )}>
               <Option value="">-- Chọn danh mục --</Option>
               {cateList.map((item) => (
                 <Option key={item.id} value={item.id}>
@@ -70,7 +79,16 @@ function AddShoeModal({ onAddSuccess }) {
             </Select>
           </Form.Item>
           <Form.Item label={"Thương hiệu"} name={"brand"} rules={[{ required: true, message: "Thương hiệu không được để trống!" }]}>
-            <Select className="me-2" showSearch optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchBrand} placeholder="Chọn thương hiệu...">
+            <Select className="me-2" showSearch optionFilterProp="children"
+              style={{ width: '100%' }} onSearch={setSearchBrand} placeholder="Chọn thương hiệu..."
+              dropdownRender={(menu) => (
+                <>
+                  {menu}
+                  <Space className="my-2 ms-2">
+                    <AddProperties placeholder={"thương hiệu"} name={"brand"} />
+                  </Space>
+                </>
+              )}>
               <Option value="">-- Chọn thương hiệu --</Option>
               {brandList.map((item) => (
                 <Option key={item.id} value={item.id}>

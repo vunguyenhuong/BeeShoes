@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Modal, QRCode, Row, Select, Space, Tooltip } from 'antd'
+import { Button, Col, Form, Input, InputNumber, Modal, QRCode, Row, Select, Space, Tooltip } from 'antd'
 import { Option } from 'antd/es/mentions';
 import React from 'react'
 import { useEffect } from 'react';
@@ -157,7 +157,22 @@ function UpdateShoeDetail({ props, onSuccess }) {
                         </Col>
                         <Col xl={8}>
                             <Form.Item label={"Đơn giá"} name={"price"} rules={[{ required: true, message: "Đơn giá không được để trống!" }]}>
-                                <Input placeholder='Nhập đơn giá...' />
+                                {/* <Input placeholder='Nhập đơn giá...' /> */}
+                                <InputNumber
+                                    className='w-100'
+                                    formatter={(value) =>
+                                        ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                    }
+                                    parser={(value) =>
+                                        value !== null && value !== undefined
+                                            ? value.replace(/\$\s?|(,*)/g, "")
+                                            : ""
+                                    }
+                                    controls={false}
+                                    min={0}
+                                    // suffix="VNĐ"
+                                    placeholder="Nhập giá trị đơn tối thiểu..."
+                                />
                             </Form.Item>
                         </Col>
                         <Col xl={8}>

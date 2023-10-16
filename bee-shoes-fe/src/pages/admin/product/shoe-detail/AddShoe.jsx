@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-import { Breadcrumb, Button, Col, Collapse, Row, Select, Space } from "antd";
+import { Breadcrumb, Button, Col, Collapse, Modal, Row, Select, Space } from "antd";
 import { Option } from "antd/es/mentions";
 import React, { useEffect, useState } from "react";
 import { FaHome } from "react-icons/fa";
@@ -88,7 +88,7 @@ function AddProduct() {
     });
   }, [searchSole])
 
-  const handleCreate = async () => {
+  const handleCreate = () => {
     // console.log(productDetail)
     const data = [];
     productDetail.forEach((item) => {
@@ -104,14 +104,21 @@ function AddProduct() {
       }
       data.push(x);
     })
-    await request.post('/shoe-detail', data).then(response => {
-      console.log(response);
-    }).catch(e => {
-      console.log(e);
-    })
-    console.log(data);
-    // toast.success("Thêm thành công!");
-    // navigate("/admin/product");
+    Modal.confirm({
+      title: "Xác nhận",
+      maskClosable: true,
+      content: "Xác nhận thêm sản phẩm ?",
+      okText: "Ok",
+      cancelText: "Cancel",
+      onOk: async () => {
+        await request.post('/shoe-detail', data).then(response => {
+          toast.success("Thêm thành công!");
+          navigate("/admin/product");
+        }).catch(e => {
+          console.log(e);
+        })
+      },
+    });
   }
 
   return (

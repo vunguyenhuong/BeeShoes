@@ -21,7 +21,7 @@ import GHNInfo from "~/components/GhnInfo";
 import CreateAddressModal from "~/components/Admin/Account/Customer/CreateAddressModal";
 import { useParams } from "react-router-dom";
 
-function ChooseAddress({ idCustomer }) {
+function ChooseAddress({ idCustomer, onSuccess }) {
   const [addressList, setAddressList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -31,8 +31,9 @@ function ChooseAddress({ idCustomer }) {
   const [dataAddress, setDataAddress] = useState(null);
   const [autoFillAddress, setAutoFillAddress] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState([]);
 
-
+  
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -43,22 +44,18 @@ function ChooseAddress({ idCustomer }) {
     setIsModalOpen(false);
   };
 
-  // const handleChooseAddress = (item) => {
-  //   handleChoose(item);
-  //   setIsModalOpen(false);
-  // };
-
   useEffect(() => {
-    loadDataAddress();
-  }, []);
+    loadDataAddress(idCustomer, currentPage, pageSize);
+  }, [idCustomer, currentPage, pageSize]);
 
-  const loadDataAddress = () => {
+  const loadDataAddress = (idCustomer, currentPage, pageSize) => {
     request
       .get(`/address/${idCustomer}`, {
         params: {
           // name: searchValue,
           page: currentPage,
           sizePage: pageSize,
+          status: false,
         },
       })
       .then((response) => {
@@ -69,25 +66,6 @@ function ChooseAddress({ idCustomer }) {
         console.log(error);
       });
   };
-
-  // const loadData = (currentPage, pageSize, searchValue, statusSize) => {
-  //   request
-  //     .get("/address", {
-  //       params: {
-  //         name: searchValue,
-  //         page: currentPage,
-  //         sizePage: pageSize,
-  //         status: statusSize,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       setAddressList(response.data);
-  //       setTotalPages(response.totalPages);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
 
   const columns = [
     {
@@ -110,37 +88,49 @@ function ChooseAddress({ idCustomer }) {
     },
     {
       title: "Địa chỉ",
-      dataIndex: "id",
+      dataIndex: "address",
       key: "address",
       className: "text-center",
       render: (x, item) => (
         <>
-          {item.specificAddress}{", "}
-          <DetailAddress distr={item.district} prov={item.province} war={item.ward}/>
+          {item.specificAddress}
+          {", "}
+          <DetailAddress
+            distr={item.district}
+            prov={item.province}
+            war={item.ward}
+          />
         </>
       ),
     },
     {
       title: "Mặc định",
-      dataIndex: "id",
       key: "defaultAddress",
       className: "text-center",
       render: (x, item) => (
         <>
-          {item.defaultAddress ? <i class="fa-solid fa-check"/> : <i class="fa-solid fa-xmark" />}
+          {item.defaultAddress ? (
+            <i class="fa-solid fa-check text-success" />
+          ) : (
+            <i class="fa-solid fa-xmark text-danger" />
+          )}
         </>
       ),
     },
     {
       title: "Action",
-      dataIndex: "id",
       key: "action",
       className: "text-center",
-      render: (x) => (
-        <Button>Chọn</Button>
-      ),
+      render: (x, record) => <Button onClick={() => handleSelectAddress(record)}>Chọn</Button>
     },
   ];
+
+  const handleSelectAddress = (address) => {
+    setSelectedAddress(address);
+    console.log("pick: " + address.name);
+    setIsModalOpen(false);
+    onSuccess(address);
+  };
 
   return (
     <>
@@ -149,7 +139,6 @@ function ChooseAddress({ idCustomer }) {
         type="text"
         icon={<i className="fas fa-location-dot"></i>}
         className="text-success fw-semibold"
-        onSuccess={() => loadDataAddress()}
       >
         Chọn địa chỉ
       </Button>
@@ -160,7 +149,13 @@ function ChooseAddress({ idCustomer }) {
               <div className="flex-grow-1">Chọn địa chỉ khác</div>
             </Col>
             <Col span={6}>
-              <CreateAddressModal idCustomer={idCustomer}/>
+              <CreateAddressModal
+                idCustomer={idCustomer}
+                onSuccess={() => {
+                  setCurrentPage(1);
+                  loadDataAddress(idCustomer, currentPage, pageSize);
+                }}
+              />
             </Col>
           </Row>
         }
@@ -188,7 +183,6 @@ function ChooseAddress({ idCustomer }) {
             },
           }}
         />
-      
       </Modal>
     </>
   );

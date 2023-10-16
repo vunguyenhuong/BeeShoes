@@ -113,6 +113,7 @@ function OrderItem({ index, props, onSuccess }) {
       caculateFee();
     }
   }, [autoFillAddress]);
+
   const caculateFee = async () => {
     await request
       .post(
@@ -411,7 +412,12 @@ function OrderItem({ index, props, onSuccess }) {
           </div>
           <div className="">
             {customer !== null && (
-              <ChooseAddress idCustomer={customer.id} />
+              <ChooseAddress 
+              idCustomer={customer.id} 
+              onSuccess={(address) => {
+                setAutoFillAddress(address);
+              }}
+              />
             )}
           </div>
         </div>
@@ -437,12 +443,12 @@ function OrderItem({ index, props, onSuccess }) {
                       </Form.Item>
                     </Col>
                     <GHNInfo disabledValue={true} distr={autoFillAddress.district} prov={autoFillAddress.province} war={autoFillAddress.ward} />
-                    <Col xl={18}>
+                    <Col xl={16}>
                       <Form.Item label="Địa chỉ cụ thể" name={"specificAddress"}>
                         <Input placeholder="Nhập địa chỉ cụ thể ..." disabled />
                       </Form.Item>
                     </Col>
-                    <Col xl={6}>
+                    <Col xl={8}>
                       <img
                         src="https://donhang.ghn.vn/static/media/Giao_Hang_Nhanh_Toan_Quoc_color.b7d18fe5.png"
                         alt=""

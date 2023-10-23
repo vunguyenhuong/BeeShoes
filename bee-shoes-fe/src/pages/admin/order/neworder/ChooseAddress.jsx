@@ -33,7 +33,7 @@ function ChooseAddress({ idCustomer, onSuccess }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState([]);
 
-  
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -130,6 +130,7 @@ function ChooseAddress({ idCustomer, onSuccess }) {
     console.log("pick: " + address.name);
     setIsModalOpen(false);
     onSuccess(address);
+    console.log(address);
   };
 
   return (

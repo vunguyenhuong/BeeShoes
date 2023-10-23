@@ -26,7 +26,8 @@ function ShowProductModal({ idBill, onClose }) {
 
     useEffect(() => {
         loadData(dataFilter);
-    }, [isModalOpen, dataFilter])
+        console.log(currentPage);
+    }, [isModalOpen, dataFilter, currentPage, pageSize])
 
     const loadData = (dataFilter) => {
         request.get('/shoe-detail', {
@@ -34,11 +35,13 @@ function ShowProductModal({ idBill, onClose }) {
                 name: dataFilter.name,
                 size: dataFilter.size,
                 color: dataFilter.color,
-                sole: dataFilter.sole
+                sole: dataFilter.sole,
+                page: currentPage,
+                sizePage: pageSize
             }
         }).then(response => {
             setProductList(response.data);
-            setTotalPages(response.data.totalPages);
+            setTotalPages(response.totalPages);
         }).catch(e => {
             console.log(e);
         })
@@ -64,9 +67,9 @@ function ShowProductModal({ idBill, onClose }) {
 
     const handleChoose = (shoeDetail) => {
         const data = {};
-        if(shoeDetail.quantity === 0){
+        if (shoeDetail.quantity === 0) {
             toast.error("Sản phẩm này đã hết hàng!")
-        }else{
+        } else {
             Modal.confirm({
                 title: "Xác nhận",
                 maskClosable: true,

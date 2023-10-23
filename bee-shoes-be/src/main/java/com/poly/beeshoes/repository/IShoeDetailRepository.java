@@ -24,7 +24,7 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
 
     @Query(value = """
             SELECT sd.id AS id,
-            ROW_NUMBER() OVER(ORDER BY s.create_at DESC) AS indexs,
+            ROW_NUMBER() OVER(ORDER BY s.update_at DESC) AS indexs,
             CONCAT(s.name, ' [', c.name, ' - ', sz.name, ']') AS name,
             sd.code AS code,
             sl.name AS sole,
@@ -36,11 +36,11 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
             GROUP_CONCAT(DISTINCT img.name) AS images,
             sd.deleted AS status
             FROM shoe_detail sd
-            JOIN shoe s ON sd.shoe_id = s.id
-            JOIN color c ON sd.color_id = c.id
-            JOIN size sz ON sd.size_id = sz.id
-            JOIN sole sl ON sd.sole_id = sl.id
-            JOIN images img ON img.shoe_detail_id = sd.id
+            LEFT JOIN shoe s ON sd.shoe_id = s.id
+            LEFT JOIN color c ON sd.color_id = c.id
+            LEFT JOIN size sz ON sd.size_id = sz.id
+            LEFT JOIN sole sl ON sd.sole_id = sl.id
+            LEFT JOIN images img ON img.shoe_detail_id = sd.id
             WHERE (:#{#req.shoe} IS NULL OR sd.shoe_id = :#{#req.shoe})
             AND (:#{#req.color} IS NULL OR sd.color_id = :#{#req.color})
             AND (:#{#req.size} IS NULL OR sd.size_id = :#{#req.size})

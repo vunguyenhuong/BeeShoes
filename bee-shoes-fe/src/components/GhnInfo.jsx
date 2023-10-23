@@ -1,6 +1,7 @@
 import { Col, Form, Select } from "antd";
 import { Option } from "antd/es/mentions";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import * as request from "~/utils/httpRequest";
 
 const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
@@ -62,6 +63,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
     setSelectedProvince(prov);
     setSelectedDistrict(distr);
     setSelectedWard(war);
+    console.log(`${prov} - ${distr} - ${war}`);
   }, [prov, distr, war]);
 
   const handleWardChange = (wardCode) => {

@@ -41,7 +41,13 @@ public class ShoeDetailController {
     }
 
     @PutMapping("/{id}")
-    public ResponseObject create(@PathVariable Long id, @ModelAttribute @Valid ShoeDetailRequest request) {
+    public ResponseObject update(@PathVariable Long id, @ModelAttribute @Valid ShoeDetailRequest request) {
         return new ResponseObject(shoeDetailService.update(id, request));
+    }
+
+    @PutMapping("/update-fast")
+    public ResponseObject updateFast(@RequestBody List<ShoeDetailRequest> list) {
+        list.forEach(request -> System.out.println(request));
+        return new ResponseObject(shoeDetailService.updateFast(list));
     }
 }

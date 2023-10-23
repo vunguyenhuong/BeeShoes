@@ -96,6 +96,7 @@ function OrderItem({ index, props, onSuccess }) {
     setCustomer(await request.get(`/customer/${id}`));
     const dataAddress = await request.get(`/address/${id}`);
     setListAddress(dataAddress.content);
+    console.log(dataAddress.content);
     setAutoFillAddress(
       dataAddress.content.find((item) => item.defaultAddress === true) || dataAddress.content[0]
     );
@@ -207,7 +208,7 @@ function OrderItem({ index, props, onSuccess }) {
           <Carousel autoplay autoplaySpeed={1500} dots={false} arrows={false} style={{ width: "150px" }}>
             {item !== undefined && item.split(',').map((image, index) => (
               <div className="" style={{ height: "150px" }}>
-                <img src={image} alt="images" style={{ width: "150px", height: "150px" }} className="object-fit-cover" />
+                <img src={image} alt="images" style={{ width: "150px", height: "150px" }} className="object-fit-contain" />
               </div>
             ))}
           </Carousel>
@@ -411,12 +412,10 @@ function OrderItem({ index, props, onSuccess }) {
             <Title level={5}>Thông tin thanh toán</Title>
           </div>
           <div className="">
-            {customer !== null && (
-              <ChooseAddress 
-              idCustomer={customer.id} 
-              onSuccess={(address) => {
-                setAutoFillAddress(address);
-              }}
+            {customer !== null && typeOrder === 1 && (
+              <ChooseAddress
+                idCustomer={customer.id}
+                onSuccess={(address) => setAutoFillAddress(address)}
               />
             )}
           </div>
@@ -442,7 +441,7 @@ function OrderItem({ index, props, onSuccess }) {
                         <Input placeholder="Nhập số điện thoại..." disabled />
                       </Form.Item>
                     </Col>
-                    <GHNInfo disabledValue={true} distr={autoFillAddress.district} prov={autoFillAddress.province} war={autoFillAddress.ward} />
+                    <GHNInfo distr={autoFillAddress.district} prov={autoFillAddress.province} war={autoFillAddress.ward} />
                     <Col xl={16}>
                       <Form.Item label="Địa chỉ cụ thể" name={"specificAddress"}>
                         <Input placeholder="Nhập địa chỉ cụ thể ..." disabled />

@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Row, Table, Tooltip } from "antd";
+import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Input, InputNumber, Modal, Row, Table, Tooltip } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -13,6 +13,9 @@ import UpdateShoe from "./UpdateShoe";
 import UpdateShoeDetail from "./UpdateShoeDetail";
 import FormatCurrency from "~/utils/FormatCurrency";
 import Title from "antd/es/typography/Title";
+import { toast } from "react-toastify";
+
+
 
 function ShoeInfo() {
   const { id } = useParams();
@@ -25,6 +28,148 @@ function ShoeInfo() {
   const [totalPages, setTotalPages] = useState(0);
   const [pageSize, setPageSize] = useState(5);
 
+  const [listUpdate, setListUpdate] = useState([]);
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const onSelectChange = (newSelectedRowKeys) => {
+    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const handleWeightChange = (value, id) => {
+    const x = listProductDetail.find((detail) => detail.id === id);
+    const index = listUpdate.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      listUpdate[index].weight = value;
+    } else {
+      listUpdate.push({ id: id, quantity: x.quantity, price: x.price, weight: value });
+    }
+    console.log(listUpdate);
+  }
+  const handleQuantityChange = (value, id) => {
+    const x = listProductDetail.find((detail) => detail.id === id);
+    const index = listUpdate.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      listUpdate[index].quantity = value;
+    } else {
+      listUpdate.push({ id: id, quantity: value, price: x.price, weight: x.weight });
+    }
+    console.log(listUpdate);
+  }
+  const handlePriceChange = (value, id) => {
+    const x = listProductDetail.find((detail) => detail.id === id);
+    const index = listUpdate.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      listUpdate[index].price = value;
+    } else {
+      listUpdate.push({ id: id, quantity: x.quantity, price: value, weight: x.weight });
+    }
+    console.log(listUpdate);
+  }
+
+  const columns = [
+    {
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
+    },
+    {
+      title: 'Tên',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Đế giày',
+      dataIndex: 'sole',
+      key: 'sole',
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (x, record) => (
+        <>
+          {selectedRowKeys.includes(record.id) ? (
+            <InputNumber defaultValue={x} formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              parser={(value) => value !== null && value !== undefined ? value.replace(/\$\s?|(,*)/g, "") : ""}
+              controls={false}
+              min={0}
+              onChange={(value) => handleQuantityChange(value, record.id)}
+            />
+          ) : (
+            <>{x}</>
+          )}
+        </>
+      )
+    },
+    {
+      title: 'Đơn giá',
+      dataIndex: 'price',
+      key: 'price',
+      render: (x, record) => (
+        <>
+          {selectedRowKeys.includes(record.id) ? (
+            <InputNumber defaultValue={x} formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              parser={(value) => value !== null && value !== undefined ? value.replace(/\$\s?|(,*)/g, "") : ""}
+              controls={false}
+              min={0}
+              onChange={(value) => handlePriceChange(value, record.id)}
+            />
+          ) : (
+            <FormatCurrency value={x} />
+          )}
+        </>
+      )
+    },
+    {
+      title: 'Cân nặng',
+      dataIndex: 'weight',
+      key: 'weight',
+      render: (x, record) => (
+        <>
+          {selectedRowKeys.includes(record.id) ? (
+            <InputNumber defaultValue={x} formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              parser={(value) => value !== null && value !== undefined ? value.replace(/\$\s?|(,*)/g, "") : ""}
+              controls={false}
+              min={0}
+              onChange={(value) => handleWeightChange(value, record.id)}
+            />
+          ) : (
+            <>{x}</>
+          )}
+        </>
+      )
+    },
+    {
+      title: (<i className="fas fa-image"></i>),
+      dataIndex: 'images',
+      key: 'images',
+      render: (images) => (
+        <Carousel autoplay autoplaySpeed={3000} dots={false} arrows={false} style={{ width: "100px" }} >
+          {images.split(',').map((image, index) => (
+            <img src={image} alt="images" style={{ width: "100px", height: "100px" }} className="object-fit-contain" />
+          ))}
+        </Carousel>
+      )
+    },
+    {
+      title: 'Hành động',
+      dataIndex: 'id',
+      key: 'action',
+      render: (x, record) => (
+        <>
+          <UpdateShoeDetail props={record} />
+          <Tooltip placement="bottom" title="Xóa">
+            <Button type="text"><i className="fas fa-trash text-danger"></i></Button>
+          </Tooltip>
+        </>
+      )
+    },
+  ];
   useEffect(() => {
     const timeout = setTimeout(() => {
       loadData(id);
@@ -56,6 +201,25 @@ function ShoeInfo() {
     })
   }
 
+  const handleUpdateFast = () => {
+    Modal.confirm({
+      title: "Xác nhận",
+      maskClosable: true,
+      content: `Xác nhận cập nhật ${selectedRowKeys.length} sản phẩm ?`,
+      okText: "Ok",
+      cancelText: "Cancel",
+      onOk: () => {
+        request.put('/shoe-detail/update-fast', listUpdate).then(response => {
+          toast.success("Cập nhật thành công!");
+          loadShoeDetail(id, currentPage, pageSize);
+          setSelectedRowKeys([]);
+        }).catch(e => {
+          console.log(e);
+        })
+      },
+    });
+  }
+
   if (loading) {
     return (
       <BaseUI>
@@ -64,71 +228,11 @@ function ShoeInfo() {
     );
   }
 
-  const columns = [
-    {
-      title: '#',
-      dataIndex: 'index',
-      key: 'index',
-    },
-    {
-      title: 'Tên',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Đế giày',
-      dataIndex: 'sole',
-      key: 'sole',
-    },
-    {
-      title: 'Số lượng',
-      dataIndex: 'quantity',
-      key: 'quantity',
-      render: (x) => x == null ? 0 : x,
-    },
-    {
-      title: 'Đơn giá',
-      dataIndex: 'price',
-      key: 'price',
-      render: (x) => <FormatCurrency value={x} />
-    },
-    {
-      title: 'Cân nặng',
-      dataIndex: 'weight',
-      key: 'weight',
-    },
-    {
-      title: (<i className="fas fa-image"></i>),
-      dataIndex: 'images',
-      key: 'images',
-      render: (images) => (
-        <Carousel autoplay autoplaySpeed={3000} dots={false} arrows={false} style={{ width: "100px" }} >
-          {images.split(',').map((image, index) => (
-            <img src={image} alt="images" style={{ width: "100px", height: "100px" }} className="object-fit-contain" />
-          ))}
-        </Carousel>
-      )
-    },
-    {
-      title: 'Hành động',
-      dataIndex: 'id',
-      key: 'action',
-      render: (x, record) => (
-        <>
-          <UpdateShoeDetail props={record} />
-          <Tooltip placement="bottom" title="Xóa">
-            <Button type="text"><i className="fas fa-trash text-danger"></i></Button>
-          </Tooltip>
-        </>
-      )
-    },
-  ];
-
   return (
     <>
       <BaseUI>
         <Breadcrumb className="mb-2"
-          items={[{ href: "/", title: <FaHome /> }, { href: "/admin/product", title: "Danh sách sản phẩm" }, { title: `` },]}
+          items={[{ href: "/", title: <FaHome /> }, { href: "/admin/product", title: "Danh sách sản phẩm" }, { title: `${product.name}` },]}
         />
         {/* Thông tin chung sản phẩm */}
         <Row gutter={24}>
@@ -176,8 +280,17 @@ function ShoeInfo() {
           <Divider />
         </Row>
         {/* Thông tin chi tiết */}
-        <Title level={5}>Chi tiết sản phẩm</Title>
+        <div className="d-flex">
+          <div className="flex-grow-1">
+            <Title level={5}>Chi tiết sản phẩm</Title>
+          </div>
+          <div className="">
+            {selectedRowKeys.length > 0 && <Button type="primary" onClick={() => handleUpdateFast()} className="bg-warning">Cập nhật {selectedRowKeys.length} sản phẩm</Button>}
+          </div>
+        </div>
         <Table dataSource={listProductDetail} columns={columns} className="mt-3"
+          rowKey={"id"}
+          rowSelection={rowSelection}
           pagination={{
             showSizeChanger: true,
             current: currentPage,

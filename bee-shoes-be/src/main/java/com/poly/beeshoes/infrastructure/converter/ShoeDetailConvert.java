@@ -55,4 +55,11 @@ public class ShoeDetailConvert {
         entity.setWeight(request.getWeight());
         return entity;
     }
+
+    public ShoeDetail convertRequestToEntityFast(ShoeDetail entity, ShoeDetailRequest request) {
+        entity.setPrice(request.getPrice());
+        entity.setQuantity(request.getQuantity());
+        entity.setWeight(request.getWeight());
+        return entity;
+    }
 }

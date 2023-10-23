@@ -95,16 +95,23 @@ const sidebarData = [
         ]
     },
     {
-        "key": "qlkhuyenmai",
-        "title": "Quản lý khuyến mại",
+        "key": "qlgiamgia",
+        "title": "Giảm giá",
         "icon": "fa-gift",
-        "path": "/admin/promotion"
-    },
-    {
-        "key": "qlVoucher",
-        "title": "Quản lý Voucher",
-        "icon": "fa-gift",
-        "path": "/admin/voucher"
+        "children": [
+            {
+                "key": "qlkhuyenmai",
+                "title": "Quản lý khuyến mại",
+                "icon": "fa-gifts",
+                "path": "/admin/promotion"
+            },
+            {
+                "key": "qlVoucher",
+                "title": "Quản lý Voucher",
+                "icon": "fa-ticket",
+                "path": "/admin/voucher"
+            },
+        ]
     },
     {
         "key": "imagesGallery",

@@ -4,6 +4,7 @@ import com.poly.beeshoes.entity.Images;
 import com.poly.beeshoes.entity.Shoe;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
+import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.converter.ShoeDetailConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
@@ -50,18 +51,18 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
     @Override
     @Transactional
     public String create(List<ShoeDetailRequest> list) {
-        for (ShoeDetailRequest request: list) {
+        for (ShoeDetailRequest request : list) {
             ShoeDetail convert = shoeDetailConvert.convertRequestToEntity(request);
             ShoeDetail check = shoeDetailRepository.findByShoeIdAndColorIdAndSizeId(request.getShoe(), request.getColor(), request.getSize());
-            if (check!= null) {
+            if (check != null) {
                 check.setQuantity(check.getQuantity() + request.getQuantity());
                 shoeDetailRepository.save(check);
-            }else {
+            } else {
                 ShoeDetail shoeDetailSave = shoeDetailRepository.save(convert);
                 Shoe shoe = shoeDetailSave.getShoe();
                 shoe.setUpdateAt(LocalDateTime.now());
                 shoeRepository.save(shoe);
-                if(request.getListImages().size()>=5)
+                if (request.getListImages().size() >= 5)
                     throw new RestApiException("Chỉ được thêm tối đa 5 hình ảnh!");
                 if (shoeDetailSave != null) {
                     for (String x : request.getListImages()) {
@@ -81,8 +82,8 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
         if (shoeDetailRepository.findByShoeIdAndColorIdAndSizeId(request.getShoe(), request.getColor(), request.getSize()) != null) {
             if (old.getSize().getId() == request.getSize() && old.getShoe().getId() == request.getShoe() && old.getColor().getId() == request.getColor() && old.getSole().getId() == request.getSole()) {
                 shoeDetailSave = shoeDetailRepository.save(shoeDetailConvert.convertRequestToEntity(old, request));
-                if(shoeDetailSave!=null){
-                    for (String x: request.getListImages()) {
+                if (shoeDetailSave != null) {
+                    for (String x : request.getListImages()) {
                         imagesRepository.save(Images.builder().shoeDetail(shoeDetailSave).name(x).build());
                     }
                 }
@@ -96,5 +97,14 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
     @Override
     public ShoeDetail delete(Long id) {
         return null;
+    }
+
+    @Override
+    public ResponseObject updateFast(List<ShoeDetailRequest> list) {
+        for (ShoeDetailRequest request : list) {
+            ShoeDetail convert = shoeDetailConvert.convertRequestToEntityFast(shoeDetailRepository.findById(request.getId()).get(), request);
+            shoeDetailRepository.save(convert);
+        }
+        return new ResponseObject(list);
     }
 }

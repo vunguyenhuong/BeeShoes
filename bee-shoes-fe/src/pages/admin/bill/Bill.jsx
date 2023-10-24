@@ -85,6 +85,11 @@ const Bill = () => {
       key: 'code',
     },
     {
+      title: 'Người tạo',
+      dataIndex: 'employee',
+      key: 'employee',
+    },
+    {
       title: 'Khách hàng',
       dataIndex: 'customer',
       key: 'customer',

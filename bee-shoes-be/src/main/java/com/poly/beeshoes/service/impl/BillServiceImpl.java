@@ -1,19 +1,27 @@
 package com.poly.beeshoes.service.impl;
 
 import com.poly.beeshoes.entity.Bill;
+import com.poly.beeshoes.entity.BillDetail;
 import com.poly.beeshoes.entity.BillHistory;
 import com.poly.beeshoes.entity.PaymentMethod;
+import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
+import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.constant.BillStatusConstant;
 import com.poly.beeshoes.infrastructure.converter.BillConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
+import com.poly.beeshoes.infrastructure.request.BillClientRequest;
+import com.poly.beeshoes.infrastructure.request.CartClientRequest;
 import com.poly.beeshoes.infrastructure.request.bill.BillRequest;
 import com.poly.beeshoes.infrastructure.request.bill.BillSearchRequest;
 import com.poly.beeshoes.infrastructure.response.BillResponse;
 import com.poly.beeshoes.repository.IAccountRepository;
+import com.poly.beeshoes.repository.IBillDetailRepository;
 import com.poly.beeshoes.repository.IBillHistoryRepository;
 import com.poly.beeshoes.repository.IBillRepository;
 import com.poly.beeshoes.repository.IPaymentMethodRepository;
+import com.poly.beeshoes.repository.IShoeDetailRepository;
+import com.poly.beeshoes.repository.IVoucherRepository;
 import com.poly.beeshoes.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +40,12 @@ public class BillServiceImpl implements BillService {
     private IAccountRepository accountRepository;
     @Autowired
     private IPaymentMethodRepository paymentMethodRepository;
+    @Autowired
+    private IVoucherRepository voucherRepository;
+    @Autowired
+    private IShoeDetailRepository shoeDetailRepository;
+    @Autowired
+    private IBillDetailRepository billDetailRepository;
 
     @Override
     public PageableObject<BillResponse> getAll(BillSearchRequest request) {
@@ -108,6 +122,43 @@ public class BillServiceImpl implements BillService {
             paymentMethodRepository.save(paymentMethod);
         }
         return billSave;
+    }
+
+    @Override
+    public ResponseObject createBillClient(BillClientRequest request) {
+        Bill bill = new Bill();
+        BillHistory billHistory = new BillHistory();
+        bill.setAccount(accountRepository.findById(1L).get());
+        bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
+        bill.setCode(this.genBillCode());
+        bill.setType(1);
+        bill.setNote(request.getNote());
+        bill.setAddress(request.getSpecificAddress()+"##"+request.getWard()+"##"+request.getDistrict()+"##"+request.getProvince());
+        bill.setMoneyShip(request.getMoneyShip());
+        bill.setMoneyReduce(request.getMoneyReduce());
+        bill.setTotalMoney(request.getTotalMoney());
+        if(request.getVoucher()!=null){
+            bill.setVoucher(voucherRepository.findById(request.getVoucher()).get());
+        }
+
+        Bill billSave = billRepository.save(bill);
+        billHistory.setBill(billSave);
+        billHistory.setStatus(billSave.getStatus());
+        billHistory.setNote("Chờ xác nhận");
+        billHistoryRepository.save(billHistory);
+
+        for (CartClientRequest x: request.getCarts()) {
+            ShoeDetail shoeDetail = shoeDetailRepository.findById(x.getId()).get();
+            BillDetail billDetail = new BillDetail();
+            billDetail.setBill(bill);
+            billDetail.setQuantity(x.getQuantity());
+            billDetail.setShoeDetail(shoeDetail);
+            billDetail.setPrice(shoeDetail.getPrice());
+            billDetailRepository.save(billDetail);
+            shoeDetail.setQuantity(shoeDetail.getQuantity()-x.getQuantity());
+            shoeDetailRepository.save(shoeDetail);
+        }
+        return new ResponseObject("OK");
     }
 
     @Override

@@ -40,4 +40,5 @@ public class ShoeDetailRequest extends PageableRequest {
     private BigDecimal maxPrice;
     private Boolean deleted;
     private String name;
+    private List<Long> shoes;
 }

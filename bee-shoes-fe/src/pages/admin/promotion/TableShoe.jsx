@@ -1,9 +1,11 @@
 import { Table } from "antd";
+import Input from "antd/es/input/Input";
 import React, { useState } from "react";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 import * as request from "~/utils/httpRequest";
 
-function TableShoe() {
+function TableShoe({ setProductIds }) {
   const [productList, setProductList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -22,6 +24,7 @@ function TableShoe() {
       .then((response) => {
         setProductList(response.data);
         setTotalPages(response.totalPages);
+        console.log(response.totalPages);
       })
       .catch((error) => {
         console.log(error);
@@ -52,69 +55,41 @@ function TableShoe() {
   ];
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
-  const onSelectChange = (newSelectedRowKeys, selectedRows) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+  const onSelectChange = (newSelectedRowKeys) => {
+    console.log(newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
+    setProductIds(newSelectedRowKeys);
+    
   };
   const rowSelection = {
     selectedRowKeys,
+    type: "radio",
     onChange: onSelectChange,
-    selections: [
-      Table.SELECTION_ALL,
-      Table.SELECTION_INVERT,
-      Table.SELECTION_NONE,
-      {
-        key: "odd",
-        text: "Select Odd Row",
-        onSelect: (changeableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return false;
-            }
-            return true;
-          });
-          setSelectedRowKeys(newSelectedRowKeys);
-        },
-      },
-      {
-        key: "even",
-        text: "Select Even Row",
-        onSelect: (changeableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return true;
-            }
-            return false;
-          });
-          setSelectedRowKeys(newSelectedRowKeys);
-        },
-      },
-    ],
   };
 
   return (
-    <Table
-      rowKey="id"
-      rowSelection={rowSelection}
-      dataSource={productList}
-      columns={columns}
-      className="mt-3"
-      pagination={{
-        showSizeChanger: true,
-        current: currentPage,
-        pageSize: pageSize,
-        pageSizeOptions: [5, 10, 20, 50, 100],
-        showQuickJumper: true,
-        total: totalPages * pageSize,
-        onChange: (page, pageSize) => {
-          setCurrentPage(page);
-          setPageSize(pageSize);
-        },
-      }}
-    />
+    <>
+      <Input placeholder="Tìm kiếm sản phẩm theo tên..." onChange={(e) => setSearchValue(e.target.value)} />
+      <Table
+        rowKey="id"
+        rowSelection={rowSelection}
+        dataSource={productList}
+        columns={columns}
+        className="mt-3"
+        pagination={{
+          showSizeChanger: true,
+          current: currentPage,
+          pageSize: pageSize,
+          pageSizeOptions: [5, 10, 20, 50, 100],
+          showQuickJumper: true,
+          total: totalPages * pageSize,
+          onChange: (page, pageSize) => {
+            setCurrentPage(page);
+            setPageSize(pageSize);
+          },
+        }}
+      />
+    </>
   );
 }
 

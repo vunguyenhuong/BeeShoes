@@ -4,6 +4,7 @@ package com.poly.beeshoes.controller;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
+import com.poly.beeshoes.infrastructure.request.BillClientRequest;
 import com.poly.beeshoes.infrastructure.request.bill.BillRequest;
 import com.poly.beeshoes.infrastructure.request.bill.BillSearchRequest;
 import com.poly.beeshoes.infrastructure.response.BillResponse;
@@ -31,6 +32,10 @@ public class BillController {
     @PostMapping
     public ResponseObject create() {
         return new ResponseObject(billService.create());
+    }
+    @PostMapping("/create-bill-client")
+    public ResponseObject create(@RequestBody BillClientRequest request) {
+        return new ResponseObject(billService.createBillClient(request));
     }
 
     @PutMapping("/{id}")

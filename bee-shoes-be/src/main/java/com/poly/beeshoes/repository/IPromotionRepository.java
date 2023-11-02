@@ -16,7 +16,7 @@ public interface IPromotionRepository extends JpaRepository<Promotion, Long> {
             SELECT p.id AS id,
             ROW_NUMBER() OVER(ORDER BY p.create_at DESC) AS indexs,
             p.code AS code, p.name AS name,
-            p.value AS value, p.type AS type,
+            p.value AS value,
             p.start_date AS startDate,
             p.end_date AS endDate, p.status AS status
             FROM promotion p 

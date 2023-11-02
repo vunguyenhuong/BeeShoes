@@ -32,11 +32,6 @@ function Promotion() {
             key: 'name',
         },
         {
-            title: 'Kiểu KM',
-            dataIndex: 'type',
-            key: 'type',
-        },
-        {
             title: 'Giá trị',
             dataIndex: 'value',
             key: 'value',

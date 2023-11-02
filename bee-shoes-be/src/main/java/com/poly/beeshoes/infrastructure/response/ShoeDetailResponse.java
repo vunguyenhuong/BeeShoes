@@ -20,6 +20,7 @@ public interface ShoeDetailResponse {
     String getColor();
 
     String getSize();
+    BigDecimal getPromotionValue();
 
     Integer getQuantity();
 

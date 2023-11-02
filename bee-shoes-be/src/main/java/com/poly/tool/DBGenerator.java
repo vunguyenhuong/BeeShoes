@@ -204,7 +204,6 @@ public class DBGenerator implements CommandLineRunner {
         Promotion promotion1 = new Promotion();
         promotion1.setCode("PRO1");
         promotion1.setName("Khuyến mại % TEST");
-        promotion1.setType(false);
         promotion1.setStatus(1);
         promotion1.setValue(BigDecimal.valueOf(5));
         promotion1.setStartDate(LocalDateTime.of(2023, Month.OCTOBER, 15, 14, 0, 0));
@@ -214,7 +213,6 @@ public class DBGenerator implements CommandLineRunner {
         Promotion promotion2 = new Promotion();
         promotion2.setCode("PRO2");
         promotion2.setName("Khuyến mại TEST");
-        promotion2.setType(true);
         promotion2.setStatus(1);
         promotion2.setValue(BigDecimal.valueOf(10000));
         promotion2.setStartDate(LocalDateTime.of(2023, Month.OCTOBER, 15, 14, 0, 0));

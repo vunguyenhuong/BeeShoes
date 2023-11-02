@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,8 +15,9 @@ public class PromotionRequest extends PageableRequest {
     private String code;
     private String name;
     private BigDecimal value;
-    private Boolean type;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Integer status;
+    private Boolean type;
+    private List<Long> productDetails;
 }

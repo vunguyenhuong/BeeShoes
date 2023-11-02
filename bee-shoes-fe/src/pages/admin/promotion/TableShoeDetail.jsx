@@ -1,133 +1,190 @@
-import { Carousel, Table } from "antd";
+import { Button, Carousel, Col, Form, Input, Row, Select, Table } from "antd";
+import { Option } from "antd/es/mentions";
 import React, { useEffect, useState } from "react";
 import FormatCurrency from "~/utils/FormatCurrency";
 import * as request from "~/utils/httpRequest";
 
-function TableShoeDetail() {
-  const [listProductDetail, setListProductDetail] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
-  const [id, setId] = useState(1);
-  
-  useEffect(() => {
-    loadShoeDetail(id, currentPage, pageSize);
-  }, [id, currentPage, pageSize])
+function TableShoeDetail({ idProduct, setSelectedProductDetail }) {
+    const [listProductDetail, setListProductDetail] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [pageSize, setPageSize] = useState(5);
 
-  const loadShoeDetail = (id, currentPage, pageSize) => {
-    request.get('/shoe-detail', {
-      params: {
-        shoe: id, page: currentPage, sizePage: pageSize,
-      }
-    }).then(response => {
-      setListProductDetail(response.data);
-      setTotalPages(response.data.totalPages);
-    })
-  }
+    const [formFilter] = Form.useForm();
+    const [listSize, setListSize] = useState([]);
+    const [searchSize, setSearchSize] = useState('');
 
-  const columns = [
-    {
-      title: "STT",
-      dataIndex: "index",
-      key: "index",
-    },
-    {
-      title: (<i className="fas fa-image"></i>),
-      dataIndex: 'images',
-      key: 'images',
-      render: (images) => (
-        <Carousel autoplay autoplaySpeed={3000} dots={false} arrows={false} style={{ width: "100px" }} >
-          {images.split(',').map((image, index) => (
-            <img src={image} alt="images" style={{ width: "100px", height: "100px" }} className="object-fit-contain" />
-          ))}
-        </Carousel>
-      )
-    },
-    {
-      title: "Tên",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Số lượng",
-      dataIndex: "quantity",
-      key: "quantity",
-      render: (x) => (x == null ? 0 : x),
-    },
-    {
-      title: "Đơn giá",
-      dataIndex: "price",
-      key: "price",
-      render: (x) => <FormatCurrency value={x} />,
-    },
-  ];
+    const [listColor, setListColor] = useState([]);
+    const [listSole, setListSole] = useState([]);
 
-  
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
-    console.log(newSelectedRowKeys);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    selections: [
-      Table.SELECTION_ALL,
-      Table.SELECTION_INVERT,
-      Table.SELECTION_NONE,
-      {
-        key: "odd",
-        text: "Select Odd Row",
-        onSelect: (changeableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return false;
+    const [dataFilter, setDataFilter] = useState({});
+
+    useEffect(() => {
+        loadData(idProduct, dataFilter);
+    }, [idProduct, dataFilter, currentPage, pageSize])
+
+    useEffect(() => {
+        setDataFilter(null);
+        formFilter.resetFields();
+    }, [idProduct])
+    const loadData = (idProduct, dataFilter) => {
+        request.get('/shoe-detail', {
+            params: {
+                shoe: idProduct,
+                name: dataFilter?.name,
+                size: dataFilter?.size,
+                color: dataFilter?.color,
+                sole: dataFilter?.sole,
+                page: currentPage,
+                sizePage: pageSize
             }
-            return true;
-          });
-          setSelectedRowKeys(newSelectedRowKeys);
-        },
-      },
-      {
-        key: "even",
-        text: "Select Even Row",
-        onSelect: (changeableRowKeys) => {
-          let newSelectedRowKeys = [];
-          newSelectedRowKeys = changeableRowKeys.filter((_, index) => {
-            if (index % 2 !== 0) {
-              return true;
-            }
-            return false;
-          });
-          setSelectedRowKeys(newSelectedRowKeys);
-        },
-      },
-    ],
-  };
+        }).then(response => {
+            setListProductDetail(response.data);
+            setTotalPages(response.totalPages);
+        }).catch(e => {
+            console.log(e);
+        })
+    }
 
-  return (
-    <Table
-      rowKey="id"
-      rowSelection={rowSelection}
-      dataSource={listProductDetail}
-      columns={columns}
-      className="mt-3"
-      pagination={{
-        showSizeChanger: true,
-        current: currentPage,
-        pageSize: pageSize,
-        pageSizeOptions: [5, 10, 20, 50, 100],
-        showQuickJumper: true,
-        total: totalPages * pageSize,
-        onChange: (page, pageSize) => {
-          setCurrentPage(page);
-          setPageSize(pageSize);
+    useEffect(() => {
+        request.get('/size', { params: { name: searchSize } }).then(response => {
+            setListSize(response.data);
+        }).catch(e => {
+            console.log(e);
+        })
+        request.get('/color', { params: { name: searchSize } }).then(response => {
+            setListColor(response.data);
+        }).catch(e => {
+            console.log(e);
+        })
+        request.get('/sole', { params: { name: searchSize } }).then(response => {
+            setListSole(response.data);
+        }).catch(e => {
+            console.log(e);
+        })
+    }, [searchSize])
+
+    const columns = [
+        {
+            title: "STT",
+            dataIndex: "index",
+            key: "index",
         },
-      }}
-    />
-  );
+        {
+            title: (<i className="fas fa-image"></i>),
+            dataIndex: 'images',
+            key: 'images',
+            render: (images) => (
+                <Carousel autoplay autoplaySpeed={3000} dots={false} arrows={false} style={{ width: "100px" }} >
+                    {images.split(',').map((image, index) => (
+                        <img src={image} alt="images" style={{ width: "100px", height: "100px" }} className="object-fit-contain" />
+                    ))}
+                </Carousel>
+            )
+        },
+        {
+            title: "Tên",
+            dataIndex: "name",
+            key: "name",
+        },
+        {
+            title: "Số lượng",
+            dataIndex: "quantity",
+            key: "quantity",
+            render: (x) => (x == null ? 0 : x),
+        },
+        {
+            title: "Đơn giá",
+            dataIndex: "price",
+            key: "price",
+            render: (x) => <FormatCurrency value={x} />,
+        },
+    ];
+
+
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const onSelectChange = (newSelectedRowKeys) => {
+        console.log(newSelectedRowKeys);
+        setSelectedRowKeys(newSelectedRowKeys);
+        setSelectedProductDetail(newSelectedRowKeys);
+    };
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
+
+    return (
+        <>
+            <Form layout='vertical' onFinish={(data) => setDataFilter(data)} form={formFilter}>
+                <Row gutter={10}>
+                    <Col span={6}>
+                        <Form.Item label="Tên sản phẩm" name={"name"}>
+                            <Input placeholder='Tìm kiếm sản phẩm theo tên...' />
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item label="Kích cỡ" name={"size"}>
+                            <Select showSearch placeholder="Chọn kích cỡ..." optionFilterProp="children" style={{ width: "100%" }} onSearch={setSearchSize}>
+                                <Option value="">Chọn kích cỡ</Option>
+                                {listSize.map((item) => (
+                                    <Option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item label="Màu sắc" name={"color"}>
+                            <Select showSearch placeholder="Chọn màu sắc..." optionFilterProp="children" style={{ width: "100%" }} onSearch={setSearchSize}>
+                                <Option value="">Chọn màu sắc</Option>
+                                {listColor.map((item) => (
+                                    <Option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item label="Loại đế" name={"sole"}>
+                            <Select showSearch placeholder="Chọn loại đế..." optionFilterProp="children" style={{ width: "100%" }} onSearch={setSearchSize}>
+                                <Option value="">Chọn loại đế</Option>
+                                {listSole.map((item) => (
+                                    <Option key={item.id} value={item.id}>
+                                        {item.name}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <div className="text-center">
+                    <Button className='me-1 bg-danger' onClick={() => { formFilter.resetFields() }} type='primary' icon={<i class="fa-solid fa-rotate-left"></i>}>Làm mới</Button>
+                    <Button onClick={() => formFilter.submit()} className='bg-warning text-dark' type='primary' icon={<i className='fas fa-search'></i>}>Tìm kiếm</Button>
+                </div>
+            </Form>
+            <Table
+                rowKey="id"
+                rowSelection={rowSelection}
+                dataSource={listProductDetail}
+                columns={columns}
+                className="mt-3"
+                pagination={{
+                    showSizeChanger: true,
+                    current: currentPage,
+                    pageSize: pageSize,
+                    pageSizeOptions: [5, 10, 20, 50, 100],
+                    showQuickJumper: true,
+                    total: totalPages * pageSize,
+                    onChange: (page, pageSize) => {
+                        setCurrentPage(page);
+                        setPageSize(pageSize);
+                    },
+                }}
+            />
+        </>
+    );
 }
 
 export default TableShoeDetail;

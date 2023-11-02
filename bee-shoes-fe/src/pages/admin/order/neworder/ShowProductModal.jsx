@@ -182,7 +182,7 @@ function ShowProductModal({ idBill, onClose }) {
                             </Form.Item>
                         </Col>
                         <Col span={6}>
-                            <Form.Item label="Kích cỡ" name={"sole"}>
+                            <Form.Item label="Loại đế" name={"sole"}>
                                 <Select showSearch placeholder="Chọn loại đế..." optionFilterProp="children" style={{ width: "100%" }} onSearch={setSearchSize}>
                                     <Option value="">Chọn loại đế</Option>
                                     {listSole.map((item) => (

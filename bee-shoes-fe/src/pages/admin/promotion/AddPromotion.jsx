@@ -1,28 +1,15 @@
-import {
-  Breadcrumb,
-  Col,
-  Divider,
-  Form,
-  Input,
-  DatePicker,
-  Row,
-  Switch,
-  Button,
-  Modal,
-  Table,
-  Checkbox,
-} from "antd";
+import { Breadcrumb, Col, Form, Input, DatePicker, Row, Button, Modal, Empty } from "antd";
 import React, { useEffect, useState } from "react";
 import * as request from "~/utils/httpRequest";
 import { FaHome } from "react-icons/fa";
-import TableShoeDetail from "./TableShoeDetail";
 import TableShoe from "./TableShoe";
-const { RangePicker } = DatePicker;
+import TableShoeDetail from "./TableShoeDetail";
 
 function AddPromotion() {
   const [form] = Form.useForm();
-  const [discountType, setDiscountType] = useState(true);
-  const [idShoe, setIdShoe] = useState(1);
+  const [productIds, setProductIds] = useState([]);
+
+  const [productDetail, setPRoductDetail] = useState([]);
 
   const handleCreatePromotion = (data) => {
     Modal.confirm({
@@ -72,36 +59,35 @@ function AddPromotion() {
                 </Form.Item>
               </Col>
               <Col xl={12}>
-                {discountType === true ? (
-                  <Form.Item valuePropName="" label={"Giá trị (%)"} name={"value"} rules={[{ required: true, message: "Giá trị không được để trống!", },]} >
-                    <Input placeholder="Nhập % khuyến mại..." />
-                  </Form.Item>
-                ) : (
-                  <Form.Item valuePropName="" label={"Giá trị (VNĐ)"} name={"value"} rules={[{ required: true, message: "Giá trị không được để trống!", },]} >
-                    <Input placeholder="Nhập giá khuyến mại..." />
-                  </Form.Item>
-                )}
-              </Col>
-              <Col xl={12}>
-                <Form.Item label={"Kiểu giảm giá"} name={"type"}>
-                  <Switch checkedChildren=" % " unCheckedChildren=" VNĐ " defaultChecked={true} name={"type"} onChange={(checked) => setDiscountType(checked ? true : false)} />
+                <Form.Item label={"Giá trị (%)"} name={"value"} rules={[{ required: true, message: "Giá trị không được để trống!", },]} >
+                  <Input placeholder="Nhập % khuyến mại..." />
                 </Form.Item>
               </Col>
               <Col xl={12}>
-                <Form.Item label={"Ngày bắt đầu"} name={"date"} rules={[{ required: true, message: "Thời gian không được để trống!", },]} >
-                  <Input type="datetime-local"/>
+                <Form.Item label={"Ngày bắt đầu"} name={"startDate"} rules={[{ required: true, message: "Ngày bắt đầu không được để trống!", },]} >
+                  <Input type="datetime-local" />
                 </Form.Item>
               </Col>
-              <Button type="primary" className="bg-warning" htmlType="submit">Thêm khuyến mại</Button>
+              <Col xl={12}>
+                <Form.Item label={"Ngày kết thúc"} name={"endDate"} rules={[{ required: true, message: "Ngày kết thúc không được để trống!", },]} >
+                  <Input type="datetime-local" />
+                </Form.Item>
+              </Col>
+              <Col xl={24}>
+                <Button type="primary" className="bg-warning" htmlType="submit">Thêm khuyến mại</Button>
+              </Col>
             </Row>
           </Col>
           <Col xl={12}>
             <h6>Danh sách sản phẩm</h6>
-            <TableShoe />
+            <TableShoe setProductIds={setProductIds} />
           </Col>
           <Col xl={24}>
-            <h6>Chi tiết sản phẩm</h6>
-            <TableShoeDetail idShoe={2} />
+            <h6>Danh sách chi tiết sản phẩm</h6>
+
+            {productIds.length === 0 ? <Empty /> : productIds.map((item, index) => (
+              <TableShoeDetail idProduct={item} setSelectedProductDetail={(value) => setPRoductDetail(value)} />
+            ))}
           </Col>
         </Row>
       </Form >

@@ -32,9 +32,6 @@ public class Promotion extends PrimaryEntity {
     @Column(name = "value")
     private BigDecimal value;
 
-    //    0: giảm theo %, 1: giảm theo giá
-    @Column(name = "type")
-    private Boolean type;
     @Column(name = "start_date")
     private LocalDateTime startDate;
     @Column(name = "end_date")

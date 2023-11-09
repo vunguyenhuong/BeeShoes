@@ -24,6 +24,7 @@ import PaymentMethod from "./PaymentMethod";
 import BillHistory from "./BillHistory";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
+import { toast } from "react-toastify";
 
 const BillDetail = () => {
   const [bill, setBill] = useState([]);
@@ -104,8 +105,10 @@ const BillDetail = () => {
       loadBillDetail();
       loadBillHistory();
       form.resetFields();
+      toast.success("Đã cập nhật trạng thái đơn hàng!");
     }).catch((e) => {
       console.log(e);
+      toast.error(e.response.data);
     });
     setIsModalOpen(false);
   }

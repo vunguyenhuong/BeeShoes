@@ -16,5 +16,6 @@ public interface AccountResponse {
     String getPhoneNumber();
     LocalDateTime getCreateAt();
     Boolean getStatus();
-
-}
+    String getAvatar();
+    String getBirthday();
+    String getGender();

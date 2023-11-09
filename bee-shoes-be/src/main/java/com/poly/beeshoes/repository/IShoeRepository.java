@@ -38,7 +38,7 @@ public interface IShoeRepository extends JpaRepository<Shoe, Long> {
             ROW_NUMBER() OVER(ORDER BY s.create_at DESC) AS indexs,
             GROUP_CONCAT(DISTINCT (CONCAT('{ \"id\": \"', c.id, '\",\"name\": \"', c.name, '\"}'))) AS color,
             GROUP_CONCAT(DISTINCT (CONCAT('{ \"id\": \"', sz.id, '\",\"name\": \"', sz.name, '\"}'))) AS size,
-            GROUP_CONCAT(DISTINCT img.name) AS images,
+            SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT img.name ORDER BY img.name), ',', 1) AS images,
             s.description AS description,
             SUM(sd.quantity) AS quantity,
             ct.name AS category,

@@ -399,11 +399,6 @@ function OrderItem({ index, props, onSuccess }) {
               )}
             </ul>
           </Col>
-          {customer === null && (
-            <Col xl={12}>
-              <li className="mb-2">Số điện thoại khách hàng: <span className="float-end fw-semibold"></span></li>
-            </Col>
-          )}
         </Row>
       </div>
       <div style={{ boxShadow: "2px 2px 4px 4px rgba(0, 0, 0, 0.03)" }} className="my-3 p-2 mt-4">
@@ -433,18 +428,18 @@ function OrderItem({ index, props, onSuccess }) {
                   <Row gutter={10}>
                     <Col xl={12}>
                       <Form.Item label="Họ và tên" required name={"name"}>
-                        <Input placeholder="Nhập họ và tên..." disabled />
+                        <Input placeholder="Nhập họ và tên..." />
                       </Form.Item>
                     </Col>
                     <Col xl={12}>
                       <Form.Item label="Số điện thoại" required name={"phoneNumber"}>
-                        <Input placeholder="Nhập số điện thoại..." disabled />
+                        <Input placeholder="Nhập số điện thoại..." />
                       </Form.Item>
                     </Col>
                     <GHNInfo distr={autoFillAddress.district} prov={autoFillAddress.province} war={autoFillAddress.ward} />
                     <Col xl={16}>
                       <Form.Item label="Địa chỉ cụ thể" name={"specificAddress"}>
-                        <Input placeholder="Nhập địa chỉ cụ thể ..." disabled />
+                        <Input placeholder="Nhập địa chỉ cụ thể ..." />
                       </Form.Item>
                     </Col>
                     <Col xl={8}>

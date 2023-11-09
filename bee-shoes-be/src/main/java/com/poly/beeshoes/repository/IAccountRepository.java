@@ -24,7 +24,7 @@ public interface IAccountRepository extends JpaRepository<Account, Long> {
             select 
             a.id as id,
             a.name as name,
-            a.email as email,
+            a.email as email,a.avatar as avatar,a.gender as gender,a.birthday as birthday,
             a.phonenumber as phoneNumber,
             a.create_at as createAt,
             a.deleted as status,

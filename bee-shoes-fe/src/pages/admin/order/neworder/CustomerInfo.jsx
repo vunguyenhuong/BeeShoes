@@ -204,7 +204,7 @@ function CustomerInfo({ handleSelect }) {
             {previewUrl !== null ? (
               <div className="text-center">
                 <img
-                  src={previewUrl}
+                  src={avatar}
                   alt="Preview"
                   style={{ width: "162px", height: "162px" }}
                   className="mt-2 border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain"

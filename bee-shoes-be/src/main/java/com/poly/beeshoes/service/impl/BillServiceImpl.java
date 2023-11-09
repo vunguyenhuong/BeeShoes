@@ -172,13 +172,23 @@ public class BillServiceImpl implements BillService {
         BillHistory history = new BillHistory();
         history.setBill(bill);
         history.setNote(note);
-        history.setStatus(bill.getStatus()+1);
         if(bill.getStatus() == BillStatusConstant.CHO_THANH_TOAN){
             if(bill.getType() == 0){
                 bill.setStatus(BillStatusConstant.HOAN_THANH);
             }
         }else {
-            bill.setStatus(bill.getStatus()+1);
+            if(bill.getStatus() == BillStatusConstant.CHO_XAC_NHAN){
+                history.setStatus(BillStatusConstant.CHO_GIAO);
+                bill.setStatus(BillStatusConstant.CHO_GIAO);
+            }else {
+                if(bill.getStatus() == BillStatusConstant.DANG_GIAO){
+                    if(!paymentMethodRepository.existsByBillId(bill.getId())){
+                        throw new RestApiException("Vui lòng xác nhận thông tin thanh toán!");
+                    }
+                }
+                bill.setStatus(bill.getStatus()+1);
+                history.setStatus(bill.getStatus());
+            }
         }
         Bill billSave = billRepository.save(bill);
         if(billSave!=null){

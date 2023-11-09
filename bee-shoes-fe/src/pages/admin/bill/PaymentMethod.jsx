@@ -40,13 +40,16 @@ function PaymentMethod({ bill }) {
   const handleCreatePaymentMethod = (data) => {
     data.method = method;
     data.bill = bill.id;
-    console.log(data);
-    request.post(`/payment-method`, data).then((response) => {
-      loadPaymentMethod();
-    }).catch((error) => {
-      console.error(error);
-      toast.error(error.response.data);
-    });
+    if (data.totalMoney < bill.totalMoney + bill?.moneyShip - bill?.moneyReduce) {
+      toast.error("Vui lòng nhập đủ tiền!");
+    } else {
+      request.post(`/payment-method`, data).then((response) => {
+        loadPaymentMethod();
+      }).catch((error) => {
+        console.error(error);
+        toast.error(error.response.data);
+      });
+    }
   }
 
   const columns = [

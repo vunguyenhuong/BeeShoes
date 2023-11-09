@@ -19,6 +19,12 @@ function AddPromotion() {
       okText: "Ok",
       cancelText: "Cancel",
       onOk: () => {
+        data.productDetails = productDetail
+        request.post('/promotion', data).then(response => {
+          console.log(response);
+        }).catch(e => {
+          console.log(e);
+        })
         console.log(data);
       },
     });

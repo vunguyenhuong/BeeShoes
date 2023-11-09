@@ -1,10 +1,13 @@
 package com.poly.beeshoes.controller;
 
 import com.poly.beeshoes.infrastructure.common.PageableObject;
+import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.request.PromotionRequest;
 import com.poly.beeshoes.service.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,5 +20,10 @@ public class PromotionController {
     @GetMapping
     public PageableObject getAll(PromotionRequest request) {
         return service.getAll(request);
+    }
+
+    @PostMapping
+    public ResponseObject create(@RequestBody PromotionRequest request){
+        return service.create(request);
     }
 }

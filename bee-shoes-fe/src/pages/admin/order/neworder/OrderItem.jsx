@@ -83,7 +83,7 @@ function OrderItem({ index, props, onSuccess }) {
       }
     }).then((response) => {
       const calculatedTotalMoney = response.data.reduce((total, item) => {
-        return total + item.quantity * item.price;
+        return total + item.quantity * (item.discountPercent !== null ? item.discountValue : item.price);
       }, 0);
       setTotalMoney(calculatedTotalMoney);
       setLoading(false);
@@ -203,11 +203,11 @@ function OrderItem({ index, props, onSuccess }) {
       title: <i className="fas fa-image"></i>,
       dataIndex: 'images',
       key: 'images',
-      render: (item) => (
+      render: (item, record) => (
         <>
           <Carousel autoplay autoplaySpeed={1500} dots={false} arrows={false} style={{ width: "150px" }}>
             {item !== undefined && item.split(',').map((image, index) => (
-              <div className="" style={{ height: "150px" }}>
+              <div className="position-relative" style={{ height: "150px" }}>
                 <img src={image} alt="images" style={{ width: "150px", height: "150px" }} className="object-fit-contain" />
               </div>
             ))}
@@ -222,9 +222,26 @@ function OrderItem({ index, props, onSuccess }) {
       render: (name, record) => (
         <>
           <ul className="list-unstyled ">
-            <li className="fw-semibold">{name}</li>
+            <li className="fw-semibold">
+              {name}
+              {record.discountPercent !== null && (
+                <>
+                  <span class="ms-2 badge rounded-pill bg-danger">
+                    - {record.discountPercent} %
+                  </span>
+                </>
+              )}
+            </li>
             <li><small>{record.shoeCode}</small></li>
-            <li>Đơn giá: <span className="text-danger"><FormatCurrency value={record.price} /></span></li>
+            <li>Đơn giá:
+              {record.discountPercent !== null ? (
+                <>
+                  <span className="text-danger"><FormatCurrency value={record.discountValue} /></span> <span className="text-decoration-line-through text-secondary"><FormatCurrency value={record.price} /></span>
+                </>
+              ) : (
+                <span className="text-danger"><FormatCurrency value={record.price} /></span>
+              )}
+            </li>
           </ul>
         </>
       )
@@ -247,7 +264,7 @@ function OrderItem({ index, props, onSuccess }) {
       key: 'total',
       render: (quantity, record) => (
         <div className="text-center text-danger fw-semibold">
-          <FormatCurrency value={record.price * record.quantity} />
+          <FormatCurrency value={(record.discountPercent !== null ? record.discountValue : record.price) * record.quantity} />
         </div>
       )
     },

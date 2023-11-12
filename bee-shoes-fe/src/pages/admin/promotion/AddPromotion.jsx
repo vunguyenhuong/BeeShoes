@@ -92,7 +92,7 @@ function AddPromotion() {
             <h6>Danh sách chi tiết sản phẩm</h6>
 
             {productIds.length === 0 ? <Empty /> : productIds.map((item, index) => (
-              <TableShoeDetail idProduct={item} setSelectedProductDetail={(value) => setPRoductDetail(value)} />
+              <TableShoeDetail idProduct={productIds} setSelectedProductDetail={(value) => setPRoductDetail(value)} />
             ))}
           </Col>
         </Row>

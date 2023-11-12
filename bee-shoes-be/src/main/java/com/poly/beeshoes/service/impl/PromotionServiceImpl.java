@@ -53,4 +53,9 @@ public class PromotionServiceImpl implements PromotionService {
         }
         return new ResponseObject("ABC");
     }
+
+    @Override
+    public PromotionResponse getOne(Long id) {
+        return iPromotionRepository.getOnePromotion(id);
+    }
 }

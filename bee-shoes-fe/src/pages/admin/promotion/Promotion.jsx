@@ -51,6 +51,16 @@ function Promotion() {
             dataIndex: 'status',
             key: 'status',
         },
+        {
+            title: 'Hành động',
+            dataIndex: 'id',
+            key: 'id',
+            render: (x) => (
+                <Link to={`/admin/promotion/${x}`} className="btn btn-sm text-warning">
+                    <i className="fas fa-edit"></i>
+                </Link>
+            )
+        },
     ]
     return (
         <>

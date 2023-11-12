@@ -25,6 +25,7 @@ import Brand from './pages/admin/product/attribute/Brand';
 import Category from './pages/admin/product/attribute/Category';
 import Promotion from './pages/admin/promotion/Promotion';
 import AddPromotion from './pages/admin/promotion/AddPromotion';
+import PromotionDetail from './pages/admin/promotion/PromotionDetail';
 
 const publicRouters = [
     { path: "/", element: BaseUI },
@@ -54,6 +55,7 @@ const publicRouters = [
     { path: "/admin/category", element: Category },
 
     { path: "/admin/promotion", element: Promotion },
+    { path: "/admin/promotion/:id", element: PromotionDetail },
     { path: "/admin/promotion/create", element: AddPromotion },
     // { path: '*', element: NotFound}
 ];

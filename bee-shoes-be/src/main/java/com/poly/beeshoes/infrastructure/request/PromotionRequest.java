@@ -18,6 +18,5 @@ public class PromotionRequest extends PageableRequest {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Integer status;
-    private Boolean type;
     private List<Long> productDetails;
 }

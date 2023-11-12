@@ -1,0 +1,86 @@
+import { Breadcrumb, Button, Col, Form, Input, Row } from 'antd'
+import React from 'react'
+import { useEffect } from 'react';
+import { useState } from 'react'
+import { FaHome } from 'react-icons/fa'
+import { useParams } from 'react-router-dom';
+import Loading from '~/components/Loading/Loading';
+import httpRequest from '~/utils/httpRequest';
+
+function PromotionDetail() {
+    const [form] = Form.useForm();
+    const [promotion, setPromotion] = useState({});
+    const [loading, setLoading] = useState(true);
+    const { id } = useParams();
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            loadPromotion(id);
+        }, 1000);
+        return () => clearTimeout(timeout);
+    }, [id]);
+
+    const loadPromotion = async () => {
+        await httpRequest.get(`/promotion/${id}`).then(response => {
+            setPromotion(response.data);
+            form.setFieldsValue({
+                code: response.data.code,
+                name: response.data.name,
+                value: response.data.value,
+                startDate: response.data.startDate,
+                endDate: response.data.endDate
+            })
+        }).catch(e => {
+            console.log(e);
+        })
+        setLoading(false);
+    }
+
+    if (loading) {
+        <Loading />
+    }
+    return (
+        <>
+            <Breadcrumb className="mb-3"
+                items={[{ href: "/", title: <FaHome /> }, { href: "/admin/promotion", title: "Danh sách khuyến mại" }, { title: `${promotion.name}` },]}
+            />
+            <Form layout="vertical" form={form}>
+                <Row gutter={24}>
+                    <Col xl={12}>
+                        <Row gutter={10}>
+                            <Col xl={12}>
+                                <Form.Item label={"Mã khuyến mại"} name={"code"} rules={[{ required: true, message: "Mã khuyến mại không được để trống!", },]}>
+                                    <Input placeholder="Nhập mã khuyến mại..." />
+                                </Form.Item>
+                            </Col>
+                            <Col xl={12}>
+                                <Form.Item label={"Tên khuyến mại"} name={"name"} rules={[{ required: true, message: "Tên khuyến mại không được để trống!", },]} >
+                                    <Input placeholder="Nhập tên khuyến mại..." />
+                                </Form.Item>
+                            </Col>
+                            <Col xl={12}>
+                                <Form.Item label={"Giá trị (%)"} name={"value"} rules={[{ required: true, message: "Giá trị không được để trống!", },]} >
+                                    <Input placeholder="Nhập % khuyến mại..." />
+                                </Form.Item>
+                            </Col>
+                            <Col xl={12}>
+                                <Form.Item label={"Ngày bắt đầu"} name={"startDate"} rules={[{ required: true, message: "Ngày bắt đầu không được để trống!", },]} >
+                                    <Input type="datetime-local" />
+                                </Form.Item>
+                            </Col>
+                            <Col xl={12}>
+                                <Form.Item label={"Ngày kết thúc"} name={"endDate"} rules={[{ required: true, message: "Ngày kết thúc không được để trống!", },]} >
+                                    <Input type="datetime-local" />
+                                </Form.Item>
+                            </Col>
+                            <Col xl={24}>
+                                <Button type="primary" className="bg-warning" htmlType="submit">Thêm khuyến mại</Button>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+            </Form>
+        </>
+    )
+}
+
+export default PromotionDetail

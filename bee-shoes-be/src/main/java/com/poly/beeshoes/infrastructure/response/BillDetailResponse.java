@@ -22,6 +22,8 @@ public interface BillDetailResponse {
     String getSole();
 
     BigDecimal getPrice();
+    BigDecimal getDiscountPercent();
+    BigDecimal getDiscountValue();
 
     Integer getQuantity();
     String getImages();

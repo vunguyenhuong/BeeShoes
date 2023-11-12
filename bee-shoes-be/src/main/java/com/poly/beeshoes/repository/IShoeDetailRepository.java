@@ -23,65 +23,44 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
     ShoeDetail findByCode(String code);
 
     @Query(value = """
-            SELECT sd.id AS id,
-            ROW_NUMBER() OVER(ORDER BY s.update_at DESC) AS indexs,
-            CONCAT(s.name, ' [', c.name, ' - ', sz.name, ']') AS name,
-            sd.code AS code,
-            sl.name AS sole,
-            c.name AS color,
-            sz.name AS size,
-            sd.quantity AS quantity,
-            sd.weight AS weight,
-            sd.price AS price,
-            GROUP_CONCAT(DISTINCT img.name) AS images,
-            sd.deleted AS status
-            FROM shoe_detail sd
-            LEFT JOIN shoe s ON sd.shoe_id = s.id
-            LEFT JOIN color c ON sd.color_id = c.id
-            LEFT JOIN size sz ON sd.size_id = sz.id
-            LEFT JOIN sole sl ON sd.sole_id = sl.id
-            LEFT JOIN images img ON img.shoe_detail_id = sd.id
-            WHERE (:#{#req.shoe} IS NULL OR sd.shoe_id = :#{#req.shoe})
-            AND (:#{#req.color} IS NULL OR sd.color_id = :#{#req.color})
-            AND (:#{#req.size} IS NULL OR sd.size_id = :#{#req.size})
-            AND (:#{#req.sole} IS NULL OR sd.sole_id = :#{#req.sole})
-            AND (:#{#req.name} IS NULL OR CONCAT(s.name, ' ', c.name, ' ', sz.name, ' ') LIKE %:#{#req.name}%)
-            GROUP BY sd.id
+            SELECT
+                sd.id AS id,
+                ROW_NUMBER() OVER(ORDER BY s.update_at DESC) AS indexs,
+                CONCAT(s.name, ' [', c.name, ' - ', sz.name, ']') AS name,
+                sd.code AS code,
+                sl.name AS sole,
+                c.name AS color,
+                sz.name AS size,
+                sd.quantity AS quantity,
+                sd.weight AS weight,
+                CASE
+                    WHEN MAX(pm.value) IS NOT NULL THEN sd.price - sd.price / 100 * MAX(pm.value)
+                    ELSE sd.price
+                END AS price,
+                MAX(pm.value) AS discountPercent,
+                GROUP_CONCAT(DISTINCT img.name) AS images,
+                sd.deleted AS status
+            FROM
+                shoe_detail sd
+                LEFT JOIN shoe s ON sd.shoe_id = s.id
+                LEFT JOIN color c ON sd.color_id = c.id
+                LEFT JOIN size sz ON sd.size_id = sz.id
+                LEFT JOIN sole sl ON sd.sole_id = sl.id
+                LEFT JOIN images img ON img.shoe_detail_id = sd.id
+                LEFT JOIN promotion_detail pmd ON pmd.shoe_detail_id = sd.id
+                LEFT JOIN promotion pm ON pm.id = pmd.promotion_id
+            WHERE
+                (:#{#req.shoe} IS NULL OR sd.shoe_id = :#{#req.shoe})
+                AND (:#{#req.color} IS NULL OR sd.color_id = :#{#req.color})
+                AND (:#{#req.size} IS NULL OR sd.size_id = :#{#req.size})
+                AND (:#{#req.sole} IS NULL OR sd.sole_id = :#{#req.sole})
+                AND (:#{#req.name} IS NULL OR CONCAT(s.name, ' ', c.name, ' ', sz.name, ' ') LIKE %:#{#req.name}%)
+            GROUP BY
+                sd.id, s.update_at, s.name, c.name, sz.name, sd.code, sl.name, sd.quantity, sd.weight, sd.price, sd.deleted;
+            
             """, nativeQuery = true)
     Page<ShoeDetailResponse> getAll(@Param("req") ShoeDetailRequest request,Pageable pageable);
     ShoeDetail findByShoeIdAndColorIdAndSizeId(Long idShoe, Long idColor, Long idSize);
 
     ShoeDetail findByShoeIdAndColorNameAndSizeName(Long idShoe, String colorName, String sizeNmae);
-
-//    @Query("""
-//            SELECT s FROM ShoeDetail s WHERE
-//            (:color IS NULL OR s.color.id = :color)
-//            AND (:shoe IS NULL OR s.shoe.id = :shoe)
-//            AND (:size IS NULL OR s.size.id = :size)
-//            AND (:sole IS NULL OR s.sole.id = :sole)
-//            ORDER BY s.createAt DESC
-//            """)
-//    List<ShoeDetail> filterShoeDetailV1(@Param("shoe") Long shoe,
-//                                        @Param("color") Long color,
-//                                        @Param("size") Long size,
-//                                        @Param("sole") Long sole);
-//
-//    List<ShoeDetail> findByShoeId(Long idShoe);
-//
-//    @Query("""
-//            SELECT A FROM ShoeDetail A
-//            WHERE A.shoe.id = :idShoe
-//            """)
-//    List<ShoeDetail> getListShoeDetail(@Param("idShoe") Long idShoe);
-//
-//    List<ShoeDetail> findByShoeIdAndColorIdAndDeletedFalse(Long idShoe, Long idColor);
-//
-//    List<ShoeDetail> findByShoeIdAndColorIdAndSizeIdAndDeletedFalse(Long idShoe, Long idColor, Long idSize);
-//
-//    @Query("""
-//            SELECT A  FROM ShoeDetail A
-//            WHERE CONCAT(A.shoe.name, ' ', A.color.name, ' - ', A.size.name) LIKE %:value%
-//            AND A.quantity >= 1
-//            """)
-//    List<ShoeDetail> searchShoeDetail(@Param("value") String value);
 }

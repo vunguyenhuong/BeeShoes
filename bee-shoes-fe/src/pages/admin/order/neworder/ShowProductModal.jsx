@@ -105,8 +105,15 @@ function ShowProductModal({ idBill, onClose }) {
             render(x, record) {
                 return (
                     <div className="d-flex">
-                        <div className="me-2">
+                        <div className="me-2 position-relative">
                             <img src={record.images.split(',')[0]} alt="" width={"100px"} height={"100"} className='object-fit-cover' />
+                            {record.discountPercent !== null && (
+                                <>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        - {record.discountPercent} %
+                                    </span>
+                                </>
+                            )}
                         </div>
                         <div className="">
                             <ul className='list-unstyled'>

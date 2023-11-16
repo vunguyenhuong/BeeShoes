@@ -8,6 +8,7 @@ import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.converter.ShoeDetailConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
+import com.poly.beeshoes.infrastructure.request.shoedetail.FindShoeDetailRequest;
 import com.poly.beeshoes.infrastructure.response.ShoeDetailResponse;
 import com.poly.beeshoes.repository.IImagesRepository;
 import com.poly.beeshoes.repository.IShoeDetailRepository;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -38,9 +40,21 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
 
 
     @Override
-    public PageableObject<ShoeDetailResponse> getAll(ShoeDetailRequest request) {
+    public PageableObject<ShoeDetailResponse> getAll(FindShoeDetailRequest request) {
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
-        return new PageableObject<>(shoeDetailRepository.getAll(request, pageable));
+        FindShoeDetailRequest customRequest = FindShoeDetailRequest.builder()
+                .colors(request.getColor() != null ? Arrays.asList(request.getColor().split(",")) : null)
+                .shoes(request.getShoe() != null ? Arrays.asList(request.getShoe().split(",")) : null)
+                .sizes(request.getSize() != null ? Arrays.asList(request.getSize().split(",")) : null)
+                .soles(request.getSole() != null ? Arrays.asList(request.getSole().split(",")) : null)
+                .size(request.getSize())
+                .color(request.getColor())
+                .shoe(request.getShoe())
+                .minPrice(request.getMinPrice())
+                .maxPrice(request.getMaxPrice())
+                .name(request.getName())
+                .build();
+        return new PageableObject<>(shoeDetailRepository.getAll(customRequest, pageable));
     }
 
     @Override

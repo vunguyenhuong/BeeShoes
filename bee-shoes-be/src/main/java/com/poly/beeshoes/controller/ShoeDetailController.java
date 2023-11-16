@@ -4,6 +4,7 @@ import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
+import com.poly.beeshoes.infrastructure.request.shoedetail.FindShoeDetailRequest;
 import com.poly.beeshoes.service.ShoeDetailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class ShoeDetailController {
     private ShoeDetailService shoeDetailService;
 
     @GetMapping
-    public PageableObject getAll(ShoeDetailRequest request) {
+    public PageableObject getAll(FindShoeDetailRequest request) {
         return shoeDetailService.getAll(request);
     }
 

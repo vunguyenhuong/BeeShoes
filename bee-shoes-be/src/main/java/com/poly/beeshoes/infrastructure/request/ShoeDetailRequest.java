@@ -34,11 +34,4 @@ public class ShoeDetailRequest extends PageableRequest {
     private Double weight;
     @NotEmpty(message = "Hình ảnh không được để trống!")
     private List<String> listImages;
-
-    //    filter
-    private BigDecimal minPrice;
-    private BigDecimal maxPrice;
-    private Boolean deleted;
-    private String name;
-    private List<Long> shoes;
 }

@@ -7,6 +7,7 @@ import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.entity.Size;
 import com.poly.beeshoes.entity.Sole;
 import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
+import com.poly.beeshoes.infrastructure.request.shoedetail.FindShoeDetailRequest;
 import com.poly.beeshoes.infrastructure.response.ShoeDetailResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,17 +51,17 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
                 LEFT JOIN promotion_detail pmd ON pmd.shoe_detail_id = sd.id
                 LEFT JOIN promotion pm ON pm.id = pmd.promotion_id
             WHERE
-                (:#{#req.shoe} IS NULL OR sd.shoe_id = :#{#req.shoe})
-                AND (:#{#req.color} IS NULL OR sd.color_id = :#{#req.color})
-                AND (:#{#req.size} IS NULL OR sd.size_id = :#{#req.size})
-                AND (:#{#req.sole} IS NULL OR sd.sole_id = :#{#req.sole})
+                (:#{#req.shoe} IS NULL OR sd.shoe_id IN (:#{#req.shoes}))
+                AND (:#{#req.color} IS NULL OR sd.color_id IN (:#{#req.colors}))
+                AND (:#{#req.size} IS NULL OR sd.size_id IN (:#{#req.sizes}))
+                AND (:#{#req.sole} IS NULL OR sd.sole_id IN (:#{#req.soles}))
                 AND (:#{#req.name} IS NULL OR CONCAT(s.name, ' ', c.name, ' ', sz.name, ' ') LIKE %:#{#req.name}%)
+                
             GROUP BY
                 sd.id, s.update_at, s.name, c.name, sz.name, sd.code, sl.name, sd.quantity, sd.weight, sd.price, sd.deleted;
-            
             """, nativeQuery = true)
-    Page<ShoeDetailResponse> getAll(@Param("req") ShoeDetailRequest request,Pageable pageable);
+    Page<ShoeDetailResponse> getAll(@Param("req") FindShoeDetailRequest request, Pageable pageable);
     ShoeDetail findByShoeIdAndColorIdAndSizeId(Long idShoe, Long idColor, Long idSize);
 
-    ShoeDetail findByShoeIdAndColorNameAndSizeName(Long idShoe, String colorName, String sizeNmae);
+    ShoeDetail findByShoeIdAndColorNameAndSizeName(Long idShoe, String colorName, String sizeName);
 }

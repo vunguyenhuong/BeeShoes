@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Account;
-import com.poly.beeshoes.infrastructure.request.AccountRequest;
+import com.poly.beeshoes.dto.request.AccountRequest;
 import com.poly.beeshoes.repository.IAccountRepository;
 import com.poly.beeshoes.repository.IRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;

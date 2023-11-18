@@ -1,37 +1,16 @@
-import {
-  AutoComplete,
-  Avatar,
-  Input,
-  Modal,
-  Select,
-  Breadcrumb,
-  Button,
-  Col,
-  Divider,
-  Form,
-  Radio,
-  Row,
-  Table,
-} from "antd";
+import { Modal, Button, Col, Row, Table, } from "antd";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import DetailAddress from "~/components/DetailAddress";
 import * as request from "~/utils/httpRequest";
-import GHNInfo from "~/components/GhnInfo";
 import CreateAddressModal from "~/components/Admin/Account/Customer/CreateAddressModal";
-import { useParams } from "react-router-dom";
 
 function ChooseAddress({ idCustomer, onSuccess }) {
   const [addressList, setAddressList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [pageSize, setPageSize] = useState(5);
-  const [statusAddress, setStatusAddress] = useState(null);
-
-  const [dataAddress, setDataAddress] = useState(null);
-  const [autoFillAddress, setAutoFillAddress] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState([]);
 
 
   const showModal = () => {
@@ -126,10 +105,9 @@ function ChooseAddress({ idCustomer, onSuccess }) {
   ];
 
   const handleSelectAddress = (address) => {
-    setSelectedAddress(address);
-    console.log("pick: " + address.name);
     setIsModalOpen(false);
     onSuccess(address);
+    console.log("---");
     console.log(address);
   };
 

@@ -2,8 +2,8 @@ package com.poly.beeshoes.controller;
 
 import com.poly.beeshoes.entity.Account;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.AccountRequest;
-import com.poly.beeshoes.infrastructure.response.AccountResponse;
+import com.poly.beeshoes.dto.request.AccountRequest;
+import com.poly.beeshoes.dto.response.AccountResponse;
 import com.poly.beeshoes.service.AccountService;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import jakarta.validation.Valid;

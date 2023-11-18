@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Category;
-import com.poly.beeshoes.infrastructure.request.CategoryRequest;
+import com.poly.beeshoes.dto.request.properties.CategoryRequest;
 import org.springframework.stereotype.Component;
 
 @Component

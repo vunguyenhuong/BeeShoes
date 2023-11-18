@@ -1,8 +1,8 @@
 package com.poly.beeshoes.service;
 
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.BillHistoryRequest;
-import com.poly.beeshoes.infrastructure.response.BillHistoryResponse;
+import com.poly.beeshoes.dto.request.BillHistoryRequest;
+import com.poly.beeshoes.dto.response.BillHistoryResponse;
 
 import java.util.List;
 

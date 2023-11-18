@@ -1,8 +1,8 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.Promotion;
-import com.poly.beeshoes.infrastructure.request.PromotionRequest;
-import com.poly.beeshoes.infrastructure.response.PromotionResponse;
+import com.poly.beeshoes.dto.request.PromotionRequest;
+import com.poly.beeshoes.dto.response.PromotionResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

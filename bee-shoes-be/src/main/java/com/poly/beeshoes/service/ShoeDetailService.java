@@ -2,10 +2,10 @@ package com.poly.beeshoes.service;
 
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
+import com.poly.beeshoes.dto.request.shoedetail.ShoeDetailRequest;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
-import com.poly.beeshoes.infrastructure.request.shoedetail.FindShoeDetailRequest;
-import com.poly.beeshoes.infrastructure.response.ShoeDetailResponse;
+import com.poly.beeshoes.dto.request.shoedetail.FindShoeDetailRequest;
+import com.poly.beeshoes.dto.response.ShoeDetailResponse;
 
 import java.util.List;
 

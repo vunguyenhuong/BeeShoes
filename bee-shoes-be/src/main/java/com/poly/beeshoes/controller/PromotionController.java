@@ -2,8 +2,8 @@ package com.poly.beeshoes.controller;
 
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.PromotionRequest;
-import com.poly.beeshoes.infrastructure.response.PromotionResponse;
+import com.poly.beeshoes.dto.request.PromotionRequest;
+import com.poly.beeshoes.dto.response.PromotionResponse;
 import com.poly.beeshoes.service.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

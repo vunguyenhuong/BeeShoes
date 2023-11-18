@@ -1,7 +1,9 @@
 import { Button, Col, Input, Radio, Row, Table } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import FormatDate from '~/utils/FormatDate';
 import httpRequest from '~/utils/httpRequest';
+import VoucherStatus from '../voucher/VoucherSatus';
 
 function Promotion() {
     const [promotions, setPromotions] = useState([]);
@@ -40,16 +42,19 @@ function Promotion() {
             title: 'Ngày bắt đầu',
             dataIndex: 'startDate',
             key: 'startDate',
+            render: (x) => <FormatDate date={x} />
         },
         {
             title: 'Ngày kết thúc',
             dataIndex: 'endDate',
             key: 'endDate',
+            render: (x) => <FormatDate date={x} />
         },
         {
             title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
+            render: (x) => <VoucherStatus status={x} />
         },
         {
             title: 'Hành động',

@@ -6,15 +6,13 @@ import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.constant.Message;
 import com.poly.beeshoes.infrastructure.converter.VoucherConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
-import com.poly.beeshoes.infrastructure.request.VoucherRequest;
-import com.poly.beeshoes.infrastructure.response.VoucherResponse;
+import com.poly.beeshoes.dto.request.VoucherRequest;
+import com.poly.beeshoes.dto.response.VoucherResponse;
 import com.poly.beeshoes.repository.IVoucherRepository;
 import com.poly.beeshoes.service.VoucherService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

@@ -1,23 +1,14 @@
 package com.poly.beeshoes.repository;
 
-import com.poly.beeshoes.entity.Brand;
-import com.poly.beeshoes.entity.Category;
-import com.poly.beeshoes.entity.Color;
 import com.poly.beeshoes.entity.ShoeDetail;
-import com.poly.beeshoes.entity.Size;
-import com.poly.beeshoes.entity.Sole;
-import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
-import com.poly.beeshoes.infrastructure.request.shoedetail.FindShoeDetailRequest;
-import com.poly.beeshoes.infrastructure.response.ShoeDetailResponse;
+import com.poly.beeshoes.dto.request.shoedetail.FindShoeDetailRequest;
+import com.poly.beeshoes.dto.response.ShoeDetailResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Repository
 public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
@@ -34,10 +25,8 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
                 sz.name AS size,
                 sd.quantity AS quantity,
                 sd.weight AS weight,
-                CASE
-                    WHEN MAX(pm.value) IS NOT NULL THEN sd.price - sd.price / 100 * MAX(pm.value)
-                    ELSE sd.price
-                END AS price,
+                sd.price AS price,
+                sd.price - sd.price / 100 * MAX(pm.value) AS discountValue,
                 MAX(pm.value) AS discountPercent,
                 GROUP_CONCAT(DISTINCT img.name) AS images,
                 sd.deleted AS status
@@ -52,10 +41,10 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
                 LEFT JOIN promotion pm ON pm.id = pmd.promotion_id
             WHERE
                 (:#{#req.shoe} IS NULL OR sd.shoe_id IN (:#{#req.shoes}))
-                AND (:#{#req.color} IS NULL OR sd.color_id IN (:#{#req.colors}))
-                AND (:#{#req.size} IS NULL OR sd.size_id IN (:#{#req.sizes}))
-                AND (:#{#req.sole} IS NULL OR sd.sole_id IN (:#{#req.soles}))
-                AND (:#{#req.name} IS NULL OR CONCAT(s.name, ' ', c.name, ' ', sz.name, ' ') LIKE %:#{#req.name}%)
+                AND (:#{#req.color} IS NULL OR :#{#req.color} = '' OR sd.color_id IN (:#{#req.colors}))
+                AND (:#{#req.size} IS NULL OR :#{#req.size} = '' OR sd.size_id IN (:#{#req.sizes}))
+                AND (:#{#req.sole} IS NULL OR :#{#req.sole} = '' OR sd.sole_id IN (:#{#req.soles}))
+                AND (:#{#req.name} IS NULL OR :#{#req.name} = '' OR CONCAT(s.name, ' ', c.name, ' ', sz.name, ' ') LIKE %:#{#req.name}%)
                 
             GROUP BY
                 sd.id, s.update_at, s.name, c.name, sz.name, sd.code, sl.name, sd.quantity, sd.weight, sd.price, sd.deleted;

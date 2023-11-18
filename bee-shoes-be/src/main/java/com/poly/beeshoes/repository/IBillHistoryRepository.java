@@ -1,7 +1,7 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.BillHistory;
-import com.poly.beeshoes.infrastructure.response.BillHistoryResponse;
+import com.poly.beeshoes.dto.response.BillHistoryResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

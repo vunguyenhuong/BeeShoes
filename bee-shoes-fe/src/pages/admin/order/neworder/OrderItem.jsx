@@ -8,7 +8,6 @@ import FormatCurrency from "~/utils/FormatCurrency";
 import * as request from "~/utils/httpRequest";
 import CustomerInfo from "./CustomerInfo";
 import ChooseAddress from "./ChooseAddress";
-import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Title from "antd/es/typography/Title";
 import TextArea from "antd/es/input/TextArea";
@@ -17,6 +16,7 @@ import Loading from "~/components/Loading/Loading";
 import ChooseVoucher from "./ChooseVoucher";
 
 function OrderItem({ index, props, onSuccess }) {
+  const [form] = Form.useForm();
   const [listOrderDetail, setListOrderDetail] = useState([]);
   const [typeOrder, setTypeOrder] = useState(0);
   const [customer, setCustomer] = useState(null);
@@ -112,6 +112,14 @@ function OrderItem({ index, props, onSuccess }) {
   useEffect(() => {
     if (autoFillAddress !== null) {
       caculateFee();
+      form.setFieldsValue({
+        name: autoFillAddress.name,
+        phoneNumber: autoFillAddress.phoneNumber,
+        specificAddress: autoFillAddress.specificAddress,
+        province: parseInt(autoFillAddress.province),
+        district: parseInt(autoFillAddress.district),
+        ward: autoFillAddress.ward
+      })
     }
   }, [autoFillAddress]);
 
@@ -427,7 +435,7 @@ function OrderItem({ index, props, onSuccess }) {
             {customer !== null && typeOrder === 1 && (
               <ChooseAddress
                 idCustomer={customer.id}
-                onSuccess={(address) => setAutoFillAddress(address)}
+                onSuccess={(address) => { setAutoFillAddress(address) }}
               />
             )}
           </div>
@@ -437,11 +445,7 @@ function OrderItem({ index, props, onSuccess }) {
           <Col xl={14}>
             {typeOrder === 0 ? <img src="https://www.lucepictor.com/wp-content/uploads/2017/05/running-shoes-on-white-background-1920x1280.jpg.webp" width={"100%"} alt="" /> : (
               <>
-                <Form layout="vertical" initialValues={{
-                  name: autoFillAddress.name,
-                  phoneNumber: autoFillAddress.phoneNumber,
-                  specificAddress: autoFillAddress.specificAddress
-                }} onFinish={(data) => console.log(data)}>
+                <Form layout="vertical" form={form} onFinish={(data) => console.log(data)}>
                   <Row gutter={10}>
                     <Col xl={12}>
                       <Form.Item label="Họ và tên" required name={"name"}>

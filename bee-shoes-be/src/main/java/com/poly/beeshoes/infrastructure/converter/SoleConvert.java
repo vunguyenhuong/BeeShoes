@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Sole;
-import com.poly.beeshoes.infrastructure.request.SoleRequest;
+import com.poly.beeshoes.dto.request.properties.SoleRequest;
 import org.springframework.stereotype.Component;
 
 @Component

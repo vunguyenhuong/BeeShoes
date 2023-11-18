@@ -1,6 +1,6 @@
 package com.poly.beeshoes.controller;
 
-import com.poly.beeshoes.infrastructure.request.ImageGalleryRequest;
+import com.poly.beeshoes.dto.request.ImageGalleryRequest;
 import com.poly.beeshoes.util.CloudinaryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

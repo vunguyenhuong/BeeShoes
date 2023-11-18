@@ -2,8 +2,8 @@ package com.poly.beeshoes.service;
 
 import com.poly.beeshoes.entity.Brand;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
-import com.poly.beeshoes.infrastructure.request.BrandRequest;
-import com.poly.beeshoes.infrastructure.response.BrandResponse;
+import com.poly.beeshoes.dto.request.properties.BrandRequest;
+import com.poly.beeshoes.dto.response.BrandResponse;
 
 public interface BrandService {
     PageableObject<BrandResponse> getAll(BrandRequest request);

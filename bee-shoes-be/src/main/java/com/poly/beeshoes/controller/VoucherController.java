@@ -3,7 +3,7 @@ package com.poly.beeshoes.controller;
 import com.poly.beeshoes.entity.Voucher;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.VoucherRequest;
+import com.poly.beeshoes.dto.request.VoucherRequest;
 import com.poly.beeshoes.service.VoucherService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

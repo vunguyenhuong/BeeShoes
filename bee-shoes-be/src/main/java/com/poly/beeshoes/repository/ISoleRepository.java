@@ -1,9 +1,8 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.Sole;
-import com.poly.beeshoes.infrastructure.request.SoleRequest;
-import com.poly.beeshoes.infrastructure.response.BrandResponse;
-import com.poly.beeshoes.infrastructure.response.SoleResponse;
+import com.poly.beeshoes.dto.request.properties.SoleRequest;
+import com.poly.beeshoes.dto.response.SoleResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

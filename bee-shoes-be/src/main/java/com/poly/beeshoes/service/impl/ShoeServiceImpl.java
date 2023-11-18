@@ -3,8 +3,9 @@ package com.poly.beeshoes.service.impl;
 import com.poly.beeshoes.entity.Shoe;
 import com.poly.beeshoes.infrastructure.converter.ShoeConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
-import com.poly.beeshoes.infrastructure.request.ShoeRequest;
-import com.poly.beeshoes.infrastructure.response.ShoeResponse;
+import com.poly.beeshoes.dto.request.ShoeRequest;
+import com.poly.beeshoes.dto.response.ShoeResponse;
+import com.poly.beeshoes.dto.response.promotion.ShoePromotionResponse;
 import com.poly.beeshoes.repository.IShoeRepository;
 import com.poly.beeshoes.service.ShoeService;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ShoeServiceImpl implements ShoeService {
@@ -56,5 +59,15 @@ public class ShoeServiceImpl implements ShoeService {
     @Override
     public Shoe delete(Long id) {
         return null;
+    }
+
+    @Override
+    public List<ShoePromotionResponse> getAllShoeInPromotion(Long promotion) {
+        return shoeRepository.getAllShoeInPromotion(promotion);
+    }
+
+    @Override
+    public List<ShoeResponse> getTopSell(Integer top) {
+        return shoeRepository.topSell(top);
     }
 }

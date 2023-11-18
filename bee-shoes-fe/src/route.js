@@ -26,9 +26,10 @@ import Category from './pages/admin/product/attribute/Category';
 import Promotion from './pages/admin/promotion/Promotion';
 import AddPromotion from './pages/admin/promotion/AddPromotion';
 import PromotionDetail from './pages/admin/promotion/PromotionDetail';
+import Statistic from './pages/admin/statistic/Statistic';
 
 const publicRouters = [
-    { path: "/", element: BaseUI },
+    { path: "/", element: Statistic },
     { path: "/admin/order", element: Order },
     { path: "/admin/bill", element: Bill },
     { path: "/admin/bill/:id", element: BillDetail },

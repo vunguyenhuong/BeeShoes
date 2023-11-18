@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Address;
-import com.poly.beeshoes.infrastructure.request.AddressRequest;
+import com.poly.beeshoes.dto.request.AddressRequest;
 import com.poly.beeshoes.repository.IAccountRepository;
 import com.poly.beeshoes.repository.IAddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;

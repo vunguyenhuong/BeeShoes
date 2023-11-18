@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Voucher;
-import com.poly.beeshoes.infrastructure.request.VoucherRequest;
+import com.poly.beeshoes.dto.request.VoucherRequest;
 import com.poly.beeshoes.repository.IVoucherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

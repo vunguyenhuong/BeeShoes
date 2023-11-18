@@ -1,8 +1,8 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.Category;
-import com.poly.beeshoes.infrastructure.request.CategoryRequest;
-import com.poly.beeshoes.infrastructure.response.CategoryResponse;
+import com.poly.beeshoes.dto.request.properties.CategoryRequest;
+import com.poly.beeshoes.dto.response.CategoryResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

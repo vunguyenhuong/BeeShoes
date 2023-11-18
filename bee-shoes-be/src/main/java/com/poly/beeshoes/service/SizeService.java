@@ -2,8 +2,8 @@ package com.poly.beeshoes.service;
 
 import com.poly.beeshoes.entity.Size;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
-import com.poly.beeshoes.infrastructure.request.SizeRequest;
-import com.poly.beeshoes.infrastructure.response.SizeResponse;
+import com.poly.beeshoes.dto.request.properties.SizeRequest;
+import com.poly.beeshoes.dto.response.SizeResponse;
 
 public interface SizeService {
     PageableObject<SizeResponse> getAll(SizeRequest request);

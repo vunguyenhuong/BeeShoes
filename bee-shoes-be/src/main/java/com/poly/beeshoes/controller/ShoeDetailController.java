@@ -3,8 +3,8 @@ package com.poly.beeshoes.controller;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
-import com.poly.beeshoes.infrastructure.request.shoedetail.FindShoeDetailRequest;
+import com.poly.beeshoes.dto.request.shoedetail.ShoeDetailRequest;
+import com.poly.beeshoes.dto.request.shoedetail.FindShoeDetailRequest;
 import com.poly.beeshoes.service.ShoeDetailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/shoe-detail")

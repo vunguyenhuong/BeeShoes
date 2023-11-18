@@ -2,8 +2,8 @@ package com.poly.beeshoes.service;
 
 import com.poly.beeshoes.entity.BillDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
-import com.poly.beeshoes.infrastructure.request.BillDetailRequest;
-import com.poly.beeshoes.infrastructure.response.BillDetailResponse;
+import com.poly.beeshoes.dto.request.billdetail.BillDetailRequest;
+import com.poly.beeshoes.dto.response.BillDetailResponse;
 
 public interface BillDetailService {
     PageableObject<BillDetailResponse> getAll(BillDetailRequest request);

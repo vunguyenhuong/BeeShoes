@@ -1,8 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
-import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.entity.BillHistory;
-import com.poly.beeshoes.infrastructure.request.BillHistoryRequest;
+import com.poly.beeshoes.dto.request.BillHistoryRequest;
 import com.poly.beeshoes.repository.IBillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

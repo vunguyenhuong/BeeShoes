@@ -2,8 +2,8 @@ package com.poly.beeshoes.service;
 
 import com.poly.beeshoes.entity.Color;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
-import com.poly.beeshoes.infrastructure.request.ColorRequest;
-import com.poly.beeshoes.infrastructure.response.ColorResponse;
+import com.poly.beeshoes.dto.request.properties.ColorRequest;
+import com.poly.beeshoes.dto.response.ColorResponse;
 
 public interface ColorService {
     PageableObject<ColorResponse> getAll(ColorRequest request);

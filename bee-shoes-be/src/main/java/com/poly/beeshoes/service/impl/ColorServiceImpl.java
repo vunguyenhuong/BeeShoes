@@ -1,12 +1,11 @@
 package com.poly.beeshoes.service.impl;
 
 import com.poly.beeshoes.entity.Color;
-import com.poly.beeshoes.entity.Size;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.converter.ColorConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
-import com.poly.beeshoes.infrastructure.request.ColorRequest;
-import com.poly.beeshoes.infrastructure.response.ColorResponse;
+import com.poly.beeshoes.dto.request.properties.ColorRequest;
+import com.poly.beeshoes.dto.response.ColorResponse;
 import com.poly.beeshoes.repository.IColorRepository;
 import com.poly.beeshoes.service.ColorService;
 import org.springframework.beans.factory.annotation.Autowired;

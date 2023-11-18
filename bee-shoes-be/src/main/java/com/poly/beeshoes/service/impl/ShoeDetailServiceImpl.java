@@ -7,14 +7,13 @@ import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.converter.ShoeDetailConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
-import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
-import com.poly.beeshoes.infrastructure.request.shoedetail.FindShoeDetailRequest;
-import com.poly.beeshoes.infrastructure.response.ShoeDetailResponse;
+import com.poly.beeshoes.dto.request.shoedetail.ShoeDetailRequest;
+import com.poly.beeshoes.dto.request.shoedetail.FindShoeDetailRequest;
+import com.poly.beeshoes.dto.response.ShoeDetailResponse;
 import com.poly.beeshoes.repository.IImagesRepository;
 import com.poly.beeshoes.repository.IShoeDetailRepository;
 import com.poly.beeshoes.repository.IShoeRepository;
 import com.poly.beeshoes.service.ShoeDetailService;
-import com.poly.beeshoes.util.CloudinaryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Future;
 
 @Service
 public class ShoeDetailServiceImpl implements ShoeDetailService {
@@ -50,6 +47,7 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
                 .size(request.getSize())
                 .color(request.getColor())
                 .shoe(request.getShoe())
+                .sole(request.getSole())
                 .minPrice(request.getMinPrice())
                 .maxPrice(request.getMaxPrice())
                 .name(request.getName())

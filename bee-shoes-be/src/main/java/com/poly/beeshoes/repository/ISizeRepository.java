@@ -1,8 +1,8 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.Size;
-import com.poly.beeshoes.infrastructure.request.SizeRequest;
-import com.poly.beeshoes.infrastructure.response.SizeResponse;
+import com.poly.beeshoes.dto.request.properties.SizeRequest;
+import com.poly.beeshoes.dto.response.SizeResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

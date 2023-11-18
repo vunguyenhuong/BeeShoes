@@ -1,9 +1,8 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.Bill;
-import com.poly.beeshoes.infrastructure.request.bill.BillRequest;
-import com.poly.beeshoes.infrastructure.request.bill.BillSearchRequest;
-import com.poly.beeshoes.infrastructure.response.BillResponse;
+import com.poly.beeshoes.dto.request.bill.BillSearchRequest;
+import com.poly.beeshoes.dto.response.BillResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

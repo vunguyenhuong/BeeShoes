@@ -1,8 +1,8 @@
 package com.poly.beeshoes.controller;
 
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.PaymentMethodRequest;
-import com.poly.beeshoes.infrastructure.response.PaymentMethodResponse;
+import com.poly.beeshoes.dto.request.PaymentMethodRequest;
+import com.poly.beeshoes.dto.response.PaymentMethodResponse;
 import com.poly.beeshoes.service.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;

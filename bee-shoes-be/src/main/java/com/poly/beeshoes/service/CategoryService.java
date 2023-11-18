@@ -2,8 +2,8 @@ package com.poly.beeshoes.service;
 
 import com.poly.beeshoes.entity.Category;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
-import com.poly.beeshoes.infrastructure.request.CategoryRequest;
-import com.poly.beeshoes.infrastructure.response.CategoryResponse;
+import com.poly.beeshoes.dto.request.properties.CategoryRequest;
+import com.poly.beeshoes.dto.response.CategoryResponse;
 
 public interface CategoryService {
     PageableObject<CategoryResponse> getAll(CategoryRequest request);

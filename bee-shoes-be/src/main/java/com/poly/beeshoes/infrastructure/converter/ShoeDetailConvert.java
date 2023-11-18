@@ -6,7 +6,7 @@ import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.entity.Size;
 import com.poly.beeshoes.entity.Sole;
 import com.poly.beeshoes.infrastructure.common.GenCode;
-import com.poly.beeshoes.infrastructure.request.ShoeDetailRequest;
+import com.poly.beeshoes.dto.request.shoedetail.ShoeDetailRequest;
 import com.poly.beeshoes.repository.IColorRepository;
 import com.poly.beeshoes.repository.IShoeRepository;
 import com.poly.beeshoes.repository.ISizeRepository;

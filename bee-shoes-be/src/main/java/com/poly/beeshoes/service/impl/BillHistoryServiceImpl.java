@@ -1,10 +1,9 @@
 package com.poly.beeshoes.service.impl;
 
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.converter.BillConvert;
 import com.poly.beeshoes.infrastructure.converter.BillHistoryConvert;
-import com.poly.beeshoes.infrastructure.request.BillHistoryRequest;
-import com.poly.beeshoes.infrastructure.response.BillHistoryResponse;
+import com.poly.beeshoes.dto.request.BillHistoryRequest;
+import com.poly.beeshoes.dto.response.BillHistoryResponse;
 import com.poly.beeshoes.repository.IBillHistoryRepository;
 import com.poly.beeshoes.service.BillHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;

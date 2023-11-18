@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Size;
-import com.poly.beeshoes.infrastructure.request.SizeRequest;
+import com.poly.beeshoes.dto.request.properties.SizeRequest;
 import org.springframework.stereotype.Component;
 
 @Component

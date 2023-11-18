@@ -77,7 +77,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
   return (
     <>
       <Col span={8}>
-        <Form.Item label="Tỉnh/thành phố" name={"province"} rules={[{ required: true, message: "Tỉnh thành phố không được để trống!" },]} initialValue={!prov ? null : parseInt(prov)}>
+        <Form.Item label="Tỉnh/thành phố" name={"province"} rules={[{ required: true, message: "Tỉnh thành phố không được để trống!" },]}>
           <Select showSearch onChange={handleProvinceChange} placeholder="Chọn tỉnh/thành phố..." optionFilterProp="children"
             filterOption={(input, option) => (option?.children ?? "").toLowerCase().includes(input.toLowerCase())}
             defaultValue={!prov ? null : parseInt(prov)}
@@ -92,7 +92,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
         </Form.Item>
       </Col>
       <Col span={8}>
-        <Form.Item label="Quận/huyện" name={"district"} rules={[{ required: true, message: "Quận huyện không được để trống!" },]} initialValue={!distr ? null : parseInt(distr)}>
+        <Form.Item label="Quận/huyện" name={"district"} rules={[{ required: true, message: "Quận huyện không được để trống!" },]}>
           <Select showSearch onChange={handleDistrictChange} placeholder="Chọn quận/huyện..." optionFilterProp="children"
             filterOption={(input, option) => (option?.children ?? "").toLowerCase().includes(input.toLowerCase())}
             defaultValue={!distr ? null : parseInt(distr)}
@@ -107,7 +107,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
         </Form.Item>
       </Col>
       <Col span={8}>
-        <Form.Item label="Xã/phường/thị trấn" name={"ward"} rules={[{ required: true, message: "Xã phường không được để trống!" },]} initialValue={war}>
+        <Form.Item label="Xã/phường/thị trấn" name={"ward"} rules={[{ required: true, message: "Xã phường không được để trống!" },]}>
           <Select showSearch onChange={handleWardChange} placeholder="Chọn xã/phường/thị trấn..." optionFilterProp="children"
             filterOption={(input, option) => (option?.children ?? "").toLowerCase().includes(input.toLowerCase())}
             defaultValue={war}

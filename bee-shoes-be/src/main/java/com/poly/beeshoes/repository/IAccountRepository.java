@@ -1,16 +1,14 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.Account;
-import com.poly.beeshoes.infrastructure.request.AccountRequest;
-import com.poly.beeshoes.infrastructure.response.AccountResponse;
+import com.poly.beeshoes.dto.request.AccountRequest;
+import com.poly.beeshoes.dto.response.AccountResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface IAccountRepository extends JpaRepository<Account, Long> {

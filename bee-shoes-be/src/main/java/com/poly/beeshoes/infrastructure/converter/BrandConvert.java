@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Brand;
-import com.poly.beeshoes.infrastructure.request.BrandRequest;
+import com.poly.beeshoes.dto.request.properties.BrandRequest;
 import org.springframework.stereotype.Component;
 
 @Component

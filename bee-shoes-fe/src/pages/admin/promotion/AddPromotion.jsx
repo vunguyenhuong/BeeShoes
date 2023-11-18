@@ -43,7 +43,7 @@ function AddPromotion() {
             className="mb-2"
             items={[
               { href: "/", title: <FaHome /> },
-              { href: "/admin/promotion", title: "Danh sách khuyến mại" },
+              { link: "/admin/promotion", title: "Danh sách khuyến mại" },
               { title: "Thêm khuyến mại" },
             ]}
           />
@@ -91,9 +91,7 @@ function AddPromotion() {
           <Col xl={24}>
             <h6>Danh sách chi tiết sản phẩm</h6>
 
-            {productIds.length === 0 ? <Empty /> : productIds.map((item, index) => (
-              <TableShoeDetail idProduct={productIds} setSelectedProductDetail={(value) => setPRoductDetail(value)} />
-            ))}
+            {productIds.length === 0 ? <Empty /> : <TableShoeDetail idProduct={productIds} setSelectedProductDetail={(value) => setPRoductDetail(value)} />}
           </Col>
         </Row>
       </Form >

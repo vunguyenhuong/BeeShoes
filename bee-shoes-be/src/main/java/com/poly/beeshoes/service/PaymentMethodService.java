@@ -1,9 +1,8 @@
 package com.poly.beeshoes.service;
 
-import com.poly.beeshoes.entity.PaymentMethod;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.PaymentMethodRequest;
-import com.poly.beeshoes.infrastructure.response.PaymentMethodResponse;
+import com.poly.beeshoes.dto.request.PaymentMethodRequest;
+import com.poly.beeshoes.dto.response.PaymentMethodResponse;
 
 import java.util.List;
 

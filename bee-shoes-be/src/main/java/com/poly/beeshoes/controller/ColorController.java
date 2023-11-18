@@ -3,8 +3,8 @@ package com.poly.beeshoes.controller;
 import com.poly.beeshoes.entity.Color;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.infrastructure.request.ColorRequest;
-import com.poly.beeshoes.infrastructure.response.ColorResponse;
+import com.poly.beeshoes.dto.request.properties.ColorRequest;
+import com.poly.beeshoes.dto.response.ColorResponse;
 import com.poly.beeshoes.service.ColorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

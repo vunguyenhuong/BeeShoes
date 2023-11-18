@@ -59,11 +59,10 @@ function TableShoe({ setProductIds }) {
     console.log(newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
     setProductIds(newSelectedRowKeys);
-    
+
   };
   const rowSelection = {
     selectedRowKeys,
-    type: "radio",
     onChange: onSelectChange,
   };
 

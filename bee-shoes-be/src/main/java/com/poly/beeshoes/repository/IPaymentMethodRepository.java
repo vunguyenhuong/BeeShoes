@@ -1,7 +1,7 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.PaymentMethod;
-import com.poly.beeshoes.infrastructure.response.PaymentMethodResponse;
+import com.poly.beeshoes.dto.response.PaymentMethodResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

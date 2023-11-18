@@ -3,7 +3,7 @@ package com.poly.beeshoes.repository;
 import com.poly.beeshoes.entity.Color;
 import com.poly.beeshoes.entity.Images;
 import com.poly.beeshoes.entity.Shoe;
-import com.poly.beeshoes.infrastructure.response.ImageResponse;
+import com.poly.beeshoes.dto.response.ImageResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

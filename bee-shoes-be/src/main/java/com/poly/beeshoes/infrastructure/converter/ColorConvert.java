@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Color;
-import com.poly.beeshoes.infrastructure.request.ColorRequest;
+import com.poly.beeshoes.dto.request.properties.ColorRequest;
 import org.springframework.stereotype.Component;
 
 @Component

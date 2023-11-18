@@ -73,7 +73,7 @@ function PromotionDetail() {
                                 </Form.Item>
                             </Col>
                             <Col xl={24}>
-                                <Button type="primary" className="bg-warning" htmlType="submit">Thêm khuyến mại</Button>
+                                <Button type="primary" className="bg-warning" htmlType="submit">Cập nhật khuyến mại</Button>
                             </Col>
                         </Row>
                     </Col>

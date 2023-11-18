@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.PaymentMethod;
-import com.poly.beeshoes.infrastructure.request.PaymentMethodRequest;
+import com.poly.beeshoes.dto.request.PaymentMethodRequest;
 import com.poly.beeshoes.repository.IBillRepository;
 import com.poly.beeshoes.repository.IPaymentMethodRepository;
 import org.springframework.beans.factory.annotation.Autowired;

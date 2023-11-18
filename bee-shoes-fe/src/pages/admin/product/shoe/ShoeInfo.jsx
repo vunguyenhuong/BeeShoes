@@ -1,11 +1,10 @@
-import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Input, InputNumber, Modal, Row, Table, Tooltip } from "antd";
+import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, Row, Select, Table, Tooltip } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { FaHome } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Loading from "~/components/Loading/Loading";
-import Pagination from "~/components/Pagination";
 import BaseUI from "~/layouts/admin/BaseUI";
 import FormatDate from "~/utils/FormatDate";
 import request from "~/utils/httpRequest";
@@ -14,10 +13,12 @@ import UpdateShoeDetail from "./UpdateShoeDetail";
 import FormatCurrency from "~/utils/FormatCurrency";
 import Title from "antd/es/typography/Title";
 import { toast } from "react-toastify";
+import { Option } from "antd/es/mentions";
 
 
 
 function ShoeInfo() {
+  const [formFilter] = Form.useForm();
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [listProductDetail, setListProductDetail] = useState([]);
@@ -29,6 +30,14 @@ function ShoeInfo() {
   const [pageSize, setPageSize] = useState(5);
 
   const [listUpdate, setListUpdate] = useState([]);
+
+  const [listSize, setListSize] = useState([]);
+  const [searchSize, setSearchSize] = useState('');
+
+  const [listColor, setListColor] = useState([]);
+  const [listSole, setListSole] = useState([]);
+
+  const [dataFilter, setDataFilter] = useState({});
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const onSelectChange = (newSelectedRowKeys) => {
@@ -71,6 +80,24 @@ function ShoeInfo() {
     console.log(listUpdate);
   }
 
+  useEffect(() => {
+    request.get('/size', { params: { name: searchSize } }).then(response => {
+      setListSize(response.data.data);
+    }).catch(e => {
+      console.log(e);
+    })
+    request.get('/color', { params: { name: searchSize } }).then(response => {
+      setListColor(response.data.data);
+    }).catch(e => {
+      console.log(e);
+    })
+    request.get('/sole', { params: { name: searchSize } }).then(response => {
+      setListSole(response.data.data);
+    }).catch(e => {
+      console.log(e);
+    })
+  }, [searchSize])
+
   const columns = [
     {
       title: '#',
@@ -81,6 +108,13 @@ function ShoeInfo() {
       title: 'Tên',
       dataIndex: 'name',
       key: 'name',
+      render: (x, record) => (
+        <>
+          {x}
+          <br />
+          {record.discountValue !== null && <small className="fw-semibold">SALE <span className="text-danger">{record.discountPercent} %</span></small>}
+        </>
+      )
     },
     {
       title: 'Đế giày',
@@ -120,7 +154,13 @@ function ShoeInfo() {
               onChange={(value) => handlePriceChange(value, record.id)}
             />
           ) : (
-            <FormatCurrency value={x} />
+            <>
+              {record.discountValue == null ? <FormatCurrency value={x} /> : (
+                <>
+                  <span className="text-danger"><FormatCurrency value={record.discountValue} /></span> <span className="text-decoration-line-through text-secondary"><FormatCurrency value={record.price} /></span>
+                </>
+              )}
+            </>
           )}
         </>
       )
@@ -188,12 +228,18 @@ function ShoeInfo() {
 
   useEffect(() => {
     loadShoeDetail(id, currentPage, pageSize);
-  }, [id, currentPage, pageSize])
+  }, [id, currentPage, pageSize, dataFilter])
 
   const loadShoeDetail = (id, currentPage, pageSize) => {
     request.get('/shoe-detail', {
       params: {
-        shoe: id, page: currentPage, sizePage: pageSize,
+        name: dataFilter.name,
+        size: dataFilter.size,
+        color: dataFilter.color,
+        sole: dataFilter.sole,
+        shoe: id,
+        page: currentPage,
+        sizePage: pageSize,
       }
     }).then(response => {
       setListProductDetail(response.data.data);
@@ -288,6 +334,50 @@ function ShoeInfo() {
             {selectedRowKeys.length > 0 && <Button type="primary" onClick={() => handleUpdateFast()} className="bg-warning">Cập nhật {selectedRowKeys.length} sản phẩm</Button>}
           </div>
         </div>
+        <Form layout='vertical' onFinish={(data) => setDataFilter(data)} form={formFilter}>
+          <Row gutter={10}>
+            <Col span={8}>
+              <Form.Item label="Kích cỡ" name={"size"}>
+                <Select showSearch placeholder="Chọn kích cỡ..." optionFilterProp="children" style={{ width: "100%" }} onSearch={setSearchSize}>
+                  <Option value="">Chọn kích cỡ</Option>
+                  {listSize.map((item) => (
+                    <Option key={item.id} value={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="Màu sắc" name={"color"}>
+                <Select showSearch placeholder="Chọn màu sắc..." optionFilterProp="children" style={{ width: "100%" }} onSearch={setSearchSize}>
+                  <Option value="">Chọn màu sắc</Option>
+                  {listColor.map((item) => (
+                    <Option key={item.id} value={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="Loại đế" name={"sole"}>
+                <Select showSearch placeholder="Chọn loại đế..." optionFilterProp="children" style={{ width: "100%" }} onSearch={setSearchSize}>
+                  <Option value="">Chọn loại đế</Option>
+                  {listSole.map((item) => (
+                    <Option key={item.id} value={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <div className="text-center">
+            <Button className='me-1 bg-danger' onClick={() => { formFilter.resetFields() }} type='primary' icon={<i class="fa-solid fa-rotate-left"></i>}>Làm mới</Button>
+            <Button htmlType='submit' className='bg-warning text-dark' type='primary' icon={<i className='fas fa-search'></i>}>Tìm kiếm</Button>
+          </div>
+        </Form>
         <Table dataSource={listProductDetail} columns={columns} className="mt-3"
           rowKey={"id"}
           rowSelection={rowSelection}

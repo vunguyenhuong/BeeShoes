@@ -2,8 +2,8 @@ package com.poly.beeshoes.service.impl;
 
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.converter.PaymentMethodConvert;
-import com.poly.beeshoes.infrastructure.request.PaymentMethodRequest;
-import com.poly.beeshoes.infrastructure.response.PaymentMethodResponse;
+import com.poly.beeshoes.dto.request.PaymentMethodRequest;
+import com.poly.beeshoes.dto.response.PaymentMethodResponse;
 import com.poly.beeshoes.repository.IPaymentMethodRepository;
 import com.poly.beeshoes.service.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;

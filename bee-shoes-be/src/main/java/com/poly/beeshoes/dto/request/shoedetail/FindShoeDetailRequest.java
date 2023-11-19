@@ -20,8 +20,6 @@ public class FindShoeDetailRequest extends PageableRequest {
     private List<String> colors;
     private List<String> sizes;
     private List<String> soles;
-    private BigDecimal minPrice;
-    private BigDecimal maxPrice;
     private Boolean deleted;
     private String name;
 }

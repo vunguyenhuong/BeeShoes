@@ -16,6 +16,8 @@ const Bill = () => {
 
   const [status, setStatus] = useState(null);
 
+  const [tabs, setTabs] = useState([]);
+
   const loadOrders = (status, currentPage, pageSize, searchValue) => {
     request
       .get(`bill`, {
@@ -36,6 +38,9 @@ const Bill = () => {
 
   useEffect(() => {
     loadOrders();
+    request.get('/bill/statistic-bill-status').then(response => {
+      setTabs(response);
+    }).catch(e => { console.log(e); })
   }, [])
 
   useEffect(() => {
@@ -43,34 +48,10 @@ const Bill = () => {
   }, [currentPage, pageSize, searchValue, status]);
 
   const items = [
-    {
-      key: null,
-      label: <Badge count={5} offset={[8, 0]} size="small">Tất cả</Badge>,
-    },
-    {
-      key: 2,
-      label: <Badge count={5} offset={[8, 0]} size="small">Chờ xác nhận</Badge>,
-    },
-    {
-      key: 4,
-      label: <Badge count={5} offset={[8, 0]} size="small">Chờ giao</Badge>,
-    },
-    {
-      key: 5,
-      label: <Badge count={5} offset={[8, 0]} size="small">Đang giao</Badge>,
-    },
-    {
-      key: 6,
-      label: <Badge count={5} offset={[8, 0]} size="small">Hoàn thành</Badge>,
-    },
-    {
-      key: 7,
-      label: <Badge count={5} offset={[8, 0]} size="small">Hủy</Badge>,
-    },
-    {
-      key: 0,
-      label: <Badge count={5} offset={[8, 0]} size="small">Chờ thanh toán</Badge>,
-    },
+    ...tabs.map(item => ({
+      key: item.status,
+      label: <Badge count={item.totalCount} offset={[8, 0]} size="small">{item.statusName}</Badge>,
+    })),
   ];
 
   const columns = [
@@ -84,11 +65,11 @@ const Bill = () => {
       dataIndex: 'code',
       key: 'code',
     },
-    {
-      title: 'Người tạo',
-      dataIndex: 'employee',
-      key: 'employee',
-    },
+    // {
+    //   title: 'Người tạo',
+    //   dataIndex: 'employee',
+    //   key: 'employee',
+    // },
     {
       title: 'Khách hàng',
       dataIndex: 'customer',
@@ -143,7 +124,7 @@ const Bill = () => {
     <BaseUI>
       <h6>Danh sách hóa đơn</h6>
       <Tabs defaultActiveKey={1} items={items} tabBarGutter={74} onChange={(key) => {
-        loadOrders(key);
+        setStatus(key);
       }} />
       <Table dataSource={listOrder} columns={columns}
         pagination={{

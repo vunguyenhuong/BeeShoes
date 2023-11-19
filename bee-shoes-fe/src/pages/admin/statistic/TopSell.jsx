@@ -60,6 +60,7 @@ function TopSell() {
         <>
             <Title level={5}>TOP SẢN PHẨM BÁN CHẠY</Title>
             <Table
+                className='text-nowrap'
                 columns={columns}
                 dataSource={topSell}
                 pagination={false}

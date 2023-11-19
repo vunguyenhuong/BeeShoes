@@ -19,7 +19,7 @@ function ChartBillStatus() {
 
     const chartPieLabels = data.map((item) => item.statusName);
     const chartPieData = data.map((item) => item.totalCount);
-    const chartPieColor = ["#E46651","#00D8FF","#FFCE56","#9C27B0","#41B883","#4CAF50","##FF5733","#DD1B16",]
+    const chartPieColor = ["#E46651", "#00D8FF", "#FFCE56", "#9C27B0", "#41B883", "#4CAF50", "##FF5733", "#DD1B16",]
 
     useEffect(() => {
         httpRequest.get('/bill/statistic-bill-status').then(response => {
@@ -31,31 +31,33 @@ function ChartBillStatus() {
     return (
         <>
             <Title level={5}>TRẠNG THÁI ĐƠN HÀNG</Title>
-            <CChart
-                type="pie"
-                data={{
-                    datasets: [
-                        {
-                            backgroundColor: chartPieColor,
-                            data: chartPieData,
-                        },
-                    ],
-                    labels: chartPieLabels,
-                }}
-                options={{
-                    plugins: {
-                        legend: {
-                            position: "bottom",
-                            labels: {
-                                color: "#333",
-                                font: {
-                                    size: 19,
+            <div className="container">
+                <CChart
+                    type="pie"
+                    data={{
+                        datasets: [
+                            {
+                                backgroundColor: chartPieColor,
+                                data: chartPieData,
+                            },
+                        ],
+                        labels: chartPieLabels,
+                    }}
+                    options={{
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+                                labels: {
+                                    color: "#333",
+                                    font: {
+                                        size: 14,
+                                    },
                                 },
                             },
                         },
-                    },
-                }}
-            />
+                    }}
+                />
+            </div>
         </>
     )
 }

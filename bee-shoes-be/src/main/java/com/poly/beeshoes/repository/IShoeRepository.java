@@ -44,6 +44,10 @@ public interface IShoeRepository extends JpaRepository<Shoe, Long> {
             AND (:#{#req.brand} IS NULL OR s.brand_id = :#{#req.brand})
             AND (:#{#req.category} IS NULL OR s.category_id = :#{#req.category})
             AND (:#{#req.status} IS NULL OR s.deleted = :#{#req.status})
+            
+            AND (:#{#req.color} IS NULL OR :#{#req.color} = '' OR sd.color_id IN (:#{#req.colors}))
+            AND (:#{#req.size} IS NULL OR :#{#req.size} = '' OR sd.size_id IN (:#{#req.sizes}))
+            AND (:#{#req.sole} IS NULL OR :#{#req.sole} = '' OR sd.sole_id IN (:#{#req.soles}))
             GROUP BY s.id
             """, nativeQuery = true)
     Page<ShoeResponse> getAllShoe(@Param("req") ShoeRequest request, Pageable pageable);

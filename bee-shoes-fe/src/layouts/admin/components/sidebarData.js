@@ -3,7 +3,7 @@ const sidebarData = [
         "key": "tongQuan",
         "title": "Tổng quan",
         "icon": "fa-gauge",
-        "path": "/admin/product"
+        "path": "/"
     },
     {
         "key": "qlgiaodich",

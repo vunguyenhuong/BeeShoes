@@ -59,10 +59,12 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
                            WHEN status = 7 THEN 'Đã hủy'
                            ELSE 'Chờ thanh toán'
                        END AS statusName,
+                       status as status,
                        COUNT(*) AS totalCount
                    FROM
                        bill
                    GROUP BY status
+                   ORDER BY status
             """,nativeQuery = true)
     List<StatisticBillStatus> statisticBillStatus();
 

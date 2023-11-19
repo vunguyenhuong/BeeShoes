@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -26,7 +27,21 @@ public class ShoeServiceImpl implements ShoeService {
     @Override
     public PageableObject<ShoeResponse> getAll(ShoeRequest request) {
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
-        return new PageableObject<>(shoeRepository.getAllShoe(request, pageable));
+        ShoeRequest customRequest = ShoeRequest.builder()
+                .colors(request.getColor() != null ? Arrays.asList(request.getColor().split(",")) : null)
+                .sizes(request.getSize() != null ? Arrays.asList(request.getSize().split(",")) : null)
+                .soles(request.getSole() != null ? Arrays.asList(request.getSole().split(",")) : null)
+                .size(request.getSize())
+                .color(request.getColor())
+                .sole(request.getSole())
+                .name(request.getName())
+                .minPrice(request.getMinPrice())
+                .maxPrice(request.getMaxPrice())
+                .category(request.getCategory())
+                .brand(request.getBrand())
+                .status(request.getStatus())
+                .build();
+        return new PageableObject<>(shoeRepository.getAllShoe(customRequest, pageable));
     }
 
     @Override

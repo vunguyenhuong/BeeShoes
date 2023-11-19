@@ -48,8 +48,6 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
                 .color(request.getColor())
                 .shoe(request.getShoe())
                 .sole(request.getSole())
-                .minPrice(request.getMinPrice())
-                .maxPrice(request.getMaxPrice())
                 .name(request.getName())
                 .build();
         return new PageableObject<>(shoeDetailRepository.getAll(customRequest, pageable));

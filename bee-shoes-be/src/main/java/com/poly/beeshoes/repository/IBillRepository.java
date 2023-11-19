@@ -1,5 +1,6 @@
 package com.poly.beeshoes.repository;
 
+import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.dto.request.bill.BillSearchRequest;
 import com.poly.beeshoes.dto.response.BillResponse;
@@ -9,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface IBillRepository extends JpaRepository<Bill, Long> {
@@ -43,6 +46,25 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
             AND b.deleted = FALSE 
             """, nativeQuery = true)
     Page<BillResponse> getAll(@Param("req") BillSearchRequest request, Pageable pageable);
+
+    @Query(value = """
+            SELECT
+                       CASE
+                           WHEN status = 1 THEN 'Tạo đơn hàng'
+                           WHEN status = 2 THEN 'Chờ xác nhận'
+                           WHEN status = 3 THEN 'Xác nhận thông tin thanh toán'
+                           WHEN status = 4 THEN 'Chờ giao'
+                           WHEN status = 5 THEN 'Đang giao'
+                           WHEN status = 6 THEN 'Hoàn thành'
+                           WHEN status = 7 THEN 'Đã hủy'
+                           ELSE 'Chờ thanh toán'
+                       END AS statusName,
+                       COUNT(*) AS totalCount
+                   FROM
+                       bill
+                   GROUP BY status
+            """,nativeQuery = true)
+    List<StatisticBillStatus> statisticBillStatus();
 
     @Query("""
             SELECT b

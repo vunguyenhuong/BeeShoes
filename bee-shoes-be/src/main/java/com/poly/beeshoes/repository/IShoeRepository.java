@@ -70,7 +70,6 @@ public interface IShoeRepository extends JpaRepository<Shoe, Long> {
             s.id AS id,s.name AS name,
             ROW_NUMBER() OVER(ORDER BY SUM(bd.quantity) DESC) AS indexs,
             SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT img.name ORDER BY img.name), ',', 1) AS images,
-            SUM(sd.quantity) AS quantity,
             ct.name AS category,
             br.name AS brand,
             MAX(sd.price) AS maxPrice,

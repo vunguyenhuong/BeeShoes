@@ -1,6 +1,7 @@
 package com.poly.beeshoes.controller;
 
 
+import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
@@ -12,6 +13,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/bill")
 public class BillController {
@@ -21,6 +24,10 @@ public class BillController {
     @GetMapping
     public PageableObject getAll(BillSearchRequest request) {
         return billService.getAll(request);
+    }
+    @GetMapping("/statistic-bill-status")
+    public List<StatisticBillStatus> statisticBillStatus(){
+        return billService.statisticBillStatus();
     }
 
     @GetMapping("/{id}")

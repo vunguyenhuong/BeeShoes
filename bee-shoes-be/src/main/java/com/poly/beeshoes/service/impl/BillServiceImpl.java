@@ -1,5 +1,6 @@
 package com.poly.beeshoes.service.impl;
 
+import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.entity.BillDetail;
 import com.poly.beeshoes.entity.BillHistory;
@@ -27,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BillServiceImpl implements BillService {
@@ -195,5 +198,10 @@ public class BillServiceImpl implements BillService {
             billHistoryRepository.save(history);
         }
         return billSave;
+    }
+
+    @Override
+    public List<StatisticBillStatus> statisticBillStatus() {
+        return billRepository.statisticBillStatus();
     }
 }

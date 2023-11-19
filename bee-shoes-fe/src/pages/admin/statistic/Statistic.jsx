@@ -3,6 +3,7 @@ import Title from 'antd/es/typography/Title';
 import React, { useEffect, useState } from 'react'
 import httpRequest from '~/utils/httpRequest';
 import TopSell from './TopSell';
+import ChartBillStatus from './ChartBillStatus';
 
 function Statistic() {
 
@@ -31,12 +32,12 @@ function Statistic() {
                 </Col>
             </Row>
 
-            <Row className='mt-3'>
+            <Row className='mt-3' gutter={24}>
                 <Col xl={12}>
                     <TopSell />
                 </Col>
                 <Col xl={12}>
-
+                    <ChartBillStatus />
                 </Col>
             </Row>
         </>

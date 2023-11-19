@@ -44,7 +44,6 @@ function TopSell() {
                             <li className='text-danger fw-semibold'><FormatCurrency value={record.minPrice} /> - <FormatCurrency value={record.maxPrice} /></li>
                             <li>Thương hiệu: {record.brand}</li>
                             <li>Danh mục: {record.category}</li>
-                            <li>Số lượng tồn: {record.quantity}</li>
                         </small>
                     </ul>
                 </>

@@ -7,7 +7,7 @@ import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
 import { Link } from "react-router-dom";
 
-const Bill = () => {
+const Bill = ({ onLoad }) => {
   const [listOrder, setListOrder] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -34,18 +34,19 @@ const Bill = () => {
       .catch((e) => {
         console.log(e);
       });
+
+    request.get('/bill/statistic-bill-status').then(response => {
+      setTabs(response);
+    }).catch(e => { console.log(e); })
   };
 
   useEffect(() => {
     loadOrders();
-    request.get('/bill/statistic-bill-status').then(response => {
-      setTabs(response);
-    }).catch(e => { console.log(e); })
   }, [])
 
   useEffect(() => {
     loadOrders(status, currentPage, pageSize, searchValue);
-  }, [currentPage, pageSize, searchValue, status]);
+  }, [currentPage, pageSize, searchValue, status, onLoad]);
 
   const items = [
     ...tabs.map(item => ({

@@ -92,7 +92,7 @@ function PaymentMethod({ bill }) {
   return (
     <>
       <div className="mt-3">
-        <div className="bg-secondary-subtle d-flex align-items-center">
+        <div className="d-flex align-items-center">
           <Title level={5} className="text-uppercase p-0 m-0 flex-grow-1 p-2">Lịch sử thanh toán</Title>
           <div className="p-2">
             {paymentMethod?.length === 0 ? (

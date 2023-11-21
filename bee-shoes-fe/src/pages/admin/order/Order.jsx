@@ -19,19 +19,19 @@ function Order() {
     {
       key: '1',
       label: `Tạo mới`,
-      children: <NewOrder/>,
+      children: <NewOrder />,
     },
     {
       key: '2',
       label: `Danh sách hóa đơn`,
-      children: "Danh sách hóa đơn",
+      children: <Bill onLoad={new Date().getTime()} />,
     }
   ];
 
   return (
     <BaseUI>
-    <h6>Quản lý đơn hàng</h6>
-    <Tabs defaultActiveKey="1" items={items} onChange={handleTabChange}/>
+      <h6>Quản lý đơn hàng</h6>
+      <Tabs defaultActiveKey="1" items={items} onChange={handleTabChange} />
     </BaseUI>
   );
 }

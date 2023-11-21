@@ -9,7 +9,7 @@ function InfoBill({ props }) {
   return (
     <>
       <div className="mt-3">
-        <Title level={5} className="text-uppercase bg-secondary-subtle p-2">Thông tin đơn hàng</Title>
+        <Title level={5} className="text-uppercase">Thông tin đơn hàng</Title>
         <Row gutter={24} className="fw-semibold">
           <Col xl={8}>
             <ul className="list-unstyled">

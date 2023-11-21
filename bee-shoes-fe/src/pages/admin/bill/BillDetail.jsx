@@ -19,12 +19,13 @@ import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
 import "./timeline.css";
 import InfoBill from "./InfoBill";
-import { Button, Carousel, Empty, Form, Modal, Table, message } from "antd";
+import { Button, Carousel, Divider, Empty, Form, Modal, Table, message } from "antd";
 import PaymentMethod from "./PaymentMethod";
 import BillHistory from "./BillHistory";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
 import { toast } from "react-toastify";
+import ShowProductModal from "../order/neworder/ShowProductModal";
 
 const BillDetail = () => {
   const [bill, setBill] = useState([]);
@@ -257,13 +258,15 @@ const BillDetail = () => {
             <BillHistory props={billHistory} />
           </div>
         </div>
+        <Divider />
         {/* Thông tin đơn hàng */}
         <InfoBill props={bill} />
         {/* Lịch sử thanh toán */}
         <PaymentMethod bill={bill} />
         {/* Thông tin đơn hàng */}
-        <div className="bg-secondary-subtle d-flex align-items-center mt-3">
+        <div className="d-flex align-items-center mt-3 mb-2">
           <Title level={5} className="text-uppercase p-0 m-0 flex-grow-1 p-2">Sản phẩm</Title>
+          <ShowProductModal idBill={bill.id} onClose={() => loadBillDetail()} />
         </div>
         <Table dataSource={listBillDetail} columns={columns}
           pagination={{

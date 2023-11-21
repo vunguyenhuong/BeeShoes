@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 @Repository
 public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
     ShoeDetail findByCode(String code);
@@ -53,4 +56,7 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
     ShoeDetail findByShoeIdAndColorIdAndSizeId(Long idShoe, Long idColor, Long idSize);
 
     ShoeDetail findByShoeIdAndColorNameAndSizeName(Long idShoe, String colorName, String sizeName);
+
+    @Query("SELECT MIN(sd.price) AS minPrice, MAX(sd.price) AS maxPrice FROM ShoeDetail sd")
+    Map<String, BigDecimal> findMinAndMaxPrice();
 }

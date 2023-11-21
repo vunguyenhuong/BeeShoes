@@ -266,7 +266,9 @@ const BillDetail = () => {
         {/* Thông tin đơn hàng */}
         <div className="d-flex align-items-center mt-3 mb-2">
           <Title level={5} className="text-uppercase p-0 m-0 flex-grow-1 p-2">Sản phẩm</Title>
-          <ShowProductModal idBill={bill.id} onClose={() => loadBillDetail()} />
+          {bill.status === 2 || bill.status === 4 && (
+            <ShowProductModal idBill={bill.id} onClose={() => loadBillDetail()} />
+          )}
         </div>
         <Table dataSource={listBillDetail} columns={columns}
           pagination={{

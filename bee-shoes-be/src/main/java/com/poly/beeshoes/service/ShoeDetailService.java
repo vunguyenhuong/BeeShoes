@@ -7,7 +7,9 @@ import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.dto.request.shoedetail.FindShoeDetailRequest;
 import com.poly.beeshoes.dto.response.ShoeDetailResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface ShoeDetailService {
     PageableObject<ShoeDetailResponse> getAll(FindShoeDetailRequest request);
@@ -17,4 +19,5 @@ public interface ShoeDetailService {
     ShoeDetail delete(Long id);
 
     ResponseObject updateFast(List<ShoeDetailRequest> list);
+    Map<String, BigDecimal> findMinAndMaxPrice();
 }

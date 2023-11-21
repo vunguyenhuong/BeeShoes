@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/shoe-detail")
@@ -33,6 +35,11 @@ public class ShoeDetailController {
     @GetMapping("/{id}")
     public ShoeDetail getOne(@PathVariable Long id) {
         return shoeDetailService.getOne(id);
+    }
+
+    @GetMapping("/find-min-max-price")
+    public Map<String, BigDecimal> findMinAndMaxPrice(){
+        return shoeDetailService.findMinAndMaxPrice();
     }
 
     @PostMapping

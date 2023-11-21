@@ -1,9 +1,10 @@
 package com.poly.beeshoes.service.impl;
 
+import com.poly.beeshoes.dto.request.shoe.FindShoeReqeust;
 import com.poly.beeshoes.entity.Shoe;
 import com.poly.beeshoes.infrastructure.converter.ShoeConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
-import com.poly.beeshoes.dto.request.ShoeRequest;
+import com.poly.beeshoes.dto.request.shoe.ShoeRequest;
 import com.poly.beeshoes.dto.response.ShoeResponse;
 import com.poly.beeshoes.dto.response.promotion.ShoePromotionResponse;
 import com.poly.beeshoes.repository.IShoeRepository;
@@ -25,16 +26,20 @@ public class ShoeServiceImpl implements ShoeService {
     private ShoeConvert shoeConvert;
 
     @Override
-    public PageableObject<ShoeResponse> getAll(ShoeRequest request) {
+    public PageableObject<ShoeResponse> getAll(FindShoeReqeust request) {
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
-        ShoeRequest customRequest = ShoeRequest.builder()
+        FindShoeReqeust customRequest = FindShoeReqeust.builder()
                 .colors(request.getColor() != null ? Arrays.asList(request.getColor().split(",")) : null)
                 .sizes(request.getSize() != null ? Arrays.asList(request.getSize().split(",")) : null)
                 .soles(request.getSole() != null ? Arrays.asList(request.getSole().split(",")) : null)
+                .categories(request.getCategory() != null ? Arrays.asList(request.getCategory().split(",")) : null)
+                .brands(request.getBrand() != null ? Arrays.asList(request.getBrand().split(",")) : null)
                 .size(request.getSize())
                 .color(request.getColor())
                 .sole(request.getSole())
                 .name(request.getName())
+                .brand(request.getBrand())
+                .category(request.getCategory())
                 .minPrice(request.getMinPrice())
                 .maxPrice(request.getMaxPrice())
                 .category(request.getCategory())

@@ -1,7 +1,7 @@
 package com.poly.beeshoes.infrastructure.converter;
 
 import com.poly.beeshoes.entity.Shoe;
-import com.poly.beeshoes.dto.request.ShoeRequest;
+import com.poly.beeshoes.dto.request.shoe.ShoeRequest;
 import com.poly.beeshoes.repository.IBrandRepository;
 import com.poly.beeshoes.repository.ICategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;

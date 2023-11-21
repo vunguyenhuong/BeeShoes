@@ -25,7 +25,7 @@ import Brand from './pages/admin/product/attribute/Brand';
 import Category from './pages/admin/product/attribute/Category';
 import Promotion from './pages/admin/promotion/Promotion';
 import AddPromotion from './pages/admin/promotion/AddPromotion';
-import PromotionDetail from './pages/admin/promotion/PromotionDetail';
+import PromotionDetail from './pages/admin/promotion/update/PromotionDetail';
 import Statistic from './pages/admin/statistic/Statistic';
 
 const publicRouters = [

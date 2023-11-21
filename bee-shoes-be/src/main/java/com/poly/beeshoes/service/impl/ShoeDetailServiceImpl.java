@@ -20,9 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ShoeDetailServiceImpl implements ShoeDetailService {
@@ -116,5 +118,10 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
             shoeDetailRepository.save(convert);
         }
         return new ResponseObject(list);
+    }
+
+    @Override
+    public Map<String, BigDecimal> findMinAndMaxPrice() {
+        return shoeDetailRepository.findMinAndMaxPrice();
     }
 }

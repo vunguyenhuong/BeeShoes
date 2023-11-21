@@ -1,7 +1,8 @@
 package com.poly.beeshoes.repository;
 
+import com.poly.beeshoes.dto.request.shoe.FindShoeReqeust;
 import com.poly.beeshoes.entity.Shoe;
-import com.poly.beeshoes.dto.request.ShoeRequest;
+import com.poly.beeshoes.dto.request.shoe.ShoeRequest;
 import com.poly.beeshoes.dto.response.ShoeResponse;
 import com.poly.beeshoes.dto.response.promotion.ShoePromotionResponse;
 import org.springframework.data.domain.Page;
@@ -41,16 +42,17 @@ public interface IShoeRepository extends JpaRepository<Shoe, Long> {
             GROUP_CONCAT(DISTINCT name) AS name FROM images GROUP BY shoe_detail_id
             ) img ON sd.id = img.shoe_detail_id
             WHERE (:#{#req.name} IS NULL OR s.name LIKE %:#{#req.name}%)
-            AND (:#{#req.brand} IS NULL OR s.brand_id = :#{#req.brand})
-            AND (:#{#req.category} IS NULL OR s.category_id = :#{#req.category})
             AND (:#{#req.status} IS NULL OR s.deleted = :#{#req.status})
             
             AND (:#{#req.color} IS NULL OR :#{#req.color} = '' OR sd.color_id IN (:#{#req.colors}))
             AND (:#{#req.size} IS NULL OR :#{#req.size} = '' OR sd.size_id IN (:#{#req.sizes}))
             AND (:#{#req.sole} IS NULL OR :#{#req.sole} = '' OR sd.sole_id IN (:#{#req.soles}))
+            AND (:#{#req.brand} IS NULL OR :#{#req.brand} = '' OR s.brand_id IN (:#{#req.brands}))
+            AND (:#{#req.category} IS NULL OR :#{#req.category} = '' OR s.category_id IN (:#{#req.categories}))
             GROUP BY s.id
+            HAVING (:#{#req.minPrice} IS NULL OR :#{#req.maxPrice} IS NULL OR (MIN(sd.price) BETWEEN :#{#req.minPrice} AND :#{#req.maxPrice}))
             """, nativeQuery = true)
-    Page<ShoeResponse> getAllShoe(@Param("req") ShoeRequest request, Pageable pageable);
+    Page<ShoeResponse> getAllShoe(@Param("req") FindShoeReqeust request, Pageable pageable);
 
     @Query(value = """
             SELECT

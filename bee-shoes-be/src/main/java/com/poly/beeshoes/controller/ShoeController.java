@@ -1,7 +1,8 @@
 package com.poly.beeshoes.controller;
 
+import com.poly.beeshoes.dto.request.shoe.FindShoeReqeust;
 import com.poly.beeshoes.entity.Shoe;
-import com.poly.beeshoes.dto.request.ShoeRequest;
+import com.poly.beeshoes.dto.request.shoe.ShoeRequest;
 import com.poly.beeshoes.dto.response.ShoeResponse;
 import com.poly.beeshoes.dto.response.promotion.ShoePromotionResponse;
 import com.poly.beeshoes.service.ShoeService;
@@ -36,7 +37,7 @@ public class ShoeController {
     }
 
     @GetMapping
-    public PageableObject<ShoeResponse> getAll(ShoeRequest request) {
+    public PageableObject<ShoeResponse> getAll(FindShoeReqeust request) {
         return shoeService.getAll(request);
     }
 

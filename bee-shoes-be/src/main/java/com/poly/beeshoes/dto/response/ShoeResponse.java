@@ -32,4 +32,5 @@ public interface ShoeResponse {
     String getImages();
 
     Integer getQuantitySold();
+    BigDecimal getDiscountValue();
 }

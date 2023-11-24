@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Service
 public class PromotionServiceImpl implements PromotionService {
     @Autowired
@@ -46,7 +48,7 @@ public class PromotionServiceImpl implements PromotionService {
                     PromotionDetail promotionDetail = new PromotionDetail();
                     promotionDetail.setPromotion(promotionSave);
                     promotionDetail.setShoeDetail(shoeDetail);
-                    promotionDetail.setPromotionPrice(shoeDetail.getPrice().multiply(request.getValue()));
+                    promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(request.getValue())));
                     promotionDetailRepository.save(promotionDetail);
                 }
             }

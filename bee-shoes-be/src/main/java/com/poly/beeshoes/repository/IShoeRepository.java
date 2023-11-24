@@ -31,6 +31,7 @@ public interface IShoeRepository extends JpaRepository<Shoe, Long> {
             br.name AS brand,
             MAX(sd.price) AS maxPrice,
             MIN(sd.price) AS minPrice,
+            MIN(pmd.promotion_price) AS discountValue,
             s.deleted AS status
             FROM shoe s
             LEFT JOIN shoe_detail sd ON s.id = sd.shoe_id
@@ -41,6 +42,7 @@ public interface IShoeRepository extends JpaRepository<Shoe, Long> {
             LEFT JOIN (SELECT shoe_detail_id, 
             GROUP_CONCAT(DISTINCT name) AS name FROM images GROUP BY shoe_detail_id
             ) img ON sd.id = img.shoe_detail_id
+            LEFT JOIN promotion_detail pmd ON pmd.shoe_detail_id = sd.id
             WHERE (:#{#req.name} IS NULL OR s.name LIKE %:#{#req.name}%)
             AND (:#{#req.status} IS NULL OR s.deleted = :#{#req.status})
             

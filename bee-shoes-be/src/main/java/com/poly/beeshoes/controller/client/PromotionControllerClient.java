@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/client/api/promotion")
-public class PromotionController {
+public class PromotionControllerClient {
     @Autowired
     private PromotionService service;
 

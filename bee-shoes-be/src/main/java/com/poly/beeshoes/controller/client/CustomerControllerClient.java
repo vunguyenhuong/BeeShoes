@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/client/api/customer")
-public class CustomerController {
+public class CustomerControllerClient {
     private static String ROLE = "Khách hàng";
     @Autowired
     private AccountService accountService;

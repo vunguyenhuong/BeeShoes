@@ -1,11 +1,11 @@
 package com.poly.beeshoes.controller.client;
 
-import com.poly.beeshoes.dto.request.properties.BrandRequest;
-import com.poly.beeshoes.dto.response.BrandResponse;
-import com.poly.beeshoes.entity.Brand;
+import com.poly.beeshoes.dto.request.properties.SizeRequest;
+import com.poly.beeshoes.dto.response.SizeResponse;
+import com.poly.beeshoes.entity.Size;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
-import com.poly.beeshoes.service.BrandService;
+import com.poly.beeshoes.service.SizeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,34 +18,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/client/api/brand")
-public class BrandController {
+@RequestMapping("/client/api/size")
+public class SizeControllerClient {
     @Autowired
-    private BrandService brandService;
+    private SizeService sizeService;
 
     @GetMapping
-    public PageableObject<BrandResponse> getAll(BrandRequest request) {
-        return brandService.getAll(request);
+    public PageableObject<SizeResponse> getAll(SizeRequest request) {
+        return sizeService.getAll(request);
     }
 
-
     @GetMapping("/{id}")
-    public Brand getOne(@PathVariable Long id) {
-        return brandService.getOne(id);
+    public Size getOne(@PathVariable Long id) {
+        return sizeService.getOne(id);
     }
 
     @PostMapping
-    public ResponseObject create(@RequestBody @Valid BrandRequest request) {
-        return new ResponseObject(brandService.create(request));
+    public ResponseObject create(@RequestBody @Valid SizeRequest request) {
+        return new ResponseObject(sizeService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid BrandRequest request) {
-        return new ResponseObject(brandService.update(id, request));
+    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid SizeRequest request) {
+        return new ResponseObject(sizeService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseObject delete(@PathVariable Long id) {
-        return new ResponseObject(brandService.delete(id));
+        return new ResponseObject(sizeService.delete(id));
     }
 }

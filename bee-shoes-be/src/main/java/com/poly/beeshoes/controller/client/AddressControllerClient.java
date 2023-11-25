@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/client/api/address")
-public class AddressController {
+public class AddressControllerClient {
     @Autowired
     private AddressService addressService;
     @GetMapping("/{account}")

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/client/api/bill-detail")
-public class BillDetailController {
+public class BillDetailControllerClient {
     @Autowired
     private BillDetailService billDetailService;
 

@@ -23,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/client/api/shoe")
-public class ShoeController {
+public class ShoeControllerClient {
     @Autowired
     private ShoeService shoeService;
     @GetMapping("/shoe-promotion")

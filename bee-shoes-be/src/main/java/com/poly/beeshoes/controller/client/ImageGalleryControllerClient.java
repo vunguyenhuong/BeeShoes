@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/client/api/image-gallery")
-public class ImageGalleryController {
+public class ImageGalleryControllerClient {
     @Autowired
     private CloudinaryUtils cloudinaryUtils;
 

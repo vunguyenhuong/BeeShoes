@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/client/api/voucher")
-public class VoucherController {
+public class VoucherControllerClient {
     @Autowired
     private VoucherService voucherService;
 

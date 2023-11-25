@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/client/api/category")
-public class CartDetailController {
+public class CartDetailControllerClient {
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/client/api/shoe-detail")
-public class ShoeDetailController {
+public class ShoeDetailControllerClient {
     @Autowired
     private ShoeDetailService shoeDetailService;
 

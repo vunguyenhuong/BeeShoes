@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class BillSearchRequest extends PageableRequest {
     private Long idStaff;
+    private Long idCustomer;
     private Integer status;
     private String code;
     private Boolean deleted;

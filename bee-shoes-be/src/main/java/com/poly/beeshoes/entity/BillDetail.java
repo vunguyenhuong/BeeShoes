@@ -30,4 +30,6 @@ public class BillDetail extends PrimaryEntity {
     @Column(name = "quantity")
     private Integer quantity;
 
+    @Column(name = "status")
+    private Boolean status;
 }

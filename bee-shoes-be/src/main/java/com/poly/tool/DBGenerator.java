@@ -214,7 +214,7 @@ public class DBGenerator implements CommandLineRunner {
         promotion2.setCode("PRO2");
         promotion2.setName("Khuyến mại TEST");
         promotion2.setStatus(1);
-        promotion2.setValue(BigDecimal.valueOf(10000));
+        promotion2.setValue(BigDecimal.valueOf(10));
         promotion2.setStartDate(LocalDateTime.of(2023, Month.OCTOBER, 15, 14, 0, 0));
         promotion2.setEndDate(LocalDateTime.of(2033, Month.OCTOBER, 15, 14, 0, 0));
         promotion2.setId(promotionRepository.save(promotion2).getId());

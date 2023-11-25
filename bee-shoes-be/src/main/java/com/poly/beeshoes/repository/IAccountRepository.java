@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface IAccountRepository extends JpaRepository<Account, Long> {
     @Query("""
@@ -47,4 +49,7 @@ public interface IAccountRepository extends JpaRepository<Account, Long> {
     Boolean existsByPhoneNumberAndPhoneNumberNot(String phoneNumber, String exceptPhoneNumber);
 
     Boolean existsByCccdAndCccdNot(String cccd, String exceptCccd);
+
+    @Query("SELECT ac FROM Account ac WHERE ac.email =:email")
+    Optional<Account> findByEmail(String email);
 }

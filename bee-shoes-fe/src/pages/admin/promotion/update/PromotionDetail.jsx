@@ -6,12 +6,17 @@ import { FaHome } from 'react-icons/fa'
 import { useParams } from 'react-router-dom';
 import Loading from '~/components/Loading/Loading';
 import httpRequest from '~/utils/httpRequest';
+import TableShoe from '../TableShoe';
+import TableShoeDetail from '../TableShoeDetail';
 
 function PromotionDetail() {
     const [form] = Form.useForm();
     const [promotion, setPromotion] = useState({});
     const [loading, setLoading] = useState(true);
     const { id } = useParams();
+
+    const [listShoeId, setListShoeId] = useState();
+    const [listShoeDetailId, setListShoeDetailId] = useState();
     useEffect(() => {
         const timeout = setTimeout(() => {
             loadPromotion(id);
@@ -19,8 +24,8 @@ function PromotionDetail() {
         return () => clearTimeout(timeout);
     }, [id]);
 
-    const loadPromotion = async () => {
-        await httpRequest.get(`/promotion/${id}`).then(response => {
+    const loadPromotion = () => {
+        httpRequest.get(`/promotion/${id}`).then(response => {
             setPromotion(response.data);
             form.setFieldsValue({
                 code: response.data.code,
@@ -29,6 +34,17 @@ function PromotionDetail() {
                 startDate: response.data.startDate,
                 endDate: response.data.endDate
             })
+        }).catch(e => {
+            console.log(e);
+        })
+
+        httpRequest.get(`/promotion/list-shoe-id?idPromotion=${id}`).then(response => {
+            setListShoeId(response.data)
+        }).catch(e => {
+            console.log(e);
+        })
+        httpRequest.get(`/promotion/list-shoe-detail-id?idPromotion=${id}`).then(response => {
+            setListShoeDetailId(response.data)
         }).catch(e => {
             console.log(e);
         })
@@ -77,7 +93,11 @@ function PromotionDetail() {
                             </Col>
                         </Row>
                     </Col>
+                    <Col xl={12}>
+                        <TableShoe setRowKeys={listShoeId} setProductIds={setListShoeId} />
+                    </Col>
                 </Row>
+                <TableShoeDetail idProduct={listShoeId} setRowKeys={listShoeDetailId}/>
             </Form>
         </>
     )

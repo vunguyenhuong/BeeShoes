@@ -27,6 +27,7 @@ import Promotion from './pages/admin/promotion/Promotion';
 import AddPromotion from './pages/admin/promotion/AddPromotion';
 import PromotionDetail from './pages/admin/promotion/update/PromotionDetail';
 import Statistic from './pages/admin/statistic/Statistic';
+import Giveback from './pages/admin/giveback/Giveback';
 
 const publicRouters = [
     { path: "/", element: Statistic },
@@ -58,6 +59,8 @@ const publicRouters = [
     { path: "/admin/promotion", element: Promotion },
     { path: "/admin/promotion/:id", element: PromotionDetail },
     { path: "/admin/promotion/create", element: AddPromotion },
+
+    { path: "/admin/give-back", element: Giveback },
     // { path: '*', element: NotFound}
 ];
 

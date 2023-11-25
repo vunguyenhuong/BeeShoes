@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import FormatCurrency from "~/utils/FormatCurrency";
 import * as request from "~/utils/httpRequest";
 
-function TableShoeDetail({ idProduct, setSelectedProductDetail }) {
+function TableShoeDetail({ idProduct, setSelectedProductDetail, setRowKeys }) {
     const [listProductDetail, setListProductDetail] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -27,6 +27,10 @@ function TableShoeDetail({ idProduct, setSelectedProductDetail }) {
         setDataFilter(null);
         formFilter.resetFields();
     }, [idProduct])
+
+    useEffect(() => {
+        setSelectedRowKeys(setRowKeys);
+    },[setRowKeys])
     const loadData = (idProduct, dataFilter) => {
         request.get('/shoe-detail', {
             params: {
@@ -35,8 +39,8 @@ function TableShoeDetail({ idProduct, setSelectedProductDetail }) {
                 size: dataFilter?.size,
                 color: dataFilter?.color,
                 sole: dataFilter?.sole,
-                page: currentPage,
-                sizePage: pageSize
+                page: 1,
+                sizePage: 1_000_000
             }
         }).then(response => {
             setListProductDetail(response.data);
@@ -176,7 +180,7 @@ function TableShoeDetail({ idProduct, setSelectedProductDetail }) {
                     pageSize: pageSize,
                     pageSizeOptions: [5, 10, 20, 50, 100],
                     showQuickJumper: true,
-                    total: totalPages * pageSize,
+                    total: listProductDetail.length,
                     onChange: (page, pageSize) => {
                         setCurrentPage(page);
                         setPageSize(pageSize);

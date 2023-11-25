@@ -3,6 +3,7 @@ package com.poly.beeshoes.repository;
 import com.poly.beeshoes.entity.PromotionDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,9 +12,18 @@ import java.util.List;
 public interface IPromotionDetailRepository extends JpaRepository<PromotionDetail, Long> {
     Boolean existsByShoeDetailId(Long id);
 
-//    @Query(value = """
-//            SELECT FROM promotion_detail pmd
-//            JOIN
-//            """, nativeQuery = true)
-//    List<Long> x();
+    @Query(value = """
+            SELECT GROUP_CONCAT(DISTINCT s.id) FROM promotion_detail pmd
+            JOIN shoe_detail sd ON sd.id = pmd.shoe_detail_id
+            JOIN shoe s ON s.id = sd.shoe_id
+            JOIN promotion pm ON pm.id = pmd.promotion_id
+            WHERE :idPromotion IS NULL OR pm.id = :idPromotion
+            """, nativeQuery = true)
+    List<String> getListIdShoePromotion(@Param("idPromotion") Long idPromotion);
+
+    @Query(value = """
+            SELECT pmd.shoe_detail_id FROM promotion_detail pmd
+            WHERE :idPromotion IS NULL OR pmd.promotion_id = :idPromotion
+            """, nativeQuery = true)
+    List<String> getListIdShoeDetailInPromotion(@Param("idPromotion") Long idPromotion);
 }

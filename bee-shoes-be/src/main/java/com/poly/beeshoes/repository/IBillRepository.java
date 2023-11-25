@@ -43,6 +43,7 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
             WHERE (:#{#req.code} IS NULL OR b.code LIKE %:#{#req.code}%)
             AND (:#{#req.idStaff} IS NULL OR b.account_id = :#{#req.idStaff})
             AND (:#{#req.status} IS NULL OR b.status = :#{#req.status})
+            AND (:#{#req.idCustomer} IS NULL OR b.customer_id = :#{#req.idCustomer})
             AND b.deleted = FALSE 
             """, nativeQuery = true)
     Page<BillResponse> getAll(@Param("req") BillSearchRequest request, Pageable pageable);

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import * as request from "~/utils/httpRequest";
 
-function TableShoe({ setProductIds }) {
+function TableShoe({ setProductIds, setRowKeys }) {
   const [productList, setProductList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -16,10 +16,14 @@ function TableShoe({ setProductIds }) {
     loadShoe(searchValue, pageSize, currentPage);
   }, [pageSize, currentPage, searchValue]);
 
+  useEffect(() => {
+    setSelectedRowKeys(setRowKeys);
+  }, [setRowKeys])
+
   const loadShoe = () => {
     request
       .get("/shoe", {
-        params: { name: searchValue, page: currentPage, sizePage: pageSize },
+        params: { name: searchValue, page: 1, sizePage: 1_000_000 },
       })
       .then((response) => {
         setProductList(response.data);
@@ -81,7 +85,7 @@ function TableShoe({ setProductIds }) {
           pageSize: pageSize,
           pageSizeOptions: [5, 10, 20, 50, 100],
           showQuickJumper: true,
-          total: totalPages * pageSize,
+          total:productList.length,
           onChange: (page, pageSize) => {
             setCurrentPage(page);
             setPageSize(pageSize);

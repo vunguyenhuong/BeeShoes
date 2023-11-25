@@ -16,7 +16,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PromotionServiceImpl implements PromotionService {
@@ -59,5 +63,19 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public PromotionResponse getOne(Long id) {
         return iPromotionRepository.getOnePromotion(id);
+    }
+
+    @Override
+    public List<Long> getListIdShoePromotion(Long idPromotion) {
+        return promotionDetailRepository.getListIdShoePromotion(idPromotion).stream()
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Long> getListIdShoeDetailInPromotion(Long idPromotion) {
+        return promotionDetailRepository.getListIdShoeDetailInPromotion(idPromotion).stream()
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
     }
 }

@@ -86,7 +86,7 @@ function AddPromotion() {
           </Col>
           <Col xl={12}>
             <h6>Danh sách sản phẩm</h6>
-            <TableShoe setProductIds={setProductIds} />
+            <TableShoe setProductIds={setProductIds} setRowKeys={null} />
           </Col>
           <Col xl={24}>
             <h6>Danh sách chi tiết sản phẩm</h6>

@@ -6,23 +6,10 @@ const sidebarData = [
         "path": "/"
     },
     {
-        "key": "qlgiaodich",
-        "title": "Quản lý giao dịch",
-        "icon": "fa-money-bill-wave",
-        "children": [
-            {
-                "key": "banHang",
-                "title": "Bán hàng",
-                "icon": "fa-truck-fast",
-                "path": "/admin/order"
-            },
-            {
-                "key": "qlDonHang",
-                "title": "Quản lý đơn hàng",
-                "icon": "fa-wallet",
-                "path": "/admin/bill"
-            }
-        ]
+        "key": "banHang",
+        "title": "Bán hàng",
+        "icon": "fa-truck-fast",
+        "path": "/admin/order"
     },
     {
         "key": "qlsanpham",
@@ -112,6 +99,12 @@ const sidebarData = [
                 "path": "/admin/voucher"
             },
         ]
+    },
+    {
+        "key": "traHang",
+        "title": "Trả hàng",
+        "icon": "fa-right-left",
+        "path": "/admin/give-back"
     },
     {
         "key": "imagesGallery",

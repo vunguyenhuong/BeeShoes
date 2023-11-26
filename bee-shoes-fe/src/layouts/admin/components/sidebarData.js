@@ -15,6 +15,7 @@ const sidebarData = [
     key: "qlsanpham",
     title: "Quản lý sản phẩm",
     icon: "fa-brands fa-slack",
+    path: "/services",
     children: [
       {
         key: "sanPham",
@@ -110,12 +111,6 @@ const sidebarData = [
     title: "Thư viện hình ảnh",
     icon: "fa-image",
     path: "/admin/image-gallery",
-  },
-  {
-    key: "logout",
-    title: "Thoát",
-    icon: "fa-right-from-bracket",
-    // path: "/admin/login",
   },
 ];
 

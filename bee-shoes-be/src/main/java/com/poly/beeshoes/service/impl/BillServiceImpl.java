@@ -16,6 +16,7 @@ import com.poly.beeshoes.dto.request.CartClientRequest;
 import com.poly.beeshoes.dto.request.bill.BillRequest;
 import com.poly.beeshoes.dto.request.bill.BillSearchRequest;
 import com.poly.beeshoes.dto.response.BillResponse;
+import com.poly.beeshoes.infrastructure.session.ShoseSession;
 import com.poly.beeshoes.repository.IAccountRepository;
 import com.poly.beeshoes.repository.IBillDetailRepository;
 import com.poly.beeshoes.repository.IBillHistoryRepository;
@@ -49,9 +50,12 @@ public class BillServiceImpl implements BillService {
     private IShoeDetailRepository shoeDetailRepository;
     @Autowired
     private IBillDetailRepository billDetailRepository;
+    @Autowired
+    private ShoseSession session;
 
     @Override
     public PageableObject<BillResponse> getAll(BillSearchRequest request) {
+        request.setIdStaff(session.getEmployee().getId());
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
         return new PageableObject<>(billRepository.getAll(request, pageable));
     }
@@ -74,12 +78,12 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Bill create() {
-        if (billRepository.findByAccountIdAndStatusAndDeletedFalse(1L, BillStatusConstant.TAO_DON_HANG, PageRequest.of(0, 10)).getContent().size() >= 5) {
+        if (billRepository.findByAccountIdAndStatusAndDeletedFalse(session.getEmployee().getId(), BillStatusConstant.TAO_DON_HANG, PageRequest.of(0, 10)).getContent().size() >= 5) {
             throw new RestApiException("Chỉ được tạo tối đa 5 đơn hàng!");
         }
         Bill bill = new Bill();
         BillHistory billHistory = new BillHistory();
-        bill.setAccount(accountRepository.findById(1L).get());
+        bill.setAccount(accountRepository.findById(session.getEmployee().getId()).get());
         bill.setStatus(BillStatusConstant.TAO_DON_HANG);
         bill.setCode(this.genBillCode());
         Bill billSave = billRepository.save(bill);
@@ -131,7 +135,7 @@ public class BillServiceImpl implements BillService {
     public ResponseObject createBillClient(BillClientRequest request) {
         Bill bill = new Bill();
         BillHistory billHistory = new BillHistory();
-        bill.setAccount(accountRepository.findById(1L).get());
+//        bill.setAccount(accountRepository.findById(session.getEmployee().getId()).get());
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
         bill.setCode(this.genBillCode());
         bill.setType(1);

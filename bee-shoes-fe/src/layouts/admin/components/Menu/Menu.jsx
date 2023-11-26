@@ -1,20 +1,43 @@
 import { Menu } from "antd";
 import sidebarData from "../sidebarData";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar.module.css";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { deleteToken, deleteUserToken } from "~/helper/useCookies";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   const [theme, setTheme] = useState(true);
   const changeTheme = () => {
     setTheme(!theme);
-    sessionStorage.setItem('theme', !theme)
-    console.log(sessionStorage.getItem('theme'))
+    sessionStorage.setItem("theme", !theme);
+    console.log(sessionStorage.getItem("theme"));
+  };
+  const handleLogout = () => {
+    deleteUserToken();
+    deleteToken();
+    navigate("/admin/login");
+    window.location.reload(true);
+    toast.success("Đăng xuất thành công");
   };
   return (
-    <Menu mode="vertical" className="h-100" theme={sessionStorage.getItem('theme') === "true" ? 'dark' : 'light'}>
+    <Menu
+      mode="vertical"
+      className="h-100"
+      theme={sessionStorage.getItem("theme") === "true" ? "dark" : "light"}
+    >
       <Link className="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-        <img src={sessionStorage.getItem('theme') === "true" ? `/logodark.png` : `/logo.png`} alt="" width="100%" onClick={() => changeTheme()}/>
+        <img
+          src={
+            sessionStorage.getItem("theme") === "true"
+              ? `/logodark.png`
+              : `/logo.png`
+          }
+          alt=""
+          width="100%"
+          onClick={() => changeTheme()}
+        />
       </Link>
       {sidebarData.map((item) => {
         if (item.children) {
@@ -33,8 +56,13 @@ const Sidebar = () => {
                       icon={<i className={`fas ${childItem.icon}`}></i>}
                     >
                       {childItem.children.map((subChildItem) => (
-                        <Menu.Item key={subChildItem.key} icon={<i className={`fas ${subChildItem.icon}`}></i>}>
-                          <Link to={subChildItem.path}>{subChildItem.title}</Link>
+                        <Menu.Item
+                          key={subChildItem.key}
+                          icon={<i className={`fas ${subChildItem.icon}`}></i>}
+                        >
+                          <Link to={subChildItem.path}>
+                            {subChildItem.title}
+                          </Link>
                         </Menu.Item>
                       ))}
                     </Menu.SubMenu>
@@ -42,7 +70,10 @@ const Sidebar = () => {
                 } else {
                   // Nếu không có menu con thì thêm menu item vào submenu
                   return (
-                    <Menu.Item key={childItem.key} icon={<i className={`fas ${childItem.icon}`}></i>}>
+                    <Menu.Item
+                      key={childItem.key}
+                      icon={<i className={`fas ${childItem.icon}`}></i>}
+                    >
                       <Link to={childItem.path}>{childItem.title}</Link>
                     </Menu.Item>
                   );
@@ -52,11 +83,20 @@ const Sidebar = () => {
           );
         }
         return (
-          <Menu.Item key={item.key} icon={<i className={`fas ${item.icon}`}></i>}>
-            <Link to={item.path}>{item.title}</Link>
-          </Menu.Item>
+          <div>
+            {" "}
+            <Menu.Item
+              key={item.key}
+              icon={<i className={`fas ${item.icon}`}></i>}
+            >
+              <Link to={item.path}>{item.title}</Link>
+            </Menu.Item>
+          </div>
         );
       })}
+      <div style={{ color: "red" }} onClick={handleLogout}>
+        Thoát
+      </div>
     </Menu>
   );
 };

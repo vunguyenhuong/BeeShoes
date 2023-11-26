@@ -3,12 +3,12 @@ import sidebarData from "../sidebarData";
 import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar.module.css";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { deleteToken, deleteUserToken } from "~/helper/useCookies";
+import { toast } from "react-toastify";
 
 const Sidebar = () => {
-  const navigate = useNavigate();
   const [theme, setTheme] = useState(true);
+  const navigate = useNavigate();
   const changeTheme = () => {
     setTheme(!theme);
     sessionStorage.setItem("theme", !theme);
@@ -83,20 +83,21 @@ const Sidebar = () => {
           );
         }
         return (
-          <div>
-            {" "}
-            <Menu.Item
-              key={item.key}
-              icon={<i className={`fas ${item.icon}`}></i>}
-            >
-              <Link to={item.path}>{item.title}</Link>
-            </Menu.Item>
-          </div>
+          <Menu.Item
+            key={item.key}
+            icon={<i className={`fas ${item.icon}`}></i>}
+          >
+            <Link to={item.path}>{item.title}</Link>
+          </Menu.Item>
         );
       })}
-      <div style={{ color: "red" }} onClick={handleLogout}>
-        Thoát
-      </div>
+      <Menu.Item
+        key={"logout"}
+        icon={<i className={`fas fa-right-from-bracket`}></i>}
+        onClick={handleLogout}
+      >
+        <Link to={"/admin/login"}>Thoát</Link>
+      </Menu.Item>
     </Menu>
   );
 };

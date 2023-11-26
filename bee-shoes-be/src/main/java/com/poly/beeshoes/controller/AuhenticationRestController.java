@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin("*")
 @RequiredArgsConstructor
 public class AuhenticationRestController {
-
+    
 
     private final AuthenticationService authenticationService;
 
@@ -32,7 +32,7 @@ public class AuhenticationRestController {
         return authenticationService.signUp(requets);
     }
 
-    @PostMapping("/singin")
+        @PostMapping("/singin")
     public ResponseEntity<JwtAuhenticationResponse> singin(@RequestBody SigninRequest requets) {
         return ResponseEntity.ok(authenticationService.singIn(requets));
     }

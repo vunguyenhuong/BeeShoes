@@ -38,6 +38,7 @@ const Login = () => {
     try {
       const res = await axios({
         method: "post",
+
         url: `http://localhost:8080/login-v2/singin`,
         data: {
           email: email,

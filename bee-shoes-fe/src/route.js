@@ -62,7 +62,6 @@ const publicRouters = [
   { path: "/admin/promotion/:id", element: withAuth(PromotionDetail) },
   { path: "/admin/promotion/create", element: withAuth(AddPromotion) },
   { path: "/admin/give-back", element: withAuth(Giveback) },
-  { path: "/admin/login", element: Login },
   // { path: '*', element: NotFound}
 ];
 

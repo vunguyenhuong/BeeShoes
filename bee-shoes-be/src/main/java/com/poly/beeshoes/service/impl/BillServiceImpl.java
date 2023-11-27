@@ -1,6 +1,11 @@
 package com.poly.beeshoes.service.impl;
 
+import com.poly.beeshoes.dto.request.UpdateBillDetailGiveBack;
+import com.poly.beeshoes.dto.request.UpdateBillGiveBack;
+import com.poly.beeshoes.dto.response.BillGiveBackInformationResponse;
+import com.poly.beeshoes.dto.response.BillProductGiveback;
 import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
+import com.poly.beeshoes.entity.Account;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.entity.BillDetail;
 import com.poly.beeshoes.entity.BillHistory;
@@ -30,7 +35,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BillServiceImpl implements BillService {
@@ -112,7 +120,7 @@ public class BillServiceImpl implements BillService {
             history.setBill(billSave);
             billHistoryRepository.save(history);
         }
-        if(request.getType() == 1 && request.getStatus() == 2){
+        if (request.getType() == 1 && request.getStatus() == 2) {
             BillHistory billHistory = new BillHistory();
             billSave.setStatus(BillStatusConstant.CHO_GIAO);
             billRepository.save(billSave);
@@ -140,11 +148,11 @@ public class BillServiceImpl implements BillService {
         bill.setCode(this.genBillCode());
         bill.setType(1);
         bill.setNote(request.getNote());
-        bill.setAddress(request.getSpecificAddress()+"##"+request.getWard()+"##"+request.getDistrict()+"##"+request.getProvince());
+        bill.setAddress(request.getSpecificAddress() + "##" + request.getWard() + "##" + request.getDistrict() + "##" + request.getProvince());
         bill.setMoneyShip(request.getMoneyShip());
         bill.setMoneyReduce(request.getMoneyReduce());
         bill.setTotalMoney(request.getTotalMoney());
-        if(request.getVoucher()!=null){
+        if (request.getVoucher() != null) {
             bill.setVoucher(voucherRepository.findById(request.getVoucher()).get());
         }
 
@@ -154,7 +162,7 @@ public class BillServiceImpl implements BillService {
         billHistory.setNote("Chờ xác nhận");
         billHistoryRepository.save(billHistory);
 
-        for (CartClientRequest x: request.getCarts()) {
+        for (CartClientRequest x : request.getCarts()) {
             ShoeDetail shoeDetail = shoeDetailRepository.findById(x.getId()).get();
             BillDetail billDetail = new BillDetail();
             billDetail.setBill(bill);
@@ -162,7 +170,7 @@ public class BillServiceImpl implements BillService {
             billDetail.setShoeDetail(shoeDetail);
             billDetail.setPrice(shoeDetail.getPrice());
             billDetailRepository.save(billDetail);
-            shoeDetail.setQuantity(shoeDetail.getQuantity()-x.getQuantity());
+            shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
             shoeDetailRepository.save(shoeDetail);
         }
         return new ResponseObject("OK");
@@ -179,26 +187,26 @@ public class BillServiceImpl implements BillService {
         BillHistory history = new BillHistory();
         history.setBill(bill);
         history.setNote(note);
-        if(bill.getStatus() == BillStatusConstant.CHO_THANH_TOAN){
-            if(bill.getType() == 0){
+        if (bill.getStatus() == BillStatusConstant.CHO_THANH_TOAN) {
+            if (bill.getType() == 0) {
                 bill.setStatus(BillStatusConstant.HOAN_THANH);
             }
-        }else {
-            if(bill.getStatus() == BillStatusConstant.CHO_XAC_NHAN){
+        } else {
+            if (bill.getStatus() == BillStatusConstant.CHO_XAC_NHAN) {
                 history.setStatus(BillStatusConstant.CHO_GIAO);
                 bill.setStatus(BillStatusConstant.CHO_GIAO);
-            }else {
-                if(bill.getStatus() == BillStatusConstant.DANG_GIAO){
-                    if(!paymentMethodRepository.existsByBillId(bill.getId())){
+            } else {
+                if (bill.getStatus() == BillStatusConstant.DANG_GIAO) {
+                    if (!paymentMethodRepository.existsByBillId(bill.getId())) {
                         throw new RestApiException("Vui lòng xác nhận thông tin thanh toán!");
                     }
                 }
-                bill.setStatus(bill.getStatus()+1);
+                bill.setStatus(bill.getStatus() + 1);
                 history.setStatus(bill.getStatus());
             }
         }
         Bill billSave = billRepository.save(bill);
-        if(billSave!=null){
+        if (billSave != null) {
             billHistoryRepository.save(history);
         }
         return billSave;
@@ -208,4 +216,36 @@ public class BillServiceImpl implements BillService {
     public List<StatisticBillStatus> statisticBillStatus() {
         return billRepository.statisticBillStatus();
     }
+
+    @Override
+    public BillGiveBackInformationResponse getBillGiveBackInformation(String codeBill) {
+        var optional = billRepository.existsByCode(codeBill);
+        if (!optional) {
+            throw new RestApiException("Không tìm thấy mã  hóa đơn " + codeBill);
+        }
+        return billRepository.getBillGiveBackInformation(codeBill);
+    }
+
+    @Override
+    public List<BillProductGiveback> getBillGiveBack(String idBill) {
+        return billRepository.getBillGiveBack(idBill);
+    }
+
+    @Override
+    public Bill updateBillGiveBack(UpdateBillGiveBack updateBillGiveBack, List<UpdateBillDetailGiveBack> updateBillDetailGiveBacks) {
+        Bill bill = billRepository.findById(updateBillGiveBack.getIdBill()).get();
+
+        if (bill == null) {
+            throw new RestApiException("Không tìm thấy mã hóa đơn.");
+        }
+
+        // todo: update points user by totalBillGiveBack
+        BigDecimal totalBill = bill.getTotalMoney();
+        BigDecimal totalBillGive = updateBillGiveBack.getTotalBillGiveBack();
+        int checkTotal = totalBill.compareTo(totalBillGive);
+
+
+        return bill;
+    }
+
 }

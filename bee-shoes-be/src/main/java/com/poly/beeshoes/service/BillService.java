@@ -1,5 +1,9 @@
 package com.poly.beeshoes.service;
 
+import com.poly.beeshoes.dto.request.UpdateBillDetailGiveBack;
+import com.poly.beeshoes.dto.request.UpdateBillGiveBack;
+import com.poly.beeshoes.dto.response.BillGiveBackInformationResponse;
+import com.poly.beeshoes.dto.response.BillProductGiveback;
 import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
@@ -20,4 +24,11 @@ public interface BillService {
     Bill delete(Long id);
     Bill changeStatus(Long id, String status);
     List<StatisticBillStatus> statisticBillStatus();
+
+    BillGiveBackInformationResponse getBillGiveBackInformation(String codeBill);
+
+    List<BillProductGiveback> getBillGiveBack(String idBill);
+
+    Bill updateBillGiveBack(UpdateBillGiveBack updateBillGiveBack , List<UpdateBillDetailGiveBack> updateBillDetailGiveBacks);
+
 }

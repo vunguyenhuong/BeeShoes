@@ -51,6 +51,7 @@ public class BillDetailServiceImpl implements BillDetailService {
         if(existBillDetail != null){
             existBillDetail.setPrice(shoeDetail.getPrice());
             existBillDetail.setQuantity(existBillDetail.getQuantity()+request.getQuantity());
+            existBillDetail.setStatus(true);
             return billDetailRepository.save(existBillDetail);
         }
         return billDetailRepository.save(billDetail);

@@ -1,0 +1,33 @@
+.search-bill{
+    position: relative;
+    margin-top: 5%;
+ }
+ .contaier-give-back{
+     position: relative;
+     background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvyKlSPxfbVKGD8UOocquku_J0wOanyvMtx2_a3fguSgu8dCWYJ_87BdUaxIzxY-gs85A&usqp=CAU'); 
+     background-size: cover; 
+     background-position: center; 
+     background-repeat: no-repeat; 
+     background-size: 30% ; 
+ }
+ 
+ .table-bill-give-back > :where(.css-dev-only-do-not-override-1m62vyb).ant-table-wrapper .ant-table-tbody>tr>td{
+  padding: 3px !important;
+ }
+ .trangthai-sd {
+    border: 1px solid green;
+    background-color: lightgreen;
+    border-radius: 20px;
+    width: 130px;
+    height: 30px;
+    pointer-events: none;
+  }
+  
+  .trangthai-ksd {
+    border: 1px solid rgb(230, 13, 13);
+    background-color: rgb(243, 87, 87);
+    border-radius: 20px;
+    width: 130px;
+    height: 30px;
+    pointer-events: none;
+  }

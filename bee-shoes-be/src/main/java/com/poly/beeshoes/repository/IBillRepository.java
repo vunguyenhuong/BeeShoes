@@ -1,5 +1,7 @@
 package com.poly.beeshoes.repository;
 
+import com.poly.beeshoes.dto.response.BillGiveBackInformationResponse;
+import com.poly.beeshoes.dto.response.BillProductGiveback;
 import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.dto.request.bill.BillSearchRequest;
@@ -83,4 +85,52 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
     Boolean existsByCode(String code);
 
     Page<Bill> findByAccountIdAndStatusAndDeletedFalse(Long idAccount, Integer status, Pageable pageable);
+
+    @Query(value = """
+            SELECT
+                bi.id AS idBill,
+                bi.code AS codeBill,
+                bi.customer_name AS nameCustomer,
+                bi.phone_number AS phoneNumber,
+                bi.status AS statusBill,
+                bi.type AS typeBill,
+                bi.address AS address,
+                bi.note AS note,
+                ac.id AS idAccount,
+                em.id AS idEmployee
+            FROM bill bi
+            LEFT JOIN account ac ON ac.id = bi.customer_id
+            LEFT JOIN account em ON em.id = bi.account_id
+            WHERE bi.code = :codeBill
+                        """, nativeQuery = true)
+    BillGiveBackInformationResponse getBillGiveBackInformation(@Param("codeBill") String codeBill);
+
+
+    @Query(value = """
+            SELECT
+                ROW_NUMBER() OVER (ORDER BY detail.id DESC) AS stt,
+                bd.id AS idBillDetail,
+                detail.id AS idProductDetail,
+                images.name AS image,
+                CONCAT(p.name ,'[ ',s2.name,' - ',c2.name,' ]') AS nameProduct,
+                bd.quantity AS quantity,
+                bd.price AS price,
+                c2.name AS codeColor,
+                bd.status AS statusBillDetail
+            FROM bill bi
+            JOIN bill_detail bd ON bi.id = bd.bill_id
+            JOIN shoe_detail detail ON bd.shoe_detail_id = detail.id
+            JOIN shoe p ON detail.shoe_id = p.id
+            JOIN (
+                SELECT shoe_detail_id, MAX(id) AS max_image_id
+                FROM images
+                GROUP BY shoe_detail_id
+            ) max_images ON detail.id = max_images.shoe_detail_id
+            LEFT JOIN  images ON max_images.max_image_id = images.id
+            JOIN size s2 on detail.size_id = s2.id
+            JOIN color c2 on detail.color_id = c2.id
+            WHERE bi.id = :idBill
+                        """, nativeQuery = true)
+    List<BillProductGiveback> getBillGiveBack(@Param("idBill") String idBill);
+
 }

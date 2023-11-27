@@ -30,6 +30,7 @@ import Statistic from "./pages/admin/statistic/Statistic";
 import Giveback from "./pages/admin/giveback/Giveback";
 import Login from "./pages/admin/login/Login";
 import withAuth from "./auth";
+import DetailGiveBack from "./pages/admin/giveback/DetailGiveBack";
 
 const publicRouters = [
   { path: "/", element: withAuth(Statistic) },
@@ -62,6 +63,8 @@ const publicRouters = [
   { path: "/admin/promotion/:id", element: withAuth(PromotionDetail) },
   { path: "/admin/promotion/create", element: withAuth(AddPromotion) },
   { path: "/admin/give-back", element: withAuth(Giveback) },
+  { path: "/admin/detail-give-back/:id", element: withAuth(DetailGiveBack) },
+
   // { path: '*', element: NotFound}
 ];
 

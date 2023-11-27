@@ -2,6 +2,8 @@ package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.dto.response.BillGiveBackInformationResponse;
 import com.poly.beeshoes.dto.response.BillProductGiveback;
+import com.poly.beeshoes.dto.response.StatisticalDayResponse;
+import com.poly.beeshoes.dto.response.StatisticalMonthlyResponse;
 import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.dto.request.bill.BillSearchRequest;
@@ -133,4 +135,27 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
                         """, nativeQuery = true)
     List<BillProductGiveback> getBillGiveBack(@Param("idBill") String idBill);
 
+
+    @Query(value = """
+            SELECT
+                COUNT(id) AS totalBillToday,
+                SUM(total_money) AS totalBillAmountToday
+            FROM bill
+            WHERE
+                receive_date >= :startOfDay AND receive_date <= :endOfDay 
+                AND bill.status IN ('8', '6')                       
+                          """, nativeQuery = true)
+    List<StatisticalDayResponse> getAllStatisticalDay(@Param("startOfDay") Long startOfDay,
+                                                      @Param("endOfDay") Long endOfDay);
+
+    @Query(value = """
+            SELECT
+                COUNT(DISTINCT b.id) AS totalBill,
+                SUM(b.total_money) AS totalBillAmount,
+                SUM(bd.quantity) AS totalProduct
+            FROM bill b JOIN bill_detail bd ON b.id = bd.bill_id
+            WHERE b.status IN ('8', '6') AND b.receive_date >= :startOfMonth AND b.receive_date <= :endOfMonth
+              """, nativeQuery = true)
+    List<StatisticalMonthlyResponse> getAllStatisticalMonthly(@Param("startOfMonth") Long startOfMonth,
+                                                              @Param("endOfMonth") Long endOfMonth);
 }

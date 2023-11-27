@@ -57,7 +57,7 @@ public class Bill extends PrimaryEntity {
     @Column(name = "desired_date")
     private Date desiredDate;
     @Column(name = "receive_date")
-    private Date receiveDate;
+    private Long receiveDate;
     @Column(name = "status")
     private Integer status;
     @Column(name = "note")

@@ -135,7 +135,17 @@ function ShowProductModal({ idBill, onClose }) {
             title: 'Đơn giá',
             dataIndex: 'price',
             key: 'price',
-            render: (x) => <FormatCurrency value={x} />
+            render: (x, record) => (
+                <>
+                    {record.discountPercent !== null ? (
+                        <>
+                            <span className="text-danger"><FormatCurrency value={record.discountValue} /></span> <br /> <span className="text-decoration-line-through text-secondary"><FormatCurrency value={record.price} /></span>
+                        </>
+                    ) : (
+                        <span className="text-danger"><FormatCurrency value={record.price} /></span>
+                    )}
+                </>
+            )
         },
         {
             title: 'Loại đế',

@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import BaseUI from "./layouts/admin/BaseUI";
 import CoreUI from "./layouts/admin/CoreUI";
 import { getTokenEmpoloyee } from "./helper/useCookies";
+import Login from "./pages/admin/login/Login";
 
 function App() {
   const renderRoutes = (routes) => {
@@ -24,7 +25,10 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>{renderRoutes(publicRouters)}</Routes>
+      <Routes>
+        {renderRoutes(publicRouters)}
+        <Route key={"login"} path="/admin/login" element={<Login />}></Route>
+      </Routes>
       <FloatButton.BackTop />
       <ToastContainer autoClose={3000} />
     </BrowserRouter>

@@ -1,8 +1,11 @@
 package com.poly.beeshoes.entity;
 
 import com.poly.beeshoes.entity.base.PrimaryEntity;
+import com.poly.beeshoes.infrastructure.constant.StartusBillDetail;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -32,4 +35,6 @@ public class BillDetail extends PrimaryEntity {
 
     @Column(name = "status")
     private Boolean status;
+
+
 }

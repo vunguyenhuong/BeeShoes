@@ -1,6 +1,7 @@
 package com.poly.beeshoes.service.impl;
 
 import com.poly.beeshoes.entity.BillDetail;
+import com.poly.beeshoes.entity.PromotionDetail;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.converter.BillDetailConvert;
@@ -8,6 +9,7 @@ import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.dto.request.billdetail.BillDetailRequest;
 import com.poly.beeshoes.dto.response.BillDetailResponse;
 import com.poly.beeshoes.repository.IBillDetailRepository;
+import com.poly.beeshoes.repository.IPromotionDetailRepository;
 import com.poly.beeshoes.repository.IShoeDetailRepository;
 import com.poly.beeshoes.service.BillDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class BillDetailServiceImpl implements BillDetailService {
     private BillDetailConvert billDetailConvert;
     @Autowired
     private IShoeDetailRepository shoeDetailRepository;
+    @Autowired
+    private IPromotionDetailRepository promotionDetailRepository;
 
     @Override
     public PageableObject<BillDetailResponse> getAll(BillDetailRequest request) {
@@ -38,6 +42,7 @@ public class BillDetailServiceImpl implements BillDetailService {
 
     @Override
     public BillDetail create(BillDetailRequest request) {
+        PromotionDetail promotionDetail = promotionDetailRepository.findByShoeDetailCode(request.getShoeDetail());
         BillDetail billDetail = billDetailConvert.convertRequestToEntity(request);
         ShoeDetail shoeDetail = shoeDetailRepository.findByCode(request.getShoeDetail());
         if(request.getQuantity() < 1){
@@ -49,8 +54,9 @@ public class BillDetailServiceImpl implements BillDetailService {
         shoeDetailRepository.save(shoeDetail);
         BillDetail existBillDetail = billDetailRepository.findByShoeDetailCodeAndBillId(request.getShoeDetail(), request.getBill());
         if(existBillDetail != null){
-            existBillDetail.setPrice(shoeDetail.getPrice());
+            existBillDetail.setPrice(promotionDetail != null ? shoeDetail.getPrice().subtract(promotionDetail.getPromotionPrice()) : shoeDetail.getPrice());
             existBillDetail.setQuantity(existBillDetail.getQuantity()+request.getQuantity());
+            existBillDetail.setStatus(true);
             return billDetailRepository.save(existBillDetail);
         }
         return billDetailRepository.save(billDetail);

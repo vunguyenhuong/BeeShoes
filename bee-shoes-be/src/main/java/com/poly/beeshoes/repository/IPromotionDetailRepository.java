@@ -26,4 +26,6 @@ public interface IPromotionDetailRepository extends JpaRepository<PromotionDetai
             WHERE :idPromotion IS NULL OR pmd.promotion_id = :idPromotion
             """, nativeQuery = true)
     List<String> getListIdShoeDetailInPromotion(@Param("idPromotion") Long idPromotion);
+
+    PromotionDetail findByShoeDetailCode(String code);
 }

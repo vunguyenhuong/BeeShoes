@@ -244,6 +244,9 @@ public class BillServiceImpl implements BillService {
         BigDecimal totalBillGive = updateBillGiveBack.getTotalBillGiveBack();
         int checkTotal = totalBill.compareTo(totalBillGive);
 
+        // todo update bill
+        bill.setStatus(BillStatusConstant.TRA_HANG);
+        bill.setTotalMoney(totalBill.subtract(totalBillGive));
 
         return bill;
     }

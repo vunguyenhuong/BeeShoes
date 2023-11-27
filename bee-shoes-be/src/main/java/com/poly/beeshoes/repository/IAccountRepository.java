@@ -52,4 +52,5 @@ public interface IAccountRepository extends JpaRepository<Account, Long> {
 
     @Query("SELECT ac FROM Account ac WHERE ac.email =:email")
     Optional<Account> findByEmail(String email);
+
 }

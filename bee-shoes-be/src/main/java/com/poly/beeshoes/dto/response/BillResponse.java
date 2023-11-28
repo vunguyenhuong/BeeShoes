@@ -37,7 +37,7 @@ public interface BillResponse {
 
     LocalDateTime getDesiredDate();
 
-    LocalDateTime getReceiveDate();
+    Long getReceiveDate();
 
     Integer getType();
 

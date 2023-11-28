@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import TopSell from "./TopSell";
 import ChartBillStatus from "./ChartBillStatus";
 import * as request from "~/utils/httpRequest";
+import FormatCurrency from "~/utils/FormatCurrency";
 
 function Statistic() {
   const [totalBillMonth, setTotalBillMonth] = useState(0);
@@ -19,7 +20,7 @@ function Statistic() {
       .then((response) => {
         const data = response.data[0];
         setTotalBillMonth(data.totalBill);
-        setTotalBillAmoutMonth(formatCurrency(data.totalBillAmount));
+        setTotalBillAmoutMonth(data.totalBillAmount);
         setTotalProductMonth(data.totalProduct);
       })
       .catch((error) => {});
@@ -29,19 +30,11 @@ function Statistic() {
       .then((response) => {
         const data = response.data[0];
         setTotalBillDay(data.totalBillToday);
-        setTotalBillAmoutDay(formatCurrency(data.totalBillAmountToday));
+        setTotalBillAmoutDay(data.totalBillAmountToday);
       })
       .catch((error) => {});
   };
 
-  const formatCurrency = (value) => {
-    const formatter = new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-      currencyDisplay: "code",
-    });
-    return formatter.format(value);
-  };
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,32 +46,32 @@ function Statistic() {
         <Col xl={8}>
           <div
             className="bg-warning border px-2 pt-2"
-            style={{ height: "150px", borderRadius: "10px" }}
+            style={{ height: "150px"}}
           >
-            <Title level={3}>Doanh số tháng này </Title>
+            <Title level={5} className="text-uppercase fw-semibold">Doanh số tháng này </Title>
             <Title level={3}>
-              {totalBillMonth} đơn hàng / {totalBillAmoutMonth}
+              {totalBillMonth} đơn hàng / <FormatCurrency value={totalBillAmoutMonth}/>
             </Title>
           </div>
         </Col>
         <Col xl={8}>
           <div
             className="bg-warning border px-2 pt-2"
-            style={{ height: "150px", borderRadius: "10px" }}
+            style={{ height: "150px"}}
           >
-            <Title level={3}>Doanh số hôm nay</Title>
+            <Title level={5} className="text-uppercase fw-semibold">Doanh số hôm nay</Title>
             <Title level={3}>
-              {totalBillDay} đơn hàng / {totalBillAmountDay}
+              {totalBillDay} đơn hàng / <FormatCurrency value={totalBillAmountDay}/>
             </Title>
           </div>
         </Col>
         <Col xl={8}>
           <div
             className="bg-warning border px-2 pt-2"
-            style={{ height: "150px", borderRadius: "10px" }}
+            style={{ height: "150px"}}
           >
-            <Title level={3}>Sản phẩm bán được trong tháng</Title>
-            <Title level={3}>{totalProductMonth} sản phẩm</Title>
+            <Title level={5} className="text-uppercase fw-semibold">Sản phẩm bán được trong tháng</Title>
+            <Title level={5}>{totalProductMonth} sản phẩm</Title>
           </div>
         </Col>
       </Row>

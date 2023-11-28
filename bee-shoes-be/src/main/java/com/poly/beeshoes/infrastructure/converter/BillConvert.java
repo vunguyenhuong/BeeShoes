@@ -44,7 +44,7 @@ public class BillConvert {
         entity.setAddress(request.getAddress());
         entity.setMoneyShip(request.getMoneyShip());
         entity.setMoneyReduce(request.getMoneyReduce());
-        entity.setTotalMoney(request.getTotalMoney());
+        entity.setTotalMoney(request.getTotalMoney().subtract(request.getMoneyReduce()));
         entity.setNote(request.getNote());
         entity.setStatus(request.getStatus());
         entity.setType(request.getType());

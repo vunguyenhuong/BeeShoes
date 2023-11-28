@@ -1,4 +1,4 @@
-import { Alert, Button, Carousel, Col, Divider, Empty, Form, Input, Modal, Row, Switch, Table, Tooltip, } from "antd";
+import { Alert, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, Row, Switch, Table, Tooltip, } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -83,7 +83,7 @@ function OrderItem({ index, props, onSuccess }) {
       }
     }).then((response) => {
       const calculatedTotalMoney = response.data.reduce((total, item) => {
-        return total + item.quantity * (item.discountPercent !== null ? item.discountValue : item.price);
+        return total + item.quantity * (item.discountPercent !== null ? item.discountValue : item.price) - moneyReduce;
       }, 0);
       setTotalMoney(calculatedTotalMoney);
       setLoading(false);
@@ -261,7 +261,7 @@ function OrderItem({ index, props, onSuccess }) {
       render: (quantity, record) => (
         <Form key={record.id}>
           <Form.Item initialValue={quantity} name={"quantity"} className="m-0 p-0">
-            <Input className="text-center" type="number" style={{ width: "64px" }} onPressEnter={(e) => handleChangeQuantity(record.id, e.target.value)} />
+            <Input className="text-center" type="number" style={{ width: "64px" }} onChange={(e) => handleChangeQuantity(record.id, e.target.value)} />
           </Form.Item>
         </Form>
       )
@@ -318,9 +318,9 @@ function OrderItem({ index, props, onSuccess }) {
             Modal.confirm({
               title: "Xác nhận",
               maskClosable: true,
-              content: "Xác nhận thêm khách hàng ?",
-              okText: "Ok",
-              cancelText: "Cancel",
+              content: "Xác nhận tạo hóa đơn ?",
+              okText: "Xác nhận",
+              cancelText: "Hủy",
               onOk: () => {
                 request.put(`/bill/${props.id}`, data).then(response => {
                   toast.success("Tạo đơn hàng thành công!");
@@ -512,7 +512,22 @@ function OrderItem({ index, props, onSuccess }) {
               {typeOrder === 0 && (
                 <>
                   <li className="mb-2">
-                    <Input placeholder="Nhập tiền khách đưa..." onChange={(e) => { setExtraMoney(e.target.value - totalMoney + moneyReduce); setTienKhachDua(e.target.value) }} className="mb-2" />
+                    <InputNumber
+                      className='w-100 mb-2'
+                      formatter={(value) =>
+                        ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
+                      parser={(value) =>
+                        value !== null && value !== undefined
+                          ? value.replace(/\$\s?|(,*)/g, "")
+                          : ""
+                      }
+                      controls={false}
+                      min={0}
+                      // suffix="VNĐ"
+                      placeholder="Nhập tiền khách đưa..."
+                      onChange={(e) => { setExtraMoney(e - totalMoney + moneyReduce); setTienKhachDua(e) }}
+                    />
                     {totalMoney > 0 && <Alert message={tienKhachDua < totalMoney - moneyReduce ? "Vui lòng nhập đủ tiền khách đưa!" : "Khách đã đưa đủ tiền!"} type={tienKhachDua < totalMoney - moneyReduce ? "error" : "success"} />}
                   </li>
                   <li className="mb-2">

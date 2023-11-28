@@ -78,4 +78,9 @@ public class PromotionServiceImpl implements PromotionService {
                 .map(Long::valueOf)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteAll(Long idPromotion) {
+        promotionDetailRepository.deleteAllById(promotionDetailRepository.findIdsByPromotionId(idPromotion));
+    }
 }

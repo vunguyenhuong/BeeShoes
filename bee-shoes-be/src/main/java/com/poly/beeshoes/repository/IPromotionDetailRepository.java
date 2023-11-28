@@ -28,4 +28,6 @@ public interface IPromotionDetailRepository extends JpaRepository<PromotionDetai
     List<String> getListIdShoeDetailInPromotion(@Param("idPromotion") Long idPromotion);
 
     PromotionDetail findByShoeDetailCode(String code);
+    @Query("SELECT pd.id FROM PromotionDetail pd WHERE pd.promotion.id = :promotionId")
+    List<Long> findIdsByPromotionId(@Param("promotionId") Long promotionId);
 }

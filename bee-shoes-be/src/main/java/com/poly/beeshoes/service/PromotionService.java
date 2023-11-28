@@ -14,4 +14,5 @@ public interface PromotionService {
     PromotionResponse getOne(Long id);
     List<Long> getListIdShoePromotion(Long idPromotion);
     List<Long> getListIdShoeDetailInPromotion(@Param("idPromotion") Long idPromotion);
+    void deleteAll(Long idPromotion);
 }

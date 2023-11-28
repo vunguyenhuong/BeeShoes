@@ -57,7 +57,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      console.error("Error fetching shoe details: ", error);
+      toast.error(error.response.data)
     }
   };
   return (

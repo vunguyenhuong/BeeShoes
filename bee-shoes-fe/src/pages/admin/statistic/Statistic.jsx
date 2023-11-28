@@ -68,10 +68,10 @@ function Statistic() {
         <Col xl={8}>
           <div
             className="bg-warning border px-2 pt-2"
-            style={{ height: "150px"}}
+            style={{ height: "150px",}}
           >
-            <Title level={5} className="text-uppercase fw-semibold">Sản phẩm bán được trong tháng</Title>
-            <Title level={5}>{totalProductMonth} sản phẩm</Title>
+            <Title level={5}>Sản phẩm bán được trong tháng</Title>
+            <Title level={3}>{totalProductMonth} sản phẩm</Title>
           </div>
         </Col>
       </Row>

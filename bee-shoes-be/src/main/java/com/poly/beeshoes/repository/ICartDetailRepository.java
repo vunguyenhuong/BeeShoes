@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface ICartDetailRepository extends JpaRepository<CartDetail, Long> {
-    List<CartDetail> getCartDetailsByCartId(Long cart);
+    List<CartDetail> findByCartId(Long idCart);
 
-    List<CartDetail> getCartDetailsByCartIdAndShoeDetailId(Long cart, Long shoeDetail);
+    Boolean existsByCartIdAndShoeDetailId(Long cart, Long shoeDetail);
+    CartDetail findByCartIdAndShoeDetailId(Long cart, Long shoeDetail);
 }

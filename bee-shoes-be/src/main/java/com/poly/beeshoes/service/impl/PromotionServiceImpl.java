@@ -38,26 +38,30 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     @Transactional
     public ResponseObject create(PromotionRequest request) {
-        Promotion promotion = new Promotion();
-        promotion.setCode(request.getCode());
-        promotion.setName(request.getName());
-        promotion.setValue(request.getValue());
-        promotion.setStartDate(request.getStartDate());
-        promotion.setEndDate(request.getEndDate());
-        Promotion promotionSave = iPromotionRepository.save(promotion);
-        if(promotionSave!=null){
-            for (Long x: request.getProductDetails()) {
-                if(!promotionDetailRepository.existsByShoeDetailId(x)){
-                    ShoeDetail shoeDetail = shoeDetailRepository.findById(x).get();
-                    PromotionDetail promotionDetail = new PromotionDetail();
-                    promotionDetail.setPromotion(promotionSave);
-                    promotionDetail.setShoeDetail(shoeDetail);
-                    promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(request.getValue())));
-                    promotionDetailRepository.save(promotionDetail);
-                }
-            }
-        }
-        return new ResponseObject("ABC");
+//        Promotion promotion = new Promotion();
+//        promotion.setCode(request.getCode());
+//        promotion.setName(request.getName());
+//        if(request.getValue() <= 0 || request.getValue() >= 100){
+//
+//        }
+//        promotion.setValue(request.getValue());
+//        promotion.setStartDate(request.getStartDate());
+//        promotion.setEndDate(request.getEndDate());
+//        Promotion promotionSave = iPromotionRepository.save(promotion);
+//        if(promotionSave!=null){
+//            for (Long x: request.getProductDetails()) {
+//                if(!promotionDetailRepository.existsByShoeDetailId(x)){
+//                    ShoeDetail shoeDetail = shoeDetailRepository.findById(x).get();
+//                    PromotionDetail promotionDetail = new PromotionDetail();
+//                    promotionDetail.setPromotion(promotionSave);
+//                    promotionDetail.setShoeDetail(shoeDetail);
+//                    promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(new BigDecimal(request.getValue()))));
+//                    promotionDetailRepository.save(promotionDetail);
+//                }
+//            }
+//        }
+        System.out.println(request.getProductDetails().toString());
+        return new ResponseObject(request);
     }
 
     @Override

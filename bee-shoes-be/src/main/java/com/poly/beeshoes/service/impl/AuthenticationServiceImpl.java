@@ -3,6 +3,7 @@ package com.poly.beeshoes.service.impl;
 import com.poly.beeshoes.dto.request.logindto.ChangePassword;
 import com.poly.beeshoes.dto.request.logindto.ResetPassword;
 import com.poly.beeshoes.entity.Account;
+import com.poly.beeshoes.infrastructure.constant.AccountRoles;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.infrastructure.sercurity.auth.JwtAuhenticationResponse;
 import com.poly.beeshoes.infrastructure.sercurity.auth.RefreshTokenRequets;
@@ -35,6 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtSerrvice jwtSerrvice;
 
+    private final IRoleRepository roleRepository;
     @Autowired
     private MailUtils mailUtils;
 
@@ -50,6 +52,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         account.setEmail(signUpRequets.getEmail());
         account.setAccountRoles(signUpRequets.getRole());
         account.setPassword(passwordEncoder.encode(signUpRequets.getPassword()));
+        if(signUpRequets.getRole().equals(AccountRoles.ROLE_USER)){
+            account.setRole(roleRepository.findByName("Khách hàng"));
+        }
         accountRepository.save(account);
 
         String emailContent = "Chào " + signUpRequets.getEmail() + "\n" + "Bạn vừa dùng email này để đăng ký tài khoản cho hệ thống Bee Shoes Store\n" + "Tài khoản của bạn là: " + signUpRequets.getEmail() + "\n" + "Mật khẩu đăng nhập là: " + signUpRequets.getPassword() + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n" + "Trang chủ BeeShoes: https://beeshoes.vunguyenhuong.id.vn\n" + "Liên hệ: https://facebook.com/VuNguyenHuong.Official";

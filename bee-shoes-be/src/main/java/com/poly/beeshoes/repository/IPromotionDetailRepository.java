@@ -1,6 +1,7 @@
 package com.poly.beeshoes.repository;
 
 import com.poly.beeshoes.entity.PromotionDetail;
+import com.poly.beeshoes.entity.ShoeDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,4 +31,5 @@ public interface IPromotionDetailRepository extends JpaRepository<PromotionDetai
     PromotionDetail findByShoeDetailCode(String code);
     @Query("SELECT pd.id FROM PromotionDetail pd WHERE pd.promotion.id = :promotionId")
     List<Long> findIdsByPromotionId(@Param("promotionId") Long promotionId);
+    Boolean existsByShoeDetail(ShoeDetail shoeDetail);
 }

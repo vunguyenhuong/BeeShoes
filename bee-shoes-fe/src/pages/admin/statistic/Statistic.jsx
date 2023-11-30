@@ -23,7 +23,7 @@ function Statistic() {
         setTotalBillAmoutMonth(data.totalBillAmount);
         setTotalProductMonth(data.totalProduct);
       })
-      .catch((error) => {});
+      .catch((error) => { });
     // ngày
     request
       .get(`statistical/day`)
@@ -32,7 +32,7 @@ function Statistic() {
         setTotalBillDay(data.totalBillToday);
         setTotalBillAmoutDay(data.totalBillAmountToday);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   useEffect(() => {
@@ -45,33 +45,34 @@ function Statistic() {
       <Row gutter={16}>
         <Col xl={8}>
           <div
-            className="bg-warning border px-2 pt-2"
-            style={{ height: "150px"}}
+            className="border px-2 pt-2"
+            style={{ height: "150px", backgroundColor: "#F59F00" }}
           >
-            <Title level={5} className="text-uppercase fw-semibold">Doanh số tháng này </Title>
-            <Title level={3}>
-              {totalBillMonth} đơn hàng / <FormatCurrency value={totalBillAmoutMonth}/>
+            <Title level={5} className="text-white">Doanh số tháng này </Title>
+            <h1 className="text-white">{totalBillMonth}</h1>
+            <Title level={3} className="text-white"><FormatCurrency value={totalBillAmoutMonth} /></Title>
+          </div>
+        </Col>
+        <Col xl={8}>
+          <div
+            className="border px-2 pt-2"
+            style={{ height: "150px", backgroundColor: "#2FB344" }}
+          >
+            <Title level={5} className="text-white">Doanh số hôm nay</Title>
+            <h1 className="text-white">{totalBillDay}</h1>
+            <Title level={3} className="text-white">
+              <FormatCurrency value={totalBillAmountDay} />
             </Title>
           </div>
         </Col>
         <Col xl={8}>
           <div
-            className="bg-warning border px-2 pt-2"
-            style={{ height: "150px"}}
+            className="border px-2 pt-2"
+            style={{ height: "150px", backgroundColor: "#4299E1" }}
           >
-            <Title level={5} className="text-uppercase fw-semibold">Doanh số hôm nay</Title>
-            <Title level={3}>
-              {totalBillDay} đơn hàng / <FormatCurrency value={totalBillAmountDay}/>
-            </Title>
-          </div>
-        </Col>
-        <Col xl={8}>
-          <div
-            className="bg-warning border px-2 pt-2"
-            style={{ height: "150px",}}
-          >
-            <Title level={5}>Sản phẩm bán được trong tháng</Title>
-            <Title level={3}>{totalProductMonth} sản phẩm</Title>
+            <Title level={5} className="text-white">Sản phẩm bán được trong tháng</Title>
+            <h1 className="text-white">{totalProductMonth === null ? 0 : totalProductMonth}</h1>
+            <Title level={3} className="text-white">Sản phẩm</Title>
           </div>
         </Col>
       </Row>

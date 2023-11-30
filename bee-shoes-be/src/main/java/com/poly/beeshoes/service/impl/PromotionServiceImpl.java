@@ -7,6 +7,7 @@ import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.dto.request.PromotionRequest;
 import com.poly.beeshoes.dto.response.PromotionResponse;
+import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.repository.IPromotionDetailRepository;
 import com.poly.beeshoes.repository.IPromotionRepository;
 import com.poly.beeshoes.repository.IShoeDetailRepository;
@@ -36,31 +37,31 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = RestApiException.class)
     public ResponseObject create(PromotionRequest request) {
-//        Promotion promotion = new Promotion();
-//        promotion.setCode(request.getCode());
-//        promotion.setName(request.getName());
-//        if(request.getValue() <= 0 || request.getValue() >= 100){
-//
-//        }
-//        promotion.setValue(request.getValue());
-//        promotion.setStartDate(request.getStartDate());
-//        promotion.setEndDate(request.getEndDate());
-//        Promotion promotionSave = iPromotionRepository.save(promotion);
-//        if(promotionSave!=null){
-//            for (Long x: request.getProductDetails()) {
-//                if(!promotionDetailRepository.existsByShoeDetailId(x)){
-//                    ShoeDetail shoeDetail = shoeDetailRepository.findById(x).get();
-//                    PromotionDetail promotionDetail = new PromotionDetail();
-//                    promotionDetail.setPromotion(promotionSave);
-//                    promotionDetail.setShoeDetail(shoeDetail);
-//                    promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(new BigDecimal(request.getValue()))));
-//                    promotionDetailRepository.save(promotionDetail);
-//                }
-//            }
-//        }
-        System.out.println(request.getProductDetails().toString());
+        Promotion promotion = new Promotion();
+        promotion.setCode(request.getCode());
+        promotion.setName(request.getName());
+        if(request.getValue() <= 0 || request.getValue() >= 100){
+            throw new RestApiException("Vui lòng nhập giá trị hợp lệ!");
+        }
+        promotion.setValue(request.getValue());
+        promotion.setStartDate(request.getStartDate());
+        promotion.setEndDate(request.getEndDate());
+        Promotion promotionSave = iPromotionRepository.save(promotion);
+        for (Long x: request.getProductDetails()) {
+            ShoeDetail shoeDetail = shoeDetailRepository.findById(x).get();
+            if(!promotionDetailRepository.existsByShoeDetailId(x)){
+                PromotionDetail promotionDetail = new PromotionDetail();
+                promotionDetail.setPromotion(promotionSave);
+                promotionDetail.setShoeDetail(shoeDetail);
+                promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(new BigDecimal(request.getValue()))));
+                promotionDetailRepository.save(promotionDetail);
+            }else {
+                throw new RestApiException(
+                        shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() + "-" + shoeDetail.getSize().getName() + "] đã được áp dụng khuyến mại!");
+            }
+        }
         return new ResponseObject(request);
     }
 
@@ -72,6 +73,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public List<Long> getListIdShoePromotion(Long idPromotion) {
         return promotionDetailRepository.getListIdShoePromotion(idPromotion).stream()
+                .flatMap(ids -> Arrays.stream(ids.split(",")))
                 .map(Long::valueOf)
                 .collect(Collectors.toList());
     }

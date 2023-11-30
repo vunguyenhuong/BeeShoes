@@ -1,5 +1,6 @@
 package com.poly.beeshoes.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poly.beeshoes.entity.base.PrimaryEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,5 +22,6 @@ import lombok.Setter;
 public class Cart  extends PrimaryEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
+    @JsonIgnoreProperties(value = {"createAt", "updateAt", "createBy", "updateBy", "deleted"})
     private Account account;
 }

@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,7 +108,14 @@ public class BillServiceImpl implements BillService {
         BillHistory history = new BillHistory();
         PaymentMethod paymentMethod = new PaymentMethod();
         Bill oldBill = billRepository.findById(id).get();
-        Bill billSave = billRepository.save(billConvert.convertRequestToEntity(oldBill, request));
+        Bill bill = billConvert.convertRequestToEntity(oldBill, request);
+
+        if(bill.getStatus() == BillStatusConstant.HOAN_THANH){
+            bill.setReceiveDate(System.currentTimeMillis());
+        }else if (bill.getStatus() == BillStatusConstant.DANG_GIAO){
+            bill.setShipDate(new Date());
+        }
+        Bill billSave = billRepository.save(bill);
         if (billSave != null) {
             if (billSave.getStatus() == 6) {
                 history.setNote("Mua hàng thành công");
@@ -250,6 +258,14 @@ public class BillServiceImpl implements BillService {
                 bill.setStatus(bill.getStatus() + 1);
                 history.setStatus(bill.getStatus());
             }
+        }
+
+        if(bill.getStatus() == BillStatusConstant.HOAN_THANH){
+            bill.setReceiveDate(System.currentTimeMillis());
+        }else if (bill.getStatus() == BillStatusConstant.DANG_GIAO){
+            bill.setShipDate(new Date());
+        }else if (bill.getStatus() == BillStatusConstant.XAC_NHAN_THONG_TIN_THANH_TOAN){
+            bill.setPayDate(new Date());
         }
         Bill billSave = billRepository.save(bill);
         if (billSave != null) {

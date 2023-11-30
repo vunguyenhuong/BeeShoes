@@ -30,7 +30,7 @@ function TableShoeDetail({ idProduct, setSelectedProductDetail, setRowKeys }) {
 
     useEffect(() => {
         setSelectedRowKeys(setRowKeys);
-    },[setRowKeys])
+    }, [setRowKeys])
     const loadData = (idProduct, dataFilter) => {
         request.get('/shoe-detail', {
             params: {
@@ -90,6 +90,13 @@ function TableShoeDetail({ idProduct, setSelectedProductDetail, setRowKeys }) {
             title: "Tên",
             dataIndex: "name",
             key: "name",
+            render: (x, record) => (
+                <>
+                    {x}
+                    <br />
+                    {record.discountValue !== null && <small className="fw-semibold">SALE <span className="text-danger">{record.discountPercent} %</span></small>}
+                </>
+            )
         },
         {
             title: "Số lượng",
@@ -101,7 +108,17 @@ function TableShoeDetail({ idProduct, setSelectedProductDetail, setRowKeys }) {
             title: "Đơn giá",
             dataIndex: "price",
             key: "price",
-            render: (x) => <FormatCurrency value={x} />,
+            render: (x, record) => (
+                <>
+                    {record.discountPercent !== null ? (
+                        <>
+                            <span className="text-danger"><FormatCurrency value={record.discountValue} /></span> <br /> <span className="text-decoration-line-through text-secondary"><FormatCurrency value={record.price} /></span>
+                        </>
+                    ) : (
+                        <span className="text-danger"><FormatCurrency value={record.price} /></span>
+                    )}
+                </>
+            )
         },
     ];
 

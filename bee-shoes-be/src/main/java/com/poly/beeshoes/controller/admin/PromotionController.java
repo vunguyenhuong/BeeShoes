@@ -6,6 +6,7 @@ import com.poly.beeshoes.dto.request.PromotionRequest;
 import com.poly.beeshoes.dto.response.PromotionResponse;
 import com.poly.beeshoes.service.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,5 +44,9 @@ public class PromotionController {
     @PostMapping
     public ResponseObject create(@RequestBody PromotionRequest request){
         return service.create(request);
+    }
+    @DeleteMapping("/delete-all-promotion-detail/{id}")
+    public void deleteAllPromotionDetailByPromotion(@PathVariable Long id){
+        service.deleteAll(id);
     }
 }

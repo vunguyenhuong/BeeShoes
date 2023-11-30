@@ -30,7 +30,7 @@ public class Promotion extends PrimaryEntity {
     @Column(name = "name")
     private String name;
     @Column(name = "value")
-    private BigDecimal value;
+    private Integer value;
 
     @Column(name = "start_date")
     private LocalDateTime startDate;

@@ -4,6 +4,7 @@ import * as request from "~/utils/httpRequest";
 import { FaHome } from "react-icons/fa";
 import TableShoe from "./TableShoe";
 import TableShoeDetail from "./TableShoeDetail";
+import { toast } from "react-toastify";
 
 function AddPromotion() {
   const [form] = Form.useForm();
@@ -22,8 +23,10 @@ function AddPromotion() {
         data.productDetails = productDetail
         request.post('/promotion', data).then(response => {
           console.log(response);
+          toast.success("Thêm thành công!");
         }).catch(e => {
           console.log(e);
+          toast.error(e.response.data);
         })
         console.log(data);
       },

@@ -135,15 +135,13 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
                         """, nativeQuery = true)
     List<BillProductGiveback> getBillGiveBack(@Param("idBill") String idBill);
 
-
     @Query(value = """
-            SELECT
-                COUNT(id) AS totalBillToday,
-                SUM(total_money) AS totalBillAmountToday
-            FROM bill
-            WHERE
-                receive_date >= :startOfDay AND receive_date <= :endOfDay 
-                AND bill.status IN ('8', '6')                       
+                SELECT
+                    COUNT(DISTINCT b.id) AS totalBillToday,
+                    SUM(total_money) AS totalBillAmountToday
+                FROM bill b JOIN bill_detail bd ON b.id = bd.bill_id
+                WHERE receive_date >= :startOfDay AND receive_date <= :endOfDay 
+                AND b.status IN ('8', '6')                   
                           """, nativeQuery = true)
     List<StatisticalDayResponse> getAllStatisticalDay(@Param("startOfDay") Long startOfDay,
                                                       @Param("endOfDay") Long endOfDay);

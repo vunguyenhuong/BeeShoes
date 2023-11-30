@@ -4,6 +4,7 @@ import com.poly.beeshoes.entity.Account;
 import com.poly.beeshoes.entity.Address;
 import com.poly.beeshoes.infrastructure.common.GenCode;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
+import com.poly.beeshoes.infrastructure.constant.AccountRoles;
 import com.poly.beeshoes.infrastructure.converter.AccountConvert;
 import com.poly.beeshoes.infrastructure.converter.AddressConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
@@ -64,6 +65,7 @@ public class AccountServiceImpl implements AccountService {
         String randomPassword = GenCode.randomPassword();
         Account account = accountConvert.convertRequestToEntity(request);
         account.setRole(roleRepository.findByName(roleName));
+        account.setAccountRoles(roleName.equals("Khách hàng") ? AccountRoles.ROLE_USER : AccountRoles.ROLE_EMLOYEE);
         account.setPassword(randomPassword);
         account.setAvatar("defaultAvatar.jpg");
         Account accountSave = accountRepository.save(account);

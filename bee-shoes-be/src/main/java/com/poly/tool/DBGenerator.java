@@ -2,6 +2,7 @@ package com.poly.tool;
 
 import com.poly.beeshoes.entity.*;
 import com.poly.beeshoes.infrastructure.common.GenCode;
+import com.poly.beeshoes.infrastructure.constant.AccountRoles;
 import com.poly.beeshoes.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -205,7 +206,7 @@ public class DBGenerator implements CommandLineRunner {
         promotion1.setCode("PRO1");
         promotion1.setName("Khuyến mại % TEST");
         promotion1.setStatus(1);
-        promotion1.setValue(BigDecimal.valueOf(5));
+        promotion1.setValue(5);
         promotion1.setStartDate(LocalDateTime.of(2023, Month.OCTOBER, 15, 14, 0, 0));
         promotion1.setEndDate(LocalDateTime.of(2033, Month.OCTOBER, 15, 14, 0, 0));
         promotion1.setId(promotionRepository.save(promotion1).getId());
@@ -214,7 +215,7 @@ public class DBGenerator implements CommandLineRunner {
         promotion2.setCode("PRO2");
         promotion2.setName("Khuyến mại TEST");
         promotion2.setStatus(1);
-        promotion2.setValue(BigDecimal.valueOf(10));
+        promotion2.setValue(10);
         promotion2.setStartDate(LocalDateTime.of(2023, Month.OCTOBER, 15, 14, 0, 0));
         promotion2.setEndDate(LocalDateTime.of(2033, Month.OCTOBER, 15, 14, 0, 0));
         promotion2.setId(promotionRepository.save(promotion2).getId());
@@ -251,6 +252,7 @@ public class DBGenerator implements CommandLineRunner {
         nhanVien1.setAvatar("https://res.cloudinary.com/beeshoes/image/upload/v1691146814/products/pyxjixea5klgwiw9ziv6.jpg");
         nhanVien1.setCccd("535834053750");
         nhanVien1.setEmail("Hangnt169@gmail.com");
+        nhanVien1.setAccountRoles(AccountRoles.ROLE_EMLOYEE);
         nhanVien1.setGender("Nữ");
         nhanVien1.setPassword("9c015d87");
         nhanVien1.setPhoneNumber("0395080515");
@@ -265,6 +267,7 @@ public class DBGenerator implements CommandLineRunner {
         khachHang1.setCccd("535834053333");
         khachHang1.setEmail("Nguyenvv4@gmail.com");
         khachHang1.setGender("Nam");
+        khachHang1.setAccountRoles(AccountRoles.ROLE_USER);
         khachHang1.setPassword("9c015d34");
         khachHang1.setPhoneNumber("0387899999");
         khachHang1.setUsername("Nguyenvv4");
@@ -278,6 +281,7 @@ public class DBGenerator implements CommandLineRunner {
         khachHang2.setCccd("535834053321");
         khachHang2.setEmail("DungNA29@gmail.com");
         khachHang2.setGender("Nam");
+        khachHang2.setAccountRoles(AccountRoles.ROLE_USER);
         khachHang2.setPassword("9c015d12");
         khachHang2.setPhoneNumber("0387811111");
         khachHang2.setUsername("DungNA29");
@@ -354,73 +358,6 @@ public class DBGenerator implements CommandLineRunner {
         accountVoucher1.setAccount(khachHang1);
         accountVoucher1.setVoucher(voucher1);
         accountVoucher1.setId(accountVoucherRepository.save(accountVoucher1).getId());
-
-        // Bill
-        Bill bill0 = new Bill();
-        bill0.setCode("HD1001");
-        bill0.setStatus(0);
-        bill0.setAccount(nhanVien1);
-        bill0.setId(billRepository.save(bill0).getId());
-
-        Bill bill1 = new Bill();
-        bill1.setCode("HD1002");
-        bill1.setStatus(1);
-        bill1.setAccount(nhanVien1);
-        bill1.setId(billRepository.save(bill1).getId());
-
-        Bill bill2 = new Bill();
-        bill2.setCode("HD1003");
-        bill2.setStatus(2);
-        bill2.setAccount(nhanVien1);
-        bill2.setId(billRepository.save(bill2).getId());
-
-        Bill bill3 = new Bill();
-        bill3.setCode("HD1004");
-        bill3.setStatus(3);
-        bill3.setAccount(nhanVien1);
-        bill3.setId(billRepository.save(bill3).getId());
-
-        Bill bill4 = new Bill();
-        bill4.setCode("HD1005");
-        bill4.setStatus(4);
-        bill4.setAccount(nhanVien1);
-        bill4.setId(billRepository.save(bill4).getId());
-
-        Bill bill5 = new Bill();
-        bill5.setCode("HD1006");
-        bill5.setStatus(5);
-        bill5.setAccount(nhanVien1);
-        bill5.setId(billRepository.save(bill5).getId());
-
-        Bill bill6 = new Bill();
-        bill6.setCode("HD1007");
-        bill6.setStatus(6);
-        bill6.setAccount(nhanVien1);
-        bill6.setId(billRepository.save(bill6).getId());
-
-        Bill bill7 = new Bill();
-        bill7.setCode("HD1008");
-        bill7.setStatus(7);
-        bill7.setAccount(nhanVien1);
-        bill7.setId(billRepository.save(bill7).getId());
-
-        // BillDetail
-
-        BillDetail billDetail1 = new BillDetail();
-        billDetail1.setBill(bill1);
-        billDetail1.setShoeDetail(shoeDetail1);
-        billDetail1.setQuantity(1);
-        billDetail1.setPrice(BigDecimal.valueOf(100000));
-        billDetail1.setId(billDetailRepository.save(billDetail1).getId());
-
-        BillDetail billDetail2 = new BillDetail();
-        billDetail2.setBill(bill2);
-        billDetail2.setShoeDetail(shoeDetail1);
-        billDetail2.setQuantity(1);
-        billDetail2.setPrice(BigDecimal.valueOf(100000));
-        billDetail2.setId(billDetailRepository.save(billDetail2).getId());
-
-
         // BillHistory
 
         // PaymentMethod

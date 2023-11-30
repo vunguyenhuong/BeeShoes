@@ -138,7 +138,7 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
     @Query(value = """
                 SELECT
                     COUNT(DISTINCT b.id) AS totalBillToday,
-                    SUM(total_money) AS totalBillAmountToday
+                    SUM(b.total_money) AS totalBillAmountToday
                 FROM bill b JOIN bill_detail bd ON b.id = bd.bill_id
                 WHERE receive_date >= :startOfDay AND receive_date <= :endOfDay 
                 AND b.status IN ('8', '6')                   

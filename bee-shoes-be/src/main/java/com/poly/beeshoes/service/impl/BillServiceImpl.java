@@ -64,7 +64,6 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public PageableObject<BillResponse> getAll(BillSearchRequest request) {
-        request.setIdStaff(session.getEmployee().getId());
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
         return new PageableObject<>(billRepository.getAll(request, pageable));
     }

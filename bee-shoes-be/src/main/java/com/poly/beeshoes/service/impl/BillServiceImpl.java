@@ -177,6 +177,52 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+    public ResponseObject createBillClientVnpay(BillClientRequest request, String code) {
+        Bill bill = new Bill();
+        BillHistory billHistory = new BillHistory();
+//        bill.setAccount(accountRepository.findById(session.getEmployee().getId()).get());
+        bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
+        bill.setCode(this.genBillCode());
+        bill.setType(1);
+        bill.setNote(request.getNote());
+        bill.setAddress(request.getSpecificAddress() + "##" + request.getWard() + "##" + request.getDistrict() + "##" + request.getProvince());
+        bill.setMoneyShip(request.getMoneyShip());
+        bill.setMoneyReduce(request.getMoneyReduce());
+        bill.setTotalMoney(request.getTotalMoney());
+        if (request.getVoucher() != null) {
+            bill.setVoucher(voucherRepository.findById(request.getVoucher()).get());
+        }
+
+        Bill billSave = billRepository.save(bill);
+        billHistory.setBill(billSave);
+        billHistory.setStatus(billSave.getStatus());
+        billHistory.setNote("Chờ xác nhận");
+        billHistoryRepository.save(billHistory);
+
+        PaymentMethod paymentMethod = new PaymentMethod();
+        paymentMethod.setBill(billSave);
+        paymentMethod.setMethod(1);
+        paymentMethod.setTradingCode(code);
+        paymentMethod.setTotalMoney(billSave.getTotalMoney());
+        paymentMethod.setNote("Đã thanh toán");
+        paymentMethodRepository.save(paymentMethod);
+
+        for (CartClientRequest x : request.getCarts()) {
+            ShoeDetail shoeDetail = shoeDetailRepository.findById(x.getId()).get();
+            BillDetail billDetail = new BillDetail();
+            billDetail.setBill(bill);
+            billDetail.setQuantity(x.getQuantity());
+            billDetail.setShoeDetail(shoeDetail);
+            billDetail.setPrice(shoeDetail.getPrice());
+            billDetailRepository.save(billDetail);
+            shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
+            shoeDetailRepository.save(shoeDetail);
+        }
+
+        return new ResponseObject("OK");
+    }
+
+    @Override
     public Bill delete(Long id) {
         return null;
     }

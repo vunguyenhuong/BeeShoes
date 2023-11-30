@@ -21,6 +21,7 @@ public interface BillService {
     Bill create();
     Bill update(Long id,BillRequest request);
     ResponseObject createBillClient(BillClientRequest request);
+    ResponseObject createBillClientVnpay(BillClientRequest request, String code);
     Bill delete(Long id);
     Bill changeStatus(Long id, String status);
     List<StatisticBillStatus> statisticBillStatus();

@@ -45,7 +45,7 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
             LEFT JOIN account cus ON cus.id = b.customer_id
             LEFT JOIN voucher v ON v.id = b.voucher_id
             WHERE (:#{#req.code} IS NULL OR b.code LIKE %:#{#req.code}%)
-            AND (:#{#req.idStaff} IS NULL OR b.account_id = :#{#req.idStaff})
+            AND ((:#{#req.idStaff} IS NULL OR b.account_id = :#{#req.idStaff}) OR (b.account_id is null ))
             AND (:#{#req.status} IS NULL OR b.status = :#{#req.status})
             AND (:#{#req.idCustomer} IS NULL OR b.customer_id = :#{#req.idCustomer})
             AND b.deleted = FALSE 

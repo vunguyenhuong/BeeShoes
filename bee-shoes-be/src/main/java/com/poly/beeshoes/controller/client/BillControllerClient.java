@@ -46,9 +46,16 @@ public class BillControllerClient {
     public ResponseObject create() {
         return new ResponseObject(billService.create());
     }
+
     @PostMapping("/create-bill-client")
     public ResponseObject create(@RequestBody BillClientRequest request) {
         return new ResponseObject(billService.createBillClient(request));
+    }
+
+    @PostMapping("/create-bill-client-vn-pay/{code}")
+    public ResponseObject createVnPay(@RequestBody BillClientRequest request,
+                                      @PathVariable("code") String code) {
+        return new ResponseObject(billService.createBillClientVnpay(request, code));
     }
 
     @PutMapping("/{id}")

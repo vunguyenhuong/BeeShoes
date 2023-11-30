@@ -84,6 +84,8 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
             """)
     Page<Bill> getAllBill(@Param("req") BillSearchRequest request, Pageable pageable);
 
+    Bill findByCode(String code);
+
     Boolean existsByCode(String code);
 
     Page<Bill> findByAccountIdAndStatusAndDeletedFalse(Long idAccount, Integer status, Pageable pageable);

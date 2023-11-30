@@ -73,6 +73,11 @@ public class BillServiceImpl implements BillService {
         return billRepository.findById(id).orElse(null);
     }
 
+    @Override
+    public Bill findByCode(String code) {
+        return billRepository.findByCode(code);
+    }
+
     private String genBillCode() {
         String prefix = "HD100";
         int x = 1;

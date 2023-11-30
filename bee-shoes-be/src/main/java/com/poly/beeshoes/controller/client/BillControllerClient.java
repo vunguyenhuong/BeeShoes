@@ -32,6 +32,11 @@ public class BillControllerClient {
     public PageableObject getAll(BillSearchRequest request) {
         return billService.getAll(request);
     }
+
+    @GetMapping("/find-by-code")
+    public Bill findByCode(@RequestParam(required = false, defaultValue = "") String code){
+        return billService.findByCode(code);
+    }
     @GetMapping("/statistic-bill-status")
     public List<StatisticBillStatus> statisticBillStatus(){
         return billService.statisticBillStatus();

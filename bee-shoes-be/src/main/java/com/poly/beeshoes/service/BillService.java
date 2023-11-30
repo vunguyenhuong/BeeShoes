@@ -18,6 +18,7 @@ import java.util.List;
 public interface BillService {
     PageableObject<BillResponse> getAll(BillSearchRequest request);
     Bill getOne(Long id);
+    Bill findByCode(String code);
     Bill create();
     Bill update(Long id,BillRequest request);
     ResponseObject createBillClient(BillClientRequest request);

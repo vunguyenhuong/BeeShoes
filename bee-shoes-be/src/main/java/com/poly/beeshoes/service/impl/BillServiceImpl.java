@@ -151,7 +151,7 @@ public class BillServiceImpl implements BillService {
     public ResponseObject createBillClient(BillClientRequest request) {
         Bill bill = new Bill();
         BillHistory billHistory = new BillHistory();
-//        bill.setAccount(accountRepository.findById(session.getEmployee().getId()).get());
+        bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
         bill.setCode(this.genBillCode());
         bill.setType(1);

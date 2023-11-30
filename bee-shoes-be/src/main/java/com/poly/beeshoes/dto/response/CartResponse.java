@@ -8,6 +8,7 @@ public interface CartResponse {
     @Value("#{target.indexs}")
     Integer getIndex();
     Long getId();
+    Long getIdProductDetail();
     String getName();
     String getImage();
     String getSole();

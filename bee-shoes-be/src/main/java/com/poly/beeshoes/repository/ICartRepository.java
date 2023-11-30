@@ -16,6 +16,7 @@ public interface ICartRepository extends JpaRepository<Cart, Long> {
                 cd.id AS id,
                 ROW_NUMBER() OVER(ORDER BY cd.update_at DESC) AS indexs,
                 CONCAT(s.name, ' [', c.name, ' - ', sz.name, ']') AS name,
+                sd.id AS idProductDetail,
                 cd.quantity AS quantity,
                 sd.price AS price,
                 sl.name AS sole,

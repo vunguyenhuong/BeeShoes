@@ -14,6 +14,7 @@ import TextArea from "antd/es/input/TextArea";
 import ShowProductModal from "./ShowProductModal";
 import Loading from "~/components/Loading/Loading";
 import ChooseVoucher from "./ChooseVoucher";
+import axios from "axios";
 
 function OrderItem({ index, props, onSuccess }) {
   const [form] = Form.useForm();
@@ -168,6 +169,32 @@ function OrderItem({ index, props, onSuccess }) {
     }
   }, [voucher])
 
+  function generateUUID() {
+    // Public Domain/MIT
+    var d = new Date().getTime(); //Timestamp
+    var d2 =
+      (typeof performance !== "undefined" &&
+        performance.now &&
+        performance.now() * 1000) ||
+      0; //Time in microseconds since page-load or 0 if unsupported
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = Math.random() * 16; //random number between 0 and 16
+        if (d > 0) {
+          //Use timestamp until depleted
+          r = (d + r) % 16 | 0;
+          d = Math.floor(d / 16);
+        } else {
+          //Use microseconds since page-load if supported
+          r = (d2 + r) % 16 | 0;
+          d2 = Math.floor(d2 / 16);
+        }
+        return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+      }
+    );
+  }
+
   const handleChangeQuantity = (id, quantity) => {
     request.get(`/bill-detail/update-quantity/${id}`, {
       params: {
@@ -321,8 +348,8 @@ function OrderItem({ index, props, onSuccess }) {
               content: "Xác nhận tạo hóa đơn ?",
               okText: "Xác nhận",
               cancelText: "Hủy",
-              onOk: () => {
-                request.put(`/bill/${props.id}`, data).then(response => {
+              onOk: async () => {
+                request.put(`/bill/${props.id}`, data).then((response) => {
                   toast.success("Tạo đơn hàng thành công!");
                   onSuccess();
                 }).catch(e => {
@@ -331,8 +358,35 @@ function OrderItem({ index, props, onSuccess }) {
               },
             });
           } else {
-            toast.error("Vui lòng nhập đủ tiền khách đưa!");
-            return;
+            if (paymentMethod === 0) {
+              toast.error("Vui lòng nhập đủ tiền khách đưa!");
+            } else {
+              Modal.confirm({
+                title: "Xác nhận",
+                maskClosable: true,
+                content: "Xác nhận tạo hóa đơn ?",
+                okText: "Xác nhận",
+                cancelText: "Hủy",
+                onOk: async () => {
+                  if (paymentMethod === 1) {
+                    request.get(`/vn-pay/payment?id=${generateUUID()}&total=${totalMoney}`).then(response => {
+                      if (response.status) {
+                        data.status = 4;
+                        window.location.href = response.data.data;
+                        request.put(`/bill/${props.id}`, data).then((response) => {
+                          toast.success("Tạo đơn hàng thành công!");
+                          onSuccess();
+                        }).catch(e => {
+                          console.log(e);
+                        })
+                      }
+                    }).catch(e => {
+                      console.log(e);
+                    })
+                  }
+                },
+              });
+            }
           }
         } else {
           data.phoneNumber = autoFillAddress.phoneNumber;
@@ -342,11 +396,19 @@ function OrderItem({ index, props, onSuccess }) {
           Modal.confirm({
             title: "Xác nhận",
             maskClosable: true,
-            content: "Xác nhận thêm khách hàng ?",
+            content: "Xác nhận tạo đơn hàng ?",
             okText: "Ok",
             cancelText: "Cancel",
-            onOk: () => {
-              console.log(data.customer);
+            onOk: async () => {
+              if (paymentMethod === 1) {
+                await request.get(`/vn-pay/payment?id=${generateUUID()}&total=${totalMoney}`).then(response => {
+                  if (response.status) {
+                    window.location.href = response.data.data;
+                  }
+                }).catch(e => {
+                  console.log(e);
+                })
+              }
               request.put(`/bill/${props.id}`, data).then(response => {
                 toast.success("Tạo đơn hàng thành công!");
                 onSuccess();

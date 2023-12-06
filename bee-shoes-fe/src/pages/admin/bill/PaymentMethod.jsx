@@ -79,6 +79,14 @@ function PaymentMethod({ bill }) {
       )
     },
     {
+      title: 'Mã giao dịch',
+      dataIndex: 'tradingCode',
+      key: 'tradingCode',
+      render: (x, record) => (
+        <>{x}</>
+      )
+    },
+    {
       title: 'Nhân viên xác nhận',
       dataIndex: 'createBy',
       key: 'createBy',
@@ -111,7 +119,7 @@ function PaymentMethod({ bill }) {
                   }
                 >
                   Số tiền cần thanh toán: <span className=" float-end fw-semibold text-danger">
-                    <FormatCurrency value={bill.totalMoney + bill.moneyShip} />
+                    <FormatCurrency value={bill.totalMoney} />
                   </span>
                   <Form layout="vertical" form={form} onFinish={handleCreatePaymentMethod}>
                     {method === 0 ? (

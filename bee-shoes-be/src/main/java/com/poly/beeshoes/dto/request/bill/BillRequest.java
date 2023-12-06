@@ -27,4 +27,8 @@ public class BillRequest extends PageableRequest {
     private String note;
     private Integer status;
     private Integer paymentMethod;
+    private BigDecimal tienMat;
+    private BigDecimal tienChuyenKhoan;
+    private String tradingCode;
+    private Boolean waitPay;
 }

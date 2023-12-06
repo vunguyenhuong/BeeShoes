@@ -28,9 +28,9 @@ import AddPromotion from "./pages/admin/promotion/AddPromotion";
 import PromotionDetail from "./pages/admin/promotion/update/PromotionDetail";
 import Statistic from "./pages/admin/statistic/Statistic";
 import Giveback from "./pages/admin/giveback/Giveback";
-import Login from "./pages/admin/login/Login";
 import withAuth from "./auth";
 import DetailGiveBack from "./pages/admin/giveback/DetailGiveBack";
+import Payment from "./pages/admin/payment/Payment";
 
 const publicRouters = [
   { path: "/", element: withAuth(Statistic) },
@@ -65,6 +65,7 @@ const publicRouters = [
   { path: "/admin/give-back", element: withAuth(Giveback) },
   { path: "/admin/detail-give-back/:id", element: withAuth(DetailGiveBack) },
 
+  { path: "/admin/vnpay-payment", element: withAuth(Payment) },
   // { path: '*', element: NotFound}
 ];
 

@@ -47,7 +47,6 @@ function ChooseProductModal({ shoe, idBill }) {
             } else {
                 data.shoeDetail = shoeDetail?.code;
                 data.bill = idBill;
-                data.price = shoeDetail?.price;
                 console.log(data);
                 request.post('/bill-detail', data).then(response => {
                     toast.success('Thêm thành công!');

@@ -43,7 +43,7 @@ function TableProduct({ props, handleChange }) {
     }
   };
   const handleChangePrice = (event, colorName, index) => {
-    const value = parseInt(event.target.value);
+    const value = parseInt(event);
     if (value < 1) {
       toast.error("Đơn giá không hợp lệ!");
     } else {
@@ -62,7 +62,7 @@ function TableProduct({ props, handleChange }) {
     }
   };
   const handleChangeWeight = (event, colorName, index) => {
-    const value = parseInt(event.target.value);
+    const value = parseInt(event);
     if (value < 1) {
       toast.error("Cân nặng không hợp lệ!");
     } else {
@@ -138,7 +138,6 @@ function TableProduct({ props, handleChange }) {
                       <td>Cân nặng</td>
                       <td>Danh mục</td>
                       <td>Thương hiệu</td>
-                      <td>Loại đế</td>
                       <td></td>
                       <td>Ảnh</td>
                     </tr>
@@ -155,21 +154,65 @@ function TableProduct({ props, handleChange }) {
                                   : option.shoe.name}{" "}
                                 [{option.color.name} - {option.size.name}]
                               </td>
-                              <td width="100px">
-                                <InputNumber defaultValue={option.quantity} onChange={(value) =>
-                                  handleChangeQuantity(value, key, idx)} min={1} />
+                              <td width="130px">
+                                <InputNumber
+                                  defaultValue={option.quantity}
+                                  style={{ width: "100%" }}
+                                  step={1}
+                                  formatter={(value) =>
+                                    ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                  }
+                                  parser={(value) =>
+                                    value !== null && value !== undefined
+                                      ? value.replace(/\$\s?|(,*)/g, "")
+                                      : ""
+                                  }
+                                  onChange={(value) =>
+                                    handleChangeQuantity(value, key, idx)}
+                                  controls={false}
+                                  min={1}
+                                />
                               </td>
-                              <td width="100px">
-                                <Input defaultValue={option.price} onChange={(value) =>
-                                  handleChangePrice(value, key, idx)} />
+                              <td width="130px">
+                                <InputNumber
+                                  defaultValue={option.price}
+                                  style={{ width: "100%" }}
+                                  step={10000}
+                                  formatter={(value) =>
+                                    ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                  }
+                                  parser={(value) =>
+                                    value !== null && value !== undefined
+                                      ? value.replace(/\$\s?|(,*)/g, "")
+                                      : ""
+                                  }
+                                  onChange={(value) =>
+                                    handleChangePrice(value, key, idx)}
+                                  controls={false}
+                                  min={0}
+                                />
                               </td>
-                              <td width="100px">
-                                <Input defaultValue={option.weight} onChange={(value) =>
-                                  handleChangeWeight(value, key, idx)} />
+                              <td width="130px">
+                                <InputNumber
+                                  defaultValue={option.weight}
+                                  style={{ width: "100%" }}
+                                  step={10000}
+                                  formatter={(value) =>
+                                    ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                  }
+                                  parser={(value) =>
+                                    value !== null && value !== undefined
+                                      ? value.replace(/\$\s?|(,*)/g, "")
+                                      : ""
+                                  }
+                                  onChange={(value) =>
+                                    handleChangeWeight(value, key, idx)}
+                                  controls={false}
+                                  min={0}
+                                />
                               </td>
                               <td>{option.shoe.category}</td>
                               <td>{option.shoe.brand}</td>
-                              <td>{option.sole == null ? "" : option.sole.name}</td>
                               <td>
                                 <button
                                   className="btn btn-sm"

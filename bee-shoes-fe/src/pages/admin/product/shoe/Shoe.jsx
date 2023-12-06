@@ -1,4 +1,4 @@
-import { Button, Col, Input, Radio, Row, Select, Table } from "antd";
+import { Button, Col, Input, Radio, Row, Select, Table, Tooltip } from "antd";
 import { Option } from "antd/es/mentions";
 import React from "react";
 import { useEffect } from "react";
@@ -82,10 +82,11 @@ function Shoe() {
       key: 'action',
       render: (x) => (
         <>
-          <button className="btn btn-sm"><i className="fas fa-eye"></i></button>
-          <Link to={`/admin/product/${x}`} className="btn btn-sm text-warning">
-            <i className="fas fa-edit"></i>
-          </Link>
+          <Tooltip title="Chỉnh sửa">
+            <Link to={`/admin/product/${x}`} className="btn btn-sm text-warning">
+              <i className="fas fa-edit"></i>
+            </Link>
+          </Tooltip>
         </>
       ),
     },

@@ -14,17 +14,24 @@ public interface BillDetailResponse {
     Long getId();
 
     String getName();
+
     String getShoeCode();
 
     String getColor();
 
     String getSize();
+
     String getSole();
 
     BigDecimal getPrice();
+
     BigDecimal getDiscountPercent();
+
     BigDecimal getDiscountValue();
 
     Integer getQuantity();
+
     String getImages();
+
+    BigDecimal getTotalMoney();
 }

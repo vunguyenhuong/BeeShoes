@@ -27,6 +27,7 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
             ROW_NUMBER() OVER(ORDER BY b.update_at DESC) AS indexs,
             b.code AS code, b.create_at AS createAt,
             cus.name AS customer,emp.name AS employee,
+            b.customer_name AS customerName,
             b.address AS address,
             b.phone_number AS phoneNumber,
             b.total_money AS totalMoney,
@@ -44,7 +45,8 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
             LEFT JOIN account emp ON emp.id = b.account_id
             LEFT JOIN account cus ON cus.id = b.customer_id
             LEFT JOIN voucher v ON v.id = b.voucher_id
-            WHERE (:#{#req.code} IS NULL OR b.code LIKE %:#{#req.code}%)
+            WHERE (:#{#req.code} IS NULL OR b.code LIKE %:#{#req.code}%
+            OR b.customer_name LIKE %:#{#req.code}% OR b.phone_number LIKE %:#{#req.code}%)
             AND ((:#{#req.idStaff} IS NULL OR b.account_id = :#{#req.idStaff}) OR (b.account_id is null ))
             AND (:#{#req.status} IS NULL OR b.status = :#{#req.status})
             AND (:#{#req.idCustomer} IS NULL OR b.customer_id = :#{#req.idCustomer})
@@ -55,13 +57,14 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
     @Query(value = """
             SELECT
                        CASE
-                           WHEN status = 1 THEN 'Tạo đơn hàng'
+                           WHEN status = 1 THEN 'Đơn mới tạo'
                            WHEN status = 2 THEN 'Chờ xác nhận'
                            WHEN status = 3 THEN 'Xác nhận thông tin thanh toán'
                            WHEN status = 4 THEN 'Chờ giao'
                            WHEN status = 5 THEN 'Đang giao'
                            WHEN status = 6 THEN 'Hoàn thành'
                            WHEN status = 7 THEN 'Đã hủy'
+                           WHEN status = 8 THEN 'Trả hàng'
                            ELSE 'Chờ thanh toán'
                        END AS statusName,
                        status as status,

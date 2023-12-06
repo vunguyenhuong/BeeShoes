@@ -24,6 +24,10 @@ function PromotionDetail() {
         return () => clearTimeout(timeout);
     }, [id]);
 
+    useEffect(() => {
+        alert(listShoeDetailId)
+    }, [listShoeDetailId])
+
     const loadPromotion = () => {
         httpRequest.get(`/promotion/${id}`).then(response => {
             setPromotion(response.data);
@@ -97,7 +101,7 @@ function PromotionDetail() {
                         <TableShoe setRowKeys={listShoeId} setProductIds={setListShoeId} />
                     </Col>
                 </Row>
-                <TableShoeDetail idProduct={listShoeId} setRowKeys={listShoeDetailId}/>
+                <TableShoeDetail idProduct={listShoeId} setRowKeys={listShoeDetailId} setSelectedProductDetail={(value) => setListShoeDetailId(value)} />
             </Form>
         </>
     )

@@ -54,7 +54,7 @@ public class BillDetailServiceImpl implements BillDetailService {
         shoeDetailRepository.save(shoeDetail);
         BillDetail existBillDetail = billDetailRepository.findByShoeDetailCodeAndBillId(request.getShoeDetail(), request.getBill());
         if(existBillDetail != null){
-            existBillDetail.setPrice(promotionDetail != null ? shoeDetail.getPrice().subtract(promotionDetail.getPromotionPrice()) : shoeDetail.getPrice());
+            existBillDetail.setPrice(promotionDetail != null ? promotionDetail.getPromotionPrice() : shoeDetail.getPrice());
             existBillDetail.setQuantity(existBillDetail.getQuantity()+request.getQuantity());
             existBillDetail.setStatus(true);
             return billDetailRepository.save(existBillDetail);
@@ -83,6 +83,9 @@ public class BillDetailServiceImpl implements BillDetailService {
         ShoeDetail shoeDetail = billDetail.getShoeDetail();
         if(newQuantity > (shoeDetail.getQuantity()+billDetail.getQuantity())){
             throw new RestApiException("Quá số lượng cho phép!");
+        }
+        if(newQuantity <= 0){
+            throw new RestApiException("Vui lòng nhập số lượng hợp lệ!");
         }
         shoeDetail.setQuantity(shoeDetail.getQuantity()+billDetail.getQuantity()-newQuantity);
         billDetail.setQuantity(newQuantity);

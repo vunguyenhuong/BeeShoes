@@ -19,13 +19,14 @@ import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
 import "./timeline.css";
 import InfoBill from "./InfoBill";
-import { Button, Carousel, Divider, Empty, Form, Modal, Table, message } from "antd";
+import { Button, Carousel, Divider, Empty, Form, Input, Modal, Radio, Space, Table, Tooltip, message } from "antd";
 import PaymentMethod from "./PaymentMethod";
 import BillHistory from "./BillHistory";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
 import { toast } from "react-toastify";
 import ShowProductModal from "../order/neworder/ShowProductModal";
+import Loading from "~/components/Loading/Loading";
 
 const BillDetail = () => {
   const [bill, setBill] = useState([]);
@@ -38,8 +39,12 @@ const BillDetail = () => {
   const { id } = useParams();
   const [form] = Form.useForm();
 
-  const loadBill = () => {
-    request
+  const [loading, setLoading] = useState(true);
+
+  const [cancelBill, setCancelBill] = useState(false);
+
+  const loadBill = async () => {
+    await request
       .get(`/bill/${id}`)
       .then((response) => {
         setBill(response);
@@ -47,6 +52,7 @@ const BillDetail = () => {
       .catch((error) => {
         console.error(error);
       });
+    setLoading(false);
   };
   const loadBillDetail = async () => {
     await request.get(`/bill-detail`, {
@@ -85,21 +91,35 @@ const BillDetail = () => {
     loadBillDetail();
   }, [currentPage, pageSize])
 
-
+  const handleChangeQuantity = (id, quantity) => {
+    request.get(`/bill-detail/update-quantity/${id}`, {
+      params: {
+        newQuantity: quantity
+      }
+    }).then(response => {
+      loadBillDetail();
+    }).catch(e => {
+      console.log(e);
+      toast.error(e.response.data);
+    })
+  }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
+  const showModal = (isCancel) => {
+    setCancelBill(isCancel);
     setIsModalOpen(true);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setCancelBill(false);
   };
 
   const handleSubmit = (data) => {
     request.get(`/bill/change-status/${bill.id}`, {
       params: {
-        note: data.note
+        note: data.note,
+        isCancel: cancelBill
       }
     }).then((response) => {
       loadBill();
@@ -172,7 +192,15 @@ const BillDetail = () => {
       dataIndex: 'quantity',
       key: 'quantity',
       render: (quantity, record) => (
-        <>{quantity}</>
+        <>
+          {bill.status === 2 | bill.status === 4 ? (
+            <Form key={record.id}>
+              <Form.Item initialValue={quantity} name={"quantity"} className="m-0 p-0">
+                <Input className="text-center" min={1} type="number" style={{ width: "64px" }} onChange={(e) => handleChangeQuantity(record.id, e.target.value)} />
+              </Form.Item>
+            </Form>
+          ) : quantity}
+        </>
       )
     },
     {
@@ -185,7 +213,33 @@ const BillDetail = () => {
         </div>
       )
     },
+    {
+      title: 'Hành động',
+      dataIndex: 'id',
+      key: 'action',
+      render: (id, record) => (
+        <>
+          {bill.status === 2 | bill.status === 4 ? (
+            <>
+              {
+                listBillDetail.length > 1 && (
+                  <>
+                    <Tooltip placement="top" title="Xóa">
+                      <Button type="text" className="text-danger me-1"><i className="fas fa-trash"></i></Button>
+                    </Tooltip>
+                  </>
+                )
+              }
+            </>
+          ) : ""}
+        </>
+      )
+    },
   ]
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -223,7 +277,12 @@ const BillDetail = () => {
                                   ? FaBug
                                   : FaBug
                 }
-                color="#2DC255"
+                color={
+                  item.status === 1 ? '#024FA0' :
+                    item.status === 3 ? "#F2721E" :
+                      item.status === 4 ? "#50B846" :
+                        item.status === 7 ? "#FF7875" : '#2DC255'
+                }
                 title={
                   <h6 className="mt-2">
                     {item.status === 1
@@ -261,17 +320,24 @@ const BillDetail = () => {
             {bill.status !== 6 ? (
               <>
                 {bill.status <= 4 && (
-                  <Button type="primary" danger className="me-1">Hủy</Button>
+                  <Button type="primary" danger className="me-1" onClick={() => showModal(true)}>Hủy</Button>
                 )}
-                <Button type="primary" onClick={showModal}>
-                  Xác nhận
-                </Button>
+                {bill.status === 7 ? '' : (
+                  <Button type="primary" onClick={() => showModal(false)}>
+                    Xác nhận
+                  </Button>
+                )}
               </>
             ) : (
               ""
             )}
           </div>
           <div className="">
+            {bill.status !== 1 | bill.status !== 2 && (
+              <Tooltip title="In hóa đơn">
+                <Link className="px-2" target="blank" to={`/export-pdf/${bill.id}`}><Button type="primary" icon={<i class="fa-regular fa-file-lines"></i>}></Button></Link>
+              </Tooltip>
+            )}
             <BillHistory props={billHistory} />
           </div>
         </div>
@@ -302,7 +368,18 @@ const BillDetail = () => {
           }} />
       </BaseUI>
       <Modal title="Nhập ghi chú" open={isModalOpen} onCancel={handleCancel} footer={<Button form="formNote" type="primary" htmlType="submit">Xác nhận</Button>}>
-        <Form id="formNote" onFinish={handleSubmit} form={form}>
+        <p><span className="text-danger">*</span>Chọn mẫu tin nhắn:</p>
+        <Radio.Group className="mb-3" onChange={(e) => { form.setFieldsValue({ note: e.target.value }) }}>
+          <Space direction="vertical">
+            <Radio value={'Đã xác nhận đơn hàng'}>Đã xác nhận đơn hàng</Radio>
+            <Radio value={'Đã đưa hàng cho shipper'}>Đã đưa hàng cho shipper</Radio>
+            <Radio value={'Đã xác nhận thông tin thanh toán'}>Đã xác nhận thông tin thanh toán</Radio>
+            <Radio value={'Đơn hàng đã được giao thành công'}>Đơn hàng đã được giao thành công</Radio>
+            <Radio value={'Đã hủy đơn hàng'}>Đã hủy đơn hàng</Radio>
+            <Radio value={''}>Khác</Radio>
+          </Space>
+        </Radio.Group>
+        <Form id="formNote" onFinish={(data) => handleSubmit(data)} form={form}>
           <Form.Item name={"note"} rules={[{ required: true, message: "Ghi chú không được để trống!" }]}>
             <TextArea placeholder="Nhập ghi chú..." />
           </Form.Item>

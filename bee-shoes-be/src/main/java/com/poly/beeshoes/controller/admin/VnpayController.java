@@ -47,7 +47,7 @@ public class VnpayController {
         String locate = "vn";
         vnp_Params.put("vnp_Locale", locate);
 
-        vnp_Params.put("vnp_ReturnUrl","http://localhost:3000" + VNPayConfig.vnp_Returnurl);
+        vnp_Params.put("vnp_ReturnUrl","http://localhost:3000/admin" + VNPayConfig.vnp_Returnurl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));

@@ -6,6 +6,7 @@ import * as request from "~/utils/httpRequest";
 import OrderItem from "./OrderItem";
 import Loading from "~/components/Loading/Loading";
 import { toast } from "react-toastify";
+import { getTokenEmpoloyee } from "~/helper/useCookies";
 
 function NewOrder() {
   const [listOrder, setListOrder] = useState([]);
@@ -22,7 +23,7 @@ function NewOrder() {
     request
       .get(`bill`, {
         params: {
-          idStaff: 1,
+          idStaff: getTokenEmpoloyee().id,
           status: 1
         }
       }).then((response) => {
@@ -87,7 +88,7 @@ function NewOrder() {
         </div>
       </div>
       <div className="mt-3">
-        <Tabs hideAdd type="editable-card" onEdit={handleDelete}>
+        <Tabs>
           {listOrder.length > 0 && listOrder.map((order, index) => (
             <Tabs.TabPane key={order.code} tab={`${order.code}`}>
               <OrderItem props={order} index={index + 1} onSuccess={loadOrders} />

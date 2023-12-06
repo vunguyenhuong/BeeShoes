@@ -32,8 +32,9 @@ public class BillController {
     public PageableObject getAll(BillSearchRequest request) {
         return billService.getAll(request);
     }
+
     @GetMapping("/statistic-bill-status")
-    public List<StatisticBillStatus> statisticBillStatus(){
+    public List<StatisticBillStatus> statisticBillStatus() {
         return billService.statisticBillStatus();
     }
 
@@ -46,40 +47,41 @@ public class BillController {
     public ResponseObject create() {
         return new ResponseObject(billService.create());
     }
+
     @PostMapping("/create-bill-client")
     public ResponseObject create(@RequestBody BillClientRequest request) {
         return new ResponseObject(billService.createBillClient(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid BillRequest request) {
-        return new ResponseObject(billService.update(id, request));
+    public ResponseObject orderBill(@PathVariable Long id, @RequestBody @Valid BillRequest request) {
+        return new ResponseObject(billService.orderBill(id, request));
     }
 
     @GetMapping("/change-status/{id}")
-    public ResponseObject changeStatus(@PathVariable Long id, @RequestParam String note) {
-        return new ResponseObject(billService.changeStatus(id, note));
+    public ResponseObject changeStatus(@PathVariable Long id, @RequestParam String note, @RequestParam(defaultValue = "false") Boolean isCancel) {
+        return new ResponseObject(billService.changeStatus(id, note,isCancel));
     }
 
     @GetMapping("/give-back-information")
-    public ResponseObject BillGiveBackInformation (@RequestParam("codeBill") String codeBill){
+    public ResponseObject BillGiveBackInformation(@RequestParam("codeBill") String codeBill) {
         return new ResponseObject(billService.getBillGiveBackInformation(codeBill));
     }
 
     @GetMapping("/give-back")
-    public ResponseObject BillGiveBack (@RequestParam("idBill") String ibBill){
+    public ResponseObject BillGiveBack(@RequestParam("idBill") String ibBill) {
         return new ResponseObject(billService.getBillGiveBack(ibBill));
     }
 
     @PostMapping("/give-back")
-    public ResponseObject UpdateBillGiveBack (@RequestParam("updateBill") String updateBill,
-                                              @RequestParam("data") String data){
+    public ResponseObject UpdateBillGiveBack(@RequestParam("updateBill") String updateBill,
+                                             @RequestParam("data") String data) {
 
         Gson gson = new Gson();
         UpdateBillGiveBack updateBillGiveBack = gson.fromJson(updateBill, UpdateBillGiveBack.class);
 
         JsonArray jsonData = JsonParser.parseString(data).getAsJsonArray();
-        List<UpdateBillDetailGiveBack> listDataBillDetail =  new ArrayList<>();
+        List<UpdateBillDetailGiveBack> listDataBillDetail = new ArrayList<>();
         for (JsonElement dataBillDetail : jsonData) {
             UpdateBillDetailGiveBack detail = gson.fromJson(dataBillDetail, UpdateBillDetailGiveBack.class);
             listDataBillDetail.add(detail);

@@ -34,8 +34,8 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
         c.name AS color,
         sz.name AS size,
         bd.quantity AS quantity,
-        bd.price AS price,
-        bd.price - bd.price / 100 * MAX(pm.value) AS discountValue,
+        sd.price AS price,
+        pmd.promotion_price discountValue,
         MAX(pm.value) AS discountPercent,
         GROUP_CONCAT(DISTINCT img.name) AS images
     FROM
@@ -51,7 +51,7 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
     WHERE
         bd.bill_id = :#{#req.bill}
     GROUP BY
-        bd.id
+        bd.id,pmd.promotion_price
             """, nativeQuery = true)
     Page<BillDetailResponse> getAllBillDetail(@Param("req") BillDetailRequest request, Pageable pageable);
 }

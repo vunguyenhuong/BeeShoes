@@ -21,4 +21,5 @@ public interface IPaymentMethodRepository extends JpaRepository<PaymentMethod, L
             """,nativeQuery = true)
     List<PaymentMethodResponse> getByBill(@Param("idBill") Long idBill);
     Boolean existsByBillId(Long id);
+    List<PaymentMethod> findByBillId(Long idBill);
 }

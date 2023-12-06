@@ -11,8 +11,8 @@ import java.util.*;
 public class VNPayConfig {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_Returnurl = "/vnpay-payment";
-    public static String vnp_TmnCode = "5YPT27KA";
-    public static String vnp_HashSecret = "MVBDWFVLPTCZEHSWFJYLUHPWQCLXRTGQ";
+    public static String vnp_TmnCode = "9OXKTB4P";
+    public static String vnp_HashSecret = "GHYGLSTSDINSNYSFIJXYTVCETKSRVBMI";
 
     public static String hashAllFields(Map fields) {
         List fieldNames = new ArrayList(fields.keySet());

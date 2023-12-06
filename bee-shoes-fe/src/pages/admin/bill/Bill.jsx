@@ -2,10 +2,13 @@ import React from "react";
 import BaseUI from "~/layouts/admin/BaseUI";
 import { useState, useEffect } from "react";
 import * as request from "~/utils/httpRequest";
-import { Badge, Button, Form, Input, Radio, Table, Tabs, Tag } from "antd";
+import { Badge, Button, Form, Input, Radio, Table, Tabs, Tag, Tooltip } from "antd";
 import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
 import { Link } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
+import { useRef } from "react";
+import TemplateExportBill from "../export-pdf/TemplateExportBill";
 
 const Bill = ({ onLoad }) => {
   const [listOrder, setListOrder] = useState([]);
@@ -13,19 +16,17 @@ const Bill = ({ onLoad }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const [pageSize, setPageSize] = useState(5);
-
-  const [status, setStatus] = useState(null);
-
+  const [status, setStatus] = useState(1);
   const [tabs, setTabs] = useState([]);
 
   const loadOrders = (status, currentPage, pageSize, searchValue) => {
     request
       .get(`bill`, {
         params: {
-          idStaff: 1,
           page: currentPage,
           sizePage: pageSize,
-          status: status
+          status: status,
+          code: searchValue
         }
       }).then((response) => {
         setListOrder(response.data);
@@ -49,6 +50,10 @@ const Bill = ({ onLoad }) => {
   }, [currentPage, pageSize, searchValue, status, onLoad]);
 
   const items = [
+    {
+      key: null,
+      label: <Badge offset={[8, 0]} size="small">Tất cả</Badge>,
+    },
     ...tabs.map(item => ({
       key: item.status,
       label: <Badge count={item.totalCount} offset={[8, 0]} size="small">{item.statusName}</Badge>,
@@ -75,7 +80,7 @@ const Bill = ({ onLoad }) => {
       title: 'Khách hàng',
       dataIndex: 'customer',
       key: 'customer',
-      render: (x) => x === null ? "Khách hàng lẻ" : x
+      render: (x, record) => x === null ? "Khách hàng lẻ" : x
     },
     {
       title: 'SDT',
@@ -87,7 +92,7 @@ const Bill = ({ onLoad }) => {
       title: 'Tổng tiền',
       dataIndex: 'totalMoney',
       key: 'totalMoney',
-      render: (x) => x === null ? 0 : <FormatCurrency value={x} />
+      render: (x, record) => x === null ? 0 : <FormatCurrency value={x + record.moneyShip} />
     },
     {
       title: 'Loại đơn hàng',
@@ -112,10 +117,16 @@ const Bill = ({ onLoad }) => {
       title: 'Hành động',
       dataIndex: 'id',
       key: '',
-      render: (x) => (
+      render: (x, record) => (
         <>
-          <Button type="text" icon={<i className="fas fa-eye"></i>} />
-          <Link to={`/admin/bill/${x}`}><Button type="text" icon={<i class="fas fa-ellipsis"></i>} /></Link>
+          <Tooltip title="Xem chi tiết">
+            <Link to={`/admin/bill/${x}`}><Button type="text" icon={<i class="fas fa-ellipsis"></i>} /></Link>
+          </Tooltip>
+          {record.status !== 1 | record.status !== 2 && (
+            <Tooltip title="In hóa đơn">
+              <Link className="px-2" target="blank" to={`/export-pdf/${record.id}`}><i class="fa-regular fa-file-lines"></i></Link>
+            </Tooltip>
+          )}
         </>
       )
     },
@@ -123,7 +134,14 @@ const Bill = ({ onLoad }) => {
 
   return (
     <BaseUI>
-      <h6>Danh sách hóa đơn</h6>
+      <div className="d-flex">
+        <div className="flex-grow-1">
+          <h6>Danh sách hóa đơn</h6>
+        </div>
+        <div className="">
+          <Input onChange={(e) => setSearchValue(e.target.value)} placeholder="Tìm kiếm theo mã hóa đơn, tên khách hàng, số điện thoại..." style={{ width: "440px" }} />
+        </div>
+      </div>
       <Tabs defaultActiveKey={1} items={items} tabBarGutter={74} onChange={(key) => {
         setStatus(key);
       }} />

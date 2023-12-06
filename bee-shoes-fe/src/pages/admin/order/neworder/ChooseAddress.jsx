@@ -107,7 +107,6 @@ function ChooseAddress({ idCustomer, onSuccess }) {
   const handleSelectAddress = (address) => {
     setIsModalOpen(false);
     onSuccess(address);
-    console.log("---");
     console.log(address);
   };
 

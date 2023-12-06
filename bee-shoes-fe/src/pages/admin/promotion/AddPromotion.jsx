@@ -10,9 +10,12 @@ function AddPromotion() {
   const [form] = Form.useForm();
   const [productIds, setProductIds] = useState([]);
 
-  const [productDetail, setPRoductDetail] = useState([]);
+  const [productDetail, setProductDetail] = useState([]);
 
   const handleCreatePromotion = (data) => {
+    if(productIds.length === 0){
+      toast.error("Vui lòng chọn sản phẩm áp dụng")
+    }
     Modal.confirm({
       title: "Xác nhận",
       maskClosable: true,
@@ -94,7 +97,7 @@ function AddPromotion() {
           <Col xl={24}>
             <h6>Danh sách chi tiết sản phẩm</h6>
 
-            {productIds.length === 0 ? <Empty /> : <TableShoeDetail idProduct={productIds} setSelectedProductDetail={(value) => setPRoductDetail(value)} />}
+            {productIds.length === 0 ? <Empty /> : <TableShoeDetail idProduct={productIds} setSelectedProductDetail={(value) => setProductDetail(value)} />}
           </Col>
         </Row>
       </Form >

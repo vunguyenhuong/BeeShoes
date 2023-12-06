@@ -46,7 +46,7 @@ function Statistic() {
         <Col xl={8}>
           <div
             className="border px-2 pt-2"
-            style={{ height: "150px", backgroundColor: "#F59F00" }}
+            style={{ height: "150px", backgroundColor: "#024FA0" }}
           >
             <Title level={5} className="text-white">Doanh số tháng này </Title>
             <h1 className="text-white">{totalBillMonth}</h1>
@@ -56,7 +56,7 @@ function Statistic() {
         <Col xl={8}>
           <div
             className="border px-2 pt-2"
-            style={{ height: "150px", backgroundColor: "#2FB344" }}
+            style={{ height: "150px", backgroundColor: "#F2721E" }}
           >
             <Title level={5} className="text-white">Doanh số hôm nay</Title>
             <h1 className="text-white">{totalBillDay}</h1>
@@ -68,7 +68,7 @@ function Statistic() {
         <Col xl={8}>
           <div
             className="border px-2 pt-2"
-            style={{ height: "150px", backgroundColor: "#4299E1" }}
+            style={{ height: "150px", backgroundColor: "#50B846" }}
           >
             <Title level={5} className="text-white">Sản phẩm bán được trong tháng</Title>
             <h1 className="text-white">{totalProductMonth === null ? 0 : totalProductMonth}</h1>

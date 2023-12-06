@@ -1,4 +1,4 @@
-import { Alert, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, Row, Switch, Table, Tooltip, } from "antd";
+import { Alert, Button, Carousel, Checkbox, Col, Divider, Empty, Form, Input, InputNumber, Modal, Radio, Row, Space, Switch, Table, Tooltip, } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -23,6 +23,7 @@ function OrderItem({ index, props, onSuccess }) {
   const [customer, setCustomer] = useState(null);
   const [listAddress, setListAddress] = useState([]);
   const [autoFillAddress, setAutoFillAddress] = useState([]);
+  const [newAddress, setNewAddress] = useState({});
   const [feeShip, setFeeShip] = useState(0);
   const [note, setNote] = useState("");
   const [waitPay, setWaitPay] = useState(false);
@@ -41,6 +42,13 @@ function OrderItem({ index, props, onSuccess }) {
   const [voucher, setVoucher] = useState(null);
   const [moneyReduce, setMoneyReduce] = useState(0);
 
+  const [tienMat, setTienMat] = useState(0);
+  const [tienChuyenKhoan, setTienChuyenKhoan] = useState(0);
+
+  useEffect(() => {
+    setTienKhachDua(0);
+    setExtraMoney(0);
+  }, [paymentMethod])
 
   useEffect(() => {
     loadListOrderDetail();
@@ -84,7 +92,7 @@ function OrderItem({ index, props, onSuccess }) {
       }
     }).then((response) => {
       const calculatedTotalMoney = response.data.reduce((total, item) => {
-        return total + item.quantity * (item.discountPercent !== null ? item.discountValue : item.price) - moneyReduce;
+        return total + item.quantity * (item.discountPercent !== null ? item.discountValue : item.price);
       }, 0);
       setTotalMoney(calculatedTotalMoney);
       setLoading(false);
@@ -160,40 +168,14 @@ function OrderItem({ index, props, onSuccess }) {
   useEffect(() => {
     if (voucher !== null) {
       if (totalMoney < voucher.minBillValue) {
-        toast.error("Không đủ điều kiện!")
+        toast.error("Hủy áp dụng Voucher do không đủ điều kiện!")
         setVoucher(null);
+        setMoneyReduce(0);
       } else {
-        toast.success("Áp dụng thành công!")
         setMoneyReduce(totalMoney / 100 * voucher?.percentReduce);
       }
     }
-  }, [voucher])
-
-  function generateUUID() {
-    // Public Domain/MIT
-    var d = new Date().getTime(); //Timestamp
-    var d2 =
-      (typeof performance !== "undefined" &&
-        performance.now &&
-        performance.now() * 1000) ||
-      0; //Time in microseconds since page-load or 0 if unsupported
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-      /[xy]/g,
-      function (c) {
-        var r = Math.random() * 16; //random number between 0 and 16
-        if (d > 0) {
-          //Use timestamp until depleted
-          r = (d + r) % 16 | 0;
-          d = Math.floor(d / 16);
-        } else {
-          //Use microseconds since page-load if supported
-          r = (d2 + r) % 16 | 0;
-          d2 = Math.floor(d2 / 16);
-        }
-        return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-      }
-    );
-  }
+  }, [voucher, totalMoney])
 
   const handleChangeQuantity = (id, quantity) => {
     request.get(`/bill-detail/update-quantity/${id}`, {
@@ -201,7 +183,6 @@ function OrderItem({ index, props, onSuccess }) {
         newQuantity: quantity
       }
     }).then(response => {
-      toast.success("Cập nhật thành công!");
       loadListOrderDetail();
     }).catch(e => {
       console.log(e);
@@ -288,7 +269,7 @@ function OrderItem({ index, props, onSuccess }) {
       render: (quantity, record) => (
         <Form key={record.id}>
           <Form.Item initialValue={quantity} name={"quantity"} className="m-0 p-0">
-            <Input className="text-center" type="number" style={{ width: "64px" }} onChange={(e) => handleChangeQuantity(record.id, e.target.value)} />
+            <Input className="text-center" min={1} type="number" style={{ width: "64px" }} onChange={(e) => handleChangeQuantity(record.id, e.target.value)} />
           </Form.Item>
         </Form>
       )
@@ -299,7 +280,7 @@ function OrderItem({ index, props, onSuccess }) {
       key: 'total',
       render: (quantity, record) => (
         <div className="text-center text-danger fw-semibold">
-          <FormatCurrency value={(record.discountPercent !== null ? record.discountValue : record.price) * record.quantity} />
+          <FormatCurrency value={(record.discountValue !== null ? record.discountValue : record.price) * record.quantity} />
         </div>
       )
     },
@@ -317,108 +298,95 @@ function OrderItem({ index, props, onSuccess }) {
     },
   ]
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const data = {};
     data.voucher = voucher === null ? null : voucher.id;
     data.customer = customer === null ? null : customer.id;
     data.type = typeOrder;
-    data.customerName = customer !== null ? customer?.name : "Khách hàng lẻ";
+    data.customerName = typeOrder === 0 ? (customer !== null ? customer?.name : "Khách hàng lẻ") : autoFillAddress.name;
     data.totalMoney = totalMoney;
     data.moneyReduce = moneyReduce;
     data.note = note;
     data.paymentMethod = paymentMethod;
+    data.tienMat = tienMat;
+    data.tienChuyenKhoan = tienChuyenKhoan;
+
+    data.phoneNumber = autoFillAddress.phoneNumber;
+    data.address = typeOrder === 0 ? null : `${autoFillAddress.specificAddress}##${autoFillAddress.ward}##${autoFillAddress.district}##${autoFillAddress.province}`;
+    data.moneyShip = typeOrder === 1 ? feeShip : 0;
+    data.waitPay = waitPay;
+
     if (listOrderDetail.length === 0) {
       toast.error("Hãy thêm gì đó vào giỏ hàng!");
     } else {
       if (waitPay) {
-        data.status = 0;
         request.put(`/bill/${props.id}`, data).then(response => {
-          toast.success("Đơn hàng đã chuyển sang trạng thái chờ thanh toán!");
+
           onSuccess();
         }).catch(e => {
           console.log(e);
         })
+        return;
       } else {
-        if (typeOrder === 0) {
-          if (extraMoney !== null && extraMoney >= 0) {
-            data.status = 6;
-            Modal.confirm({
-              title: "Xác nhận",
-              maskClosable: true,
-              content: "Xác nhận tạo hóa đơn ?",
-              okText: "Xác nhận",
-              cancelText: "Hủy",
-              onOk: async () => {
-                request.put(`/bill/${props.id}`, data).then((response) => {
-                  toast.success("Tạo đơn hàng thành công!");
-                  onSuccess();
-                }).catch(e => {
-                  console.log(e);
-                })
-              },
-            });
+        if (paymentMethod === 2) {
+          if (tienMat <= 0 || tienMat === null) {
+            toast.error('Vui lòng nhập số tiền mặt cần thanh toán!');
+            return;
+          }
+          if (tienMat > totalMoney) {
+            toast.error('Tiền khách đưa phải < tổng tiền cần thanh toán!');
           } else {
-            if (paymentMethod === 0) {
-              toast.error("Vui lòng nhập đủ tiền khách đưa!");
-            } else {
-              Modal.confirm({
-                title: "Xác nhận",
-                maskClosable: true,
-                content: "Xác nhận tạo hóa đơn ?",
-                okText: "Xác nhận",
-                cancelText: "Hủy",
-                onOk: async () => {
-                  if (paymentMethod === 1) {
-                    request.get(`/vn-pay/payment?id=${generateUUID()}&total=${totalMoney}`).then(response => {
-                      if (response.status) {
-                        data.status = 4;
-                        window.location.href = response.data.data;
-                        request.put(`/bill/${props.id}`, data).then((response) => {
-                          toast.success("Tạo đơn hàng thành công!");
-                          onSuccess();
-                        }).catch(e => {
-                          console.log(e);
-                        })
-                      }
-                    }).catch(e => {
-                      console.log(e);
-                    })
-                  }
-                },
-              });
+            const bill = { ...data, id: props.id };
+            localStorage.setItem("checkout", JSON.stringify(bill));
+            try {
+              const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${tienChuyenKhoan}`);
+              if (response.status) {
+                window.location.href = response.data.data;
+              }
+            } catch (error) {
+              console.error("Error making axios request:", error);
+            }
+            return;
+          }
+        } else if (paymentMethod === 1) {
+          const bill = { ...data, id: props.id };
+          localStorage.setItem("checkout", JSON.stringify(bill));
+          try {
+            const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${bill.totalMoney}`);
+            if (response.status) {
+              window.location.href = response.data.data;
+            }
+          } catch (error) {
+            console.error("Error making axios request:", error);
+          }
+          return;
+        } else {
+          if (typeOrder === 0) {
+            if (tienKhachDua <= 0 || tienKhachDua === null) {
+              toast.error('Vui lòng nhập đủ tiền khách đưa!');
+              console.log(data);
+              return;
             }
           }
-        } else {
-          data.phoneNumber = autoFillAddress.phoneNumber;
-          data.address = typeOrder === 0 ? null : `${autoFillAddress.specificAddress}##${autoFillAddress.ward}##${autoFillAddress.district}##${autoFillAddress.province}`;
-          data.moneyShip = feeShip;
-          data.status = 2;
-          Modal.confirm({
-            title: "Xác nhận",
-            maskClosable: true,
-            content: "Xác nhận tạo đơn hàng ?",
-            okText: "Ok",
-            cancelText: "Cancel",
-            onOk: async () => {
-              if (paymentMethod === 1) {
-                await request.get(`/vn-pay/payment?id=${generateUUID()}&total=${totalMoney}`).then(response => {
-                  if (response.status) {
-                    window.location.href = response.data.data;
-                  }
-                }).catch(e => {
-                  console.log(e);
-                })
-              }
-              request.put(`/bill/${props.id}`, data).then(response => {
-                toast.success("Tạo đơn hàng thành công!");
-                onSuccess();
-              }).catch(e => {
-                console.log(e);
-              })
-            },
-          });
         }
       }
+
+      Modal.confirm({
+        title: "Xác nhận",
+        maskClosable: true,
+        content: `Xác nhận ${waitPay ? 'chuyển sang trạng thái chờ thanh toán' : 'tạo hóa đơn'} ?`,
+        okText: "Xác nhận",
+        cancelText: "Hủy",
+        onOk: async () => {
+          console.log(data);
+          request.put(`/bill/${props.id}`, data).then((response) => {
+            toast.success(waitPay ? "Đơn hàng đã chuyển sang trạng thái chờ thanh toán!" : "Tạo đơn hàng thành công!");
+            onSuccess();
+          }).catch(e => {
+            console.log(e);
+          })
+        },
+      });
     }
   }
 
@@ -511,18 +479,18 @@ function OrderItem({ index, props, onSuccess }) {
                   <Row gutter={10}>
                     <Col xl={12}>
                       <Form.Item label="Họ và tên" required name={"name"}>
-                        <Input placeholder="Nhập họ và tên..." />
+                        <Input placeholder="Nhập họ và tên..." onChange={(e) => setAutoFillAddress({ ...autoFillAddress, name: e.target.value })} />
                       </Form.Item>
                     </Col>
                     <Col xl={12}>
                       <Form.Item label="Số điện thoại" required name={"phoneNumber"}>
-                        <Input placeholder="Nhập số điện thoại..." />
+                        <Input placeholder="Nhập số điện thoại..." onChange={(e) => setAutoFillAddress({ ...autoFillAddress, phoneNumber: e.target.value })} />
                       </Form.Item>
                     </Col>
-                    <GHNInfo distr={autoFillAddress.district} prov={autoFillAddress.province} war={autoFillAddress.ward} />
+                    <GHNInfo distr={autoFillAddress.district} dataAddress={(data) => setAutoFillAddress({ ...autoFillAddress, ...data })} prov={autoFillAddress.province} war={autoFillAddress.ward} />
                     <Col xl={16}>
                       <Form.Item label="Địa chỉ cụ thể" name={"specificAddress"}>
-                        <Input placeholder="Nhập địa chỉ cụ thể ..." />
+                        <Input placeholder="Nhập địa chỉ cụ thể ..." onChange={(e) => setAutoFillAddress({ ...autoFillAddress, specificAddress: e.target.value })} />
                       </Form.Item>
                     </Col>
                     <Col xl={8}>
@@ -573,41 +541,73 @@ function OrderItem({ index, props, onSuccess }) {
               <li className="mb-2">Tổng tiền: <span className="float-end fw-semibold text-danger"><FormatCurrency value={totalMoney - moneyReduce + (typeOrder === 1 ? feeShip : 0)} /></span></li>
               {typeOrder === 0 && (
                 <>
-                  <li className="mb-2">
-                    <InputNumber
-                      className='w-100 mb-2'
-                      formatter={(value) =>
-                        ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                      }
-                      parser={(value) =>
-                        value !== null && value !== undefined
-                          ? value.replace(/\$\s?|(,*)/g, "")
-                          : ""
-                      }
-                      controls={false}
-                      min={0}
-                      // suffix="VNĐ"
-                      placeholder="Nhập tiền khách đưa..."
-                      onChange={(e) => { setExtraMoney(e - totalMoney + moneyReduce); setTienKhachDua(e) }}
-                    />
-                    {totalMoney > 0 && <Alert message={tienKhachDua < totalMoney - moneyReduce ? "Vui lòng nhập đủ tiền khách đưa!" : "Khách đã đưa đủ tiền!"} type={tienKhachDua < totalMoney - moneyReduce ? "error" : "success"} />}
-                  </li>
-                  <li className="mb-2">
-                    Tiền thừa: <span className="float-end fw-semibold text-danger"><FormatCurrency value={extraMoney < 0 || extraMoney === null ? 0 : extraMoney} /></span>
-                  </li>
+                  {paymentMethod === 0 && (
+                    <>
+                      <li className="mb-2">
+                        Tiền khách đưa:
+                        <InputNumber
+                          className='w-100 mb-2'
+                          formatter={(value) =>
+                            ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          }
+                          controls={false}
+                          min={0}
+                          suffix="VNĐ"
+                          placeholder="Nhập tiền khách đưa..."
+                          onChange={(e) => { setExtraMoney(e - totalMoney + moneyReduce); setTienKhachDua(e) }}
+                        />
+                        {totalMoney > 0 && <Alert message={tienKhachDua < totalMoney - moneyReduce ? "Vui lòng nhập đủ tiền khách đưa!" : "Khách đã đưa đủ tiền!"} type={tienKhachDua < totalMoney - moneyReduce ? "error" : "success"} />}
+                      </li>
+                      <li className="mb-2">
+                        Tiền thừa: <span className="float-end fw-semibold text-danger"><FormatCurrency value={extraMoney < 0 || extraMoney === null ? 0 : extraMoney} /></span>
+                      </li>
+                    </>
+                  )}
                 </>
               )}
-              <li className="mb-2 text-center">
+              {paymentMethod === 2 && (
+                <li className="mb-2">
+                  <>
+                    <li className="mb-2">
+                      Tiền khách đưa:
+                      <InputNumber
+                        className='w-100 mb-2'
+                        formatter={(value) =>
+                          ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        }
+                        controls={false}
+                        min={0}
+                        suffix="VNĐ"
+                        placeholder="Nhập tiền khách đưa..."
+                        onChange={(e) => { setTienChuyenKhoan(totalMoney - moneyReduce + feeShip - e); setTienMat(e) }}
+                      />
+                    </li>
+                    <li className="mb-2">
+                      Tiền cần chuyển khoản: <span className="float-end fw-semibold text-danger"><FormatCurrency value={tienChuyenKhoan} /></span>
+                    </li>
+                  </>
+                </li>
+              )}
+              <li className="mb-2">
+                <li className="mb-2">Chọn phương thức thanh toán:</li>
                 <Row gutter={10}>
                   <Col xl={12} onClick={() => setPaymentMethod(0)}>
-                    <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${paymentMethod === 1 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
+                    <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${paymentMethod === 0 && 'border-warning text-warning'}`}>
                       <i className="fa-solid fa-coins" style={{ fontSize: "36px" }}></i>
                       <span className="ms-2 fw-semibold text-dark">Tiền mặt</span>
                     </div>
                   </Col>
                   <Col xl={12} onClick={() => setPaymentMethod(1)}>
-                    <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${paymentMethod === 0 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
-                      <i class="fa-regular fa-credit-card" style={{ fontSize: "36px" }}></i>
+                    <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${paymentMethod === 1 && 'border-warning text-warning'}`}>
+                      <img src="https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418196384.png" alt="" style={{ width: "36px" }} />
+                      <span className="ms-2 fw-semibold text-dark">Chuyển khoản</span>
+                    </div>
+                  </Col>
+                  <Col xl={24} onClick={() => setPaymentMethod(2)}>
+                    <div className={`py-2 mt-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${paymentMethod === 2 && 'border-warning text-warning'}`}>
+                      <i className="fa-solid fa-coins" style={{ fontSize: "36px" }}></i>
+                      <span className="ms-2 fw-semibold text-dark">Tiền mặt & </span>
+                      <img src="https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418196384.png" alt="" style={{ width: "36px" }} />
                       <span className="ms-2 fw-semibold text-dark">Chuyển khoản</span>
                     </div>
                   </Col>

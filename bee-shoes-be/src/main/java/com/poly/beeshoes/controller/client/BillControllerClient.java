@@ -34,11 +34,12 @@ public class BillControllerClient {
     }
 
     @GetMapping("/find-by-code")
-    public Bill findByCode(@RequestParam(required = false, defaultValue = "") String code){
+    public Bill findByCode(@RequestParam(required = false, defaultValue = "") String code) {
         return billService.findByCode(code);
     }
+
     @GetMapping("/statistic-bill-status")
-    public List<StatisticBillStatus> statisticBillStatus(){
+    public List<StatisticBillStatus> statisticBillStatus() {
         return billService.statisticBillStatus();
     }
 
@@ -64,12 +65,12 @@ public class BillControllerClient {
     }
 
     @PutMapping("/{id}")
-    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid BillRequest request) {
-        return new ResponseObject(billService.update(id, request));
+    public ResponseObject orderBill(@PathVariable Long id, @RequestBody @Valid BillRequest request) {
+        return new ResponseObject(billService.orderBill(id, request));
     }
 
     @GetMapping("/change-status/{id}")
-    public ResponseObject changeStatus(@PathVariable Long id, @RequestParam String note) {
-        return new ResponseObject(billService.changeStatus(id, note));
+    public ResponseObject changeStatus(@PathVariable Long id, @RequestParam String note, @RequestParam(defaultValue = "false") Boolean isCancel) {
+        return new ResponseObject(billService.changeStatus(id, note, isCancel));
     }
 }

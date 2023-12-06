@@ -23,11 +23,11 @@ public class BillDetailConvert {
     public BillDetail convertRequestToEntity(BillDetailRequest request) {
         ShoeDetail shoeDetail = shoeDetailRepository.findByCode(request.getShoeDetail());
         Bill bill = billRepository.findById(request.getBill()).get();
-        PromotionDetail promotionDetail = promotionDetailRepository.findByShoeDetailCode(request.getCode());
+        PromotionDetail promotionDetail = promotionDetailRepository.findByShoeDetailCode(request.getShoeDetail());
         return BillDetail.builder()
                 .shoeDetail(shoeDetail)
                 .bill(bill)
-                .price(promotionDetail != null ? shoeDetail.getPrice().subtract(promotionDetail.getPromotionPrice()) : shoeDetail.getPrice())
+                .price(promotionDetail != null ? promotionDetail.getPromotionPrice() : shoeDetail.getPrice())
                 .quantity(request.getQuantity())
                 .build();
     }

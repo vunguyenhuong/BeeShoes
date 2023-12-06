@@ -20,11 +20,12 @@ public interface BillService {
     Bill getOne(Long id);
     Bill findByCode(String code);
     Bill create();
-    Bill update(Long id,BillRequest request);
+    Bill orderBill(Long id,BillRequest request);
+    Bill updateBill();
     ResponseObject createBillClient(BillClientRequest request);
     ResponseObject createBillClientVnpay(BillClientRequest request, String code);
     Bill delete(Long id);
-    Bill changeStatus(Long id, String status);
+    Bill changeStatus(Long id, String status,Boolean isCancel);
     List<StatisticBillStatus> statisticBillStatus();
 
     BillGiveBackInformationResponse getBillGiveBackInformation(String codeBill);

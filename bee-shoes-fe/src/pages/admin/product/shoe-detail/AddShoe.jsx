@@ -89,8 +89,8 @@ function AddProduct() {
   }, [searchSole])
 
   const handleCreate = () => {
-    // console.log(productDetail)
     const data = [];
+    const colorImageErrors = [];
     productDetail.forEach((item) => {
       const x = {
         shoe: item.shoe.id,
@@ -103,7 +103,16 @@ function AddProduct() {
         listImages: item.images
       }
       data.push(x);
+      if (!item.images || item.images.length === 0) {
+        colorImageErrors.push(item.color.name);
+      }
     })
+    if (colorImageErrors.length > 0) {
+      const uniqueColorErrors = [...new Set(colorImageErrors)];
+      toast.error(`Các sản phẩm màu ${uniqueColorErrors.join(', ')} chưa chọn ảnh.`);
+      return;
+    }
+
     Modal.confirm({
       title: "Xác nhận",
       maskClosable: true,

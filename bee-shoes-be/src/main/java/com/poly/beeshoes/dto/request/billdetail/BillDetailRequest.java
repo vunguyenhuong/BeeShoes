@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 @Setter
 public class BillDetailRequest extends PageableRequest {
     private Long id;
-    private BigDecimal price;
     @NotNull(message = "Đơn giá không được để trống!")
     private Integer quantity;
     private Long bill;

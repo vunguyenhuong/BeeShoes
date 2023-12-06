@@ -7,6 +7,8 @@ import BaseUI from "./layouts/admin/BaseUI";
 import CoreUI from "./layouts/admin/CoreUI";
 import { getTokenEmpoloyee } from "./helper/useCookies";
 import Login from "./pages/admin/login/Login";
+import withAuth from "./auth";
+import TemplateExportBill from "./pages/admin/export-pdf/TemplateExportBill";
 
 function App() {
   const renderRoutes = (routes) => {
@@ -28,6 +30,7 @@ function App() {
       <Routes>
         {renderRoutes(publicRouters)}
         <Route key={"login"} path="/admin/login" element={<Login />}></Route>
+        <Route key={"exportPdf"} path="/export-pdf/:idBill" element={<TemplateExportBill />}></Route>
       </Routes>
       <FloatButton.BackTop />
       <ToastContainer autoClose={3000} />

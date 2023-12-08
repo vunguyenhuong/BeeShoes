@@ -362,10 +362,10 @@ function OrderItem({ index, props, onSuccess }) {
         if (tienMat > totalMoney) {
           toast.error('Tiền khách đưa phải < tổng tiền cần thanh toán!');
         } else {
-          const bill = { ...data, id: generateUUID(), idBill: props.id };
+          const bill = { ...data, idTransaction: generateUUID(), id: props.id };
           localStorage.setItem("checkout", JSON.stringify(bill));
           try {
-            const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${tienChuyenKhoan}`);
+            const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.idTransaction}&total=${tienChuyenKhoan}`);
             if (response.status) {
               window.location.href = response.data.data;
             }
@@ -375,10 +375,10 @@ function OrderItem({ index, props, onSuccess }) {
           return;
         }
       } else if (paymentMethod === 1) {
-        const bill = { ...data, id: generateUUID(), idBill: props.id };
+        const bill = { ...data, idTransaction: generateUUID(), id: props.id };
         localStorage.setItem("checkout", JSON.stringify(bill));
         try {
-          const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${bill.totalMoney - bill.moneyReduce + bill.moneyShip}`);
+          const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.idTransaction}&total=${bill.totalMoney - bill.moneyReduce + bill.moneyShip}`);
           if (response.status) {
             window.location.href = response.data.data;
           }

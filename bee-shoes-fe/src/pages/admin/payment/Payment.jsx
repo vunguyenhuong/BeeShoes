@@ -19,7 +19,7 @@ export default function Payment() {
             for (const [key, value] of new URLSearchParams(window.location.search)) {
                 requestData[key] = value;
             }
-            requestData.vnp_TxnRef = paymentReturn.id ? paymentReturn.id : null;
+            requestData.vnp_TxnRef = paymentReturn.idTransaction ? paymentReturn.idTransaction : null;
             try {
                 const response = await axios.get(`http://localhost:8080/api/vn-pay/payment-return`,
                     { params: requestData }
@@ -27,7 +27,7 @@ export default function Payment() {
 
                 if (isMounted) {
                     if (response.data) {
-                        const response = await httpRequest.put(`/bill/${paymentReturn.idBill}`, {...paymentReturn, tradingCode: requestData.vnp_BankTranNo});
+                        const response = await httpRequest.put(`/bill/${paymentReturn.id}`, {...paymentReturn, tradingCode: requestData.vnp_BankTranNo});
                         if (response.status) {
                             toast.success("Đặt hàng thành công");
                             navigate('/admin/order');

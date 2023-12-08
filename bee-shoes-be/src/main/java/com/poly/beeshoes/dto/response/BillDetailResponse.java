@@ -28,8 +28,10 @@ public interface BillDetailResponse {
     BigDecimal getDiscountPercent();
 
     BigDecimal getDiscountValue();
+    BigDecimal getShoePrice();
 
     Integer getQuantity();
+    Double getWeight();
 
     String getImages();
 

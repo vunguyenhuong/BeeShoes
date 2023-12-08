@@ -82,7 +82,7 @@ public class BillServiceImpl implements BillService {
     }
 
     private String genBillCode() {
-        String prefix = "HD100";
+        String prefix = "HD150300";
         int x = 1;
         String code = prefix + x;
         while (billRepository.existsByCode(code)) {
@@ -147,6 +147,7 @@ public class BillServiceImpl implements BillService {
             } else if (request.getPaymentMethod() == PaymentMethodConstant.CHUYEN_KHOAN) {
                 paymentMethod.setTotalMoney(bill.getTotalMoney());
                 paymentMethod.setNote("Đã chuyển khoản!");
+                paymentMethod.setTradingCode(request.getTradingCode());
                 paymentMethod.setMethod(PaymentMethodConstant.CHUYEN_KHOAN);
                 paymentMethodRepository.save(paymentMethod);
             } else if (request.getPaymentMethod() == PaymentMethodConstant.TIEN_MAT_VA_CHUYEN_KHOAN) {
@@ -157,6 +158,7 @@ public class BillServiceImpl implements BillService {
                 paymentMethod1.setMethod(PaymentMethodConstant.TIEN_MAT);
                 paymentMethodRepository.save(paymentMethod1);
                 paymentMethod.setTotalMoney(request.getTienChuyenKhoan());
+                paymentMethod.setTradingCode(request.getTradingCode());
                 paymentMethod.setNote("Đã chuyển khoản!");
                 paymentMethod.setMethod(PaymentMethodConstant.CHUYEN_KHOAN);
                 paymentMethodRepository.save(paymentMethod);
@@ -173,13 +175,15 @@ public class BillServiceImpl implements BillService {
                 history1.setNote("Đã xác nhận thông tin thanh toán!");
                 history1.setStatus(BillStatusConstant.XAC_NHAN_THONG_TIN_THANH_TOAN);
                 billHistoryRepository.save(history1);
-                paymentMethod.setTotalMoney(bill.getTotalMoney());
+                paymentMethod.setTotalMoney(bill.getTotalMoney().add(bill.getMoneyShip()));
                 paymentMethod.setNote("Đã chuyển khoản!");
+                paymentMethod.setTradingCode(request.getTradingCode());
                 paymentMethod.setMethod(PaymentMethodConstant.CHUYEN_KHOAN);
                 paymentMethodRepository.save(paymentMethod);
             } else if (request.getPaymentMethod() == PaymentMethodConstant.TIEN_MAT_VA_CHUYEN_KHOAN) {
                 paymentMethod.setTotalMoney(request.getTienChuyenKhoan());
                 paymentMethod.setNote("Đã chuyển khoản!");
+                paymentMethod.setTradingCode(request.getTradingCode());
                 paymentMethod.setMethod(PaymentMethodConstant.CHUYEN_KHOAN);
                 paymentMethodRepository.save(paymentMethod);
             }
@@ -288,6 +292,13 @@ public class BillServiceImpl implements BillService {
         BillHistory history = new BillHistory();
         history.setBill(bill);
         history.setNote(note);
+
+        List<PaymentMethod> paymentMethods = paymentMethodRepository.findByBillId(bill.getId());
+        Double totalPayment = 0.0;
+        for (PaymentMethod x: paymentMethods) {
+            totalPayment+=x.getTotalMoney().doubleValue();
+        }
+
         if(isCancel){
             for (BillDetail x: billDetailRepository.findByBillId(bill.getId())) {
                 ShoeDetail shoeDetail = x.getShoeDetail();
@@ -298,7 +309,10 @@ public class BillServiceImpl implements BillService {
             bill.setStatus(BillStatusConstant.DA_HUY);
         }else {
             if (bill.getStatus() == BillStatusConstant.CHO_THANH_TOAN) {
-                if (bill.getType() == TyperOrderConstant.TAI_QUAY) {
+                if (BigDecimal.valueOf(totalPayment).compareTo(bill.getTotalMoney().add(bill.getMoneyShip())) < 0) {
+                    throw new RestApiException("Vui lòng hoàn tất thanh toán!");
+                }else {
+                    history.setStatus(BillStatusConstant.HOAN_THANH);
                     bill.setStatus(BillStatusConstant.HOAN_THANH);
                 }
             } else {
@@ -307,20 +321,8 @@ public class BillServiceImpl implements BillService {
                     bill.setStatus(BillStatusConstant.CHO_GIAO);
                 } else {
                     if (bill.getStatus() == BillStatusConstant.DANG_GIAO) {
-                        List<PaymentMethod> paymentMethods = paymentMethodRepository.findByBillId(bill.getId());
-                        Double totalPayment = 0.0;
-                        for (PaymentMethod x: paymentMethods) {
-                            totalPayment+=x.getTotalMoney().doubleValue();
-                        }
                         if (BigDecimal.valueOf(totalPayment).compareTo(bill.getTotalMoney().add(bill.getMoneyShip())) < 0) {
-                            System.out.println(totalPayment);
                             throw new RestApiException("Vui lòng hoàn tất thanh toán!");
-                        }else {
-                            BillHistory history1 = new BillHistory();
-                            history1.setBill(bill);
-                            history1.setStatus(BillStatusConstant.XAC_NHAN_THONG_TIN_THANH_TOAN);
-                            history1.setNote("Đã thanh toán đủ tiền");
-                            billHistoryRepository.save(history1);
                         }
                     }
                     bill.setStatus(bill.getStatus() + 1);
@@ -336,11 +338,29 @@ public class BillServiceImpl implements BillService {
         } else if (bill.getStatus() == BillStatusConstant.XAC_NHAN_THONG_TIN_THANH_TOAN) {
             bill.setPayDate(new Date());
         }
+
         Bill billSave = billRepository.save(bill);
         if (billSave != null) {
             billHistoryRepository.save(history);
         }
         return billSave;
+    }
+
+    @Override
+    public Bill changeInfoCustomer(Long id, BillRequest request) {
+        Bill bill = billRepository.findById(id).orElse(null);
+        bill.setCustomerName(request.getCustomerName());
+        bill.setPhoneNumber(request.getPhoneNumber());
+        bill.setEmail(request.getEmail());
+        bill.setAddress(request.getAddress());
+        bill.setMoneyShip(request.getMoneyShip());
+
+        BillHistory history = new BillHistory();
+        history.setBill(bill);
+        history.setStatus(BillStatusConstant.CHINH_SUA_DON_HANG);
+        history.setNote("Cập nhật thông tin khách hàng!");
+        billHistoryRepository.save(history);
+        return billRepository.save(bill);
     }
 
     @Override

@@ -27,8 +27,7 @@ export default function Payment() {
 
                 if (isMounted) {
                     if (response.data) {
-                        paymentReturn.tradingCode = requestData.vnp_BankTranNo;
-                        const response = await httpRequest.put(`/bill/${paymentReturn.id}`, paymentReturn);
+                        const response = await httpRequest.put(`/bill/${paymentReturn.id}`, {...paymentReturn, tradingCode: requestData.vnp_BankTranNo});
                         if (response.status) {
                             toast.success("Đặt hàng thành công");
                             navigate('/admin/order');

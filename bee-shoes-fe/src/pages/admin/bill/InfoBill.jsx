@@ -3,7 +3,6 @@ import Title from "antd/es/typography/Title";
 import React from "react";
 import DetailAddress from "~/components/DetailAddress";
 import FormatCurrency from "~/utils/FormatCurrency";
-import ChooseAddress from "../order/neworder/ChooseAddress";
 
 function InfoBill({ props }) {
 
@@ -21,7 +20,7 @@ function InfoBill({ props }) {
           </Col>
           <Col xl={12}>
             <ul className="list-unstyled">
-              <li className="mb-2">Mã đơn hàng: <span className="float-end text-danger">{props.code}</span></li>
+              <li className="mb-2">Mã đơn hàng: <span className="float-end text-danger">{props?.code}</span></li>
               <li className="mb-2">Phí vận chuyển: <span className="float-end text-danger">{
                 props.type === 1 ? <FormatCurrency value={props.moneyShip} /> : "Không có"
               }</span></li>
@@ -35,7 +34,7 @@ function InfoBill({ props }) {
             <Col xl={24}>
               <ul className="list-unstyled">
                 <li className="mb-2">
-                  Mã giảm giá: <span className="text-danger">({props.voucher.code})</span> {props.voucher.name} - giảm <span className="text-danger">{props.voucher.percentReduce} %</span> cho đơn tối thiểu từ <span className="text-danger"><FormatCurrency value={props.voucher.minBillValue} /></span>, đã giảm <span className="text-success"><FormatCurrency value={props.moneyReduce} /></span>
+                  Mã giảm giá: <span className="text-danger">({props?.voucher?.code})</span> {props.voucher?.name} - giảm <span className="text-danger">{props.voucher?.percentReduce} %</span> cho đơn tối thiểu từ <span className="text-danger"><FormatCurrency value={props.voucher?.minBillValue} /></span>, đã giảm <span className="text-success"><FormatCurrency value={props.moneyReduce} /></span>
                 </li>
               </ul>
             </Col>
@@ -66,10 +65,10 @@ function InfoBill({ props }) {
               <li className="mb-2">Email: <span className="float-end text-danger">{props.customer?.email === null | props.customer?.email === undefined ? "Không có" : props.customer?.email}</span></li>
               <li className="mb-2">Địa chỉ: <span className="float-end text-danger">{props?.address !== null ? (
                 <>
-                  {props.address.split("##")[0]} ,
-                  <DetailAddress war={props.address.split("##")[1]}
-                    distr={props.address.split("##")[2]}
-                    prov={props.address.split("##")[3]} />
+                  {props.address?.split("##")[0]} ,
+                  <DetailAddress war={props.address?.split("##")[1]}
+                    distr={props.address?.split("##")[2]}
+                    prov={props.address?.split("##")[3]} />
                 </>
               ) : "Tại cửa hàng"}</span></li>
             </Col>

@@ -1,4 +1,5 @@
 .Timeline-wrapper-1 {
-  overflow-x: scroll !important;
-  width: 110%;
+  position: relative;
+  overflow: auto !important;
+  width: 98%;
 }

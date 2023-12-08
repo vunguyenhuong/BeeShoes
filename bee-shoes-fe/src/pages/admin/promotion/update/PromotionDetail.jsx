@@ -3,14 +3,16 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react'
 import { FaHome } from 'react-icons/fa'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Loading from '~/components/Loading/Loading';
 import httpRequest from '~/utils/httpRequest';
 import TableShoe from '../TableShoe';
 import TableShoeDetail from '../TableShoeDetail';
+import { toast } from 'react-toastify';
 
 function PromotionDetail() {
     const [form] = Form.useForm();
+    const navigate = useNavigate();
     const [promotion, setPromotion] = useState({});
     const [loading, setLoading] = useState(true);
     const { id } = useParams();
@@ -23,10 +25,6 @@ function PromotionDetail() {
         }, 1000);
         return () => clearTimeout(timeout);
     }, [id]);
-
-    useEffect(() => {
-        alert(listShoeDetailId)
-    }, [listShoeDetailId])
 
     const loadPromotion = () => {
         httpRequest.get(`/promotion/${id}`).then(response => {
@@ -55,6 +53,14 @@ function PromotionDetail() {
         setLoading(false);
     }
 
+    const handleUpdate = (data) => {
+        httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
+            console.log(response);
+            toast.success("Cập nhật thành công!");
+            navigate('/admin/promotion');
+        }).catch(e => { console.log(e); })
+    }
+
     if (loading) {
         <Loading />
     }
@@ -63,7 +69,7 @@ function PromotionDetail() {
             <Breadcrumb className="mb-3"
                 items={[{ href: "/", title: <FaHome /> }, { href: "/admin/promotion", title: "Danh sách khuyến mại" }, { title: `${promotion.name}` },]}
             />
-            <Form layout="vertical" form={form}>
+            <Form layout="vertical" form={form} onFinish={(data) => handleUpdate(data)}>
                 <Row gutter={24}>
                     <Col xl={12}>
                         <Row gutter={10}>
@@ -102,7 +108,7 @@ function PromotionDetail() {
                     </Col>
                 </Row>
                 <TableShoeDetail idProduct={listShoeId} setRowKeys={listShoeDetailId} setSelectedProductDetail={(value) => setListShoeDetailId(value)} />
-            </Form>
+            </Form >
         </>
     )
 }

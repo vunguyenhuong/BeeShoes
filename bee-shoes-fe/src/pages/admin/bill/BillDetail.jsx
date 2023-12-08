@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { Timeline, TimelineEvent } from "@mailtop/horizontal-timeline";
 import {
   FaBug,
+  FaEdit,
   FaRegCalendar,
   FaRegCalendarCheck,
   FaRegFileAlt,
@@ -40,18 +41,16 @@ const BillDetail = () => {
   const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(true);
+  const [loading1, setLoading1] = useState(true);
 
   const [cancelBill, setCancelBill] = useState(false);
 
   const loadBill = async () => {
-    await request
-      .get(`/bill/${id}`)
-      .then((response) => {
-        setBill(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    await request.get(`/bill/${id}`).then((response) => {
+      setBill(response);
+    }).catch((error) => {
+      console.error(error);
+    });
     setLoading(false);
   };
   const loadBillDetail = async () => {
@@ -64,10 +63,10 @@ const BillDetail = () => {
     }).then((response) => {
       setListBillDetail(response.data);
       setTotalPages(response.totalPages);
-    })
-      .catch((e) => {
-        console.log(e);
-      });
+    }).catch((e) => {
+      console.log(e);
+    });
+    setLoading1(false);
   };
 
   const loadBillHistory = () => {
@@ -91,6 +90,27 @@ const BillDetail = () => {
     loadBillDetail();
   }, [currentPage, pageSize])
 
+  const handleDeleteBillDetail = (id) => {
+    Modal.confirm({
+      title: "Xác nhận",
+      maskClosable: true,
+      content: "Xác nhận xóa khỏi giỏ hàng ?",
+      okText: "Ok",
+      cancelText: "Cancel",
+      onOk: () => {
+        request.remove(`/bill-detail/${id}`).then(response => {
+          toast.success("Xóa thành công!");
+          loadBillDetail();
+          loadBill();
+          loadBillHistory();
+        }).catch(e => {
+          console.log(e);
+          toast.error(e.response.data);
+        })
+      },
+    });
+  }
+
   const handleChangeQuantity = (id, quantity) => {
     request.get(`/bill-detail/update-quantity/${id}`, {
       params: {
@@ -98,6 +118,8 @@ const BillDetail = () => {
       }
     }).then(response => {
       loadBillDetail();
+      loadBill();
+      loadBillHistory();
     }).catch(e => {
       console.log(e);
       toast.error(e.response.data);
@@ -165,23 +187,10 @@ const BillDetail = () => {
           <ul className="list-unstyled ">
             <li className="fw-semibold">
               {name}
-              {record.discountPercent !== null && (
-                <>
-                  <span class="ms-2 badge rounded-pill bg-danger">
-                    - {record.discountPercent} %
-                  </span>
-                </>
-              )}
             </li>
             <li><small>{record.shoeCode}</small></li>
             <li>Đơn giá:
-              {record.discountPercent !== null ? (
-                <>
-                  <span className="text-danger"><FormatCurrency value={record.discountValue} /></span> <span className="text-decoration-line-through text-secondary"><FormatCurrency value={record.price} /></span>
-                </>
-              ) : (
-                <span className="text-danger"><FormatCurrency value={record.price} /></span>
-              )}
+              <span className="text-danger"><FormatCurrency value={record.price} /></span>
             </li>
           </ul>
         </>
@@ -193,7 +202,7 @@ const BillDetail = () => {
       key: 'quantity',
       render: (quantity, record) => (
         <>
-          {bill.status === 2 | bill.status === 4 ? (
+          {bill.status <= 4 ? (
             <Form key={record.id}>
               <Form.Item initialValue={quantity} name={"quantity"} className="m-0 p-0">
                 <Input className="text-center" min={1} type="number" style={{ width: "64px" }} onChange={(e) => handleChangeQuantity(record.id, e.target.value)} />
@@ -209,7 +218,7 @@ const BillDetail = () => {
       key: 'total',
       render: (quantity, record) => (
         <div className="text-center text-danger fw-semibold">
-          <FormatCurrency value={(record.discountPercent !== null ? record.discountValue : record.price) * record.quantity} />
+          <FormatCurrency value={record.price * record.quantity} />
         </div>
       )
     },
@@ -219,13 +228,13 @@ const BillDetail = () => {
       key: 'action',
       render: (id, record) => (
         <>
-          {bill.status === 2 | bill.status === 4 ? (
+          {bill.status <= 4 ? (
             <>
               {
                 listBillDetail.length > 1 && (
                   <>
                     <Tooltip placement="top" title="Xóa">
-                      <Button type="text" className="text-danger me-1"><i className="fas fa-trash"></i></Button>
+                      <Button onClick={() => handleDeleteBillDetail(id)} type="text" className="text-danger me-1"><i className="fas fa-trash"></i></Button>
                     </Tooltip>
                   </>
                 )
@@ -251,57 +260,42 @@ const BillDetail = () => {
           >
             Danh sách hóa đơn
           </Link>
-          <span className="breadcrumb-item">Hóa đơn #{bill.code}</span>
+          <span className="breadcrumb-item">Hóa đơn {bill.code}</span>
         </nav>
         <div className="container overflow-x-auto mb-3" >
-          <Timeline minEvents={billHistory.length} placeholder>
+          <Timeline minEvents={8} placeholder maxEvents={billHistory.length}>
             {billHistory.map((item, index) => (
               <TimelineEvent
                 key={index}
                 icon={
-                  item.status === 0
-                    ? FaRegFileAlt
-                    : item.status === 1
-                      ? FaRegFileAlt
-                      : item.status === 2
-                        ? MdOutlineConfirmationNumber
-                        : item.status === 3
-                          ? FaRegCalendar
-                          : item.status === 4
-                            ? FaRegCalendarCheck
-                            : item.status === 5
-                              ? FaTruck
-                              : item.status === 6
-                                ? GiConfirmed
-                                : item.status === 7
-                                  ? FaBug
-                                  : FaBug
+                  item.status === 0 ? FaRegFileAlt
+                    : item.status === 1 ? FaRegFileAlt
+                      : item.status === 2 ? MdOutlineConfirmationNumber
+                        : item.status === 3 ? FaRegCalendar
+                          : item.status === 4 ? FaRegCalendarCheck
+                            : item.status === 5 ? FaTruck
+                              : item.status === 6 ? GiConfirmed
+                                : item.status === 7 ? FaBug
+                                  : item.status === 500 ? FaEdit : ""
                 }
                 color={
                   item.status === 1 ? '#024FA0' :
                     item.status === 3 ? "#F2721E" :
                       item.status === 4 ? "#50B846" :
-                        item.status === 7 ? "#FF7875" : '#2DC255'
+                        item.status === 500 ? "#FFBC05" :
+                          item.status === 7 ? "#9C281C" : '#2DC255'
                 }
                 title={
                   <h6 className="mt-2">
-                    {item.status === 1
-                      ? "Tạo đơn hàng"
-                      : item.status === 0
-                        ? "Chờ thanh toán"
-                        : item.status === 2
-                          ? "Chờ xác nhận"
-                          : item.status === 3
-                            ? "Xác nhận thông tin thanh toán"
-                            : item.status === 4
-                              ? "Chờ giao"
-                              : item.status === 5
-                                ? "Đang giao"
-                                : item.status === 6
-                                  ? "Hoàn thành"
-                                  : item.status === 7
-                                    ? "Hủy"
-                                    : ""}
+                    {item.status === 1 ? "Tạo đơn hàng"
+                      : item.status === 0 ? "Chờ thanh toán"
+                        : item.status === 2 ? "Chờ xác nhận"
+                          : item.status === 3 ? "Xác nhận thanh toán"
+                            : item.status === 4 ? "Chờ giao"
+                              : item.status === 5 ? "Đang giao"
+                                : item.status === 6 ? "Hoàn thành"
+                                  : item.status === 7 ? "Hủy"
+                                    : item.status === 500 ? "Chỉnh sửa đơn hàng" : ""}
                   </h6>
                 }
                 subtitle={
@@ -345,15 +339,16 @@ const BillDetail = () => {
         {/* Thông tin đơn hàng */}
         <InfoBill props={bill} />
         {/* Lịch sử thanh toán */}
-        <PaymentMethod bill={bill} />
+        <PaymentMethod bill={bill} onSucess={() => loadBillHistory()} />
         {/* Thông tin đơn hàng */}
         <div className="d-flex align-items-center mt-3 mb-2">
           <Title level={5} className="text-uppercase p-0 m-0 flex-grow-1 p-2">Sản phẩm</Title>
-          {bill.status === 2 | bill.status === 4 ? (
-            <ShowProductModal idBill={bill.id} onClose={() => loadBillDetail()} />
+          {bill.status <= 4 ? (
+            <ShowProductModal idBill={bill.id} onClose={() => { loadBillDetail(); loadBill() }} />
           ) : ''}
         </div>
-        <Table dataSource={listBillDetail} columns={columns}
+        {loading1 ? <Loading /> : <Table dataSource={listBillDetail} columns={columns} className="mt-3"
+          loading={loading1}
           pagination={{
             showSizeChanger: true,
             current: currentPage,
@@ -366,6 +361,7 @@ const BillDetail = () => {
               setPageSize(pageSize);
             },
           }} />
+        }
       </BaseUI>
       <Modal title="Nhập ghi chú" open={isModalOpen} onCancel={handleCancel} footer={<Button form="formNote" type="primary" htmlType="submit">Xác nhận</Button>}>
         <p><span className="text-danger">*</span>Chọn mẫu tin nhắn:</p>

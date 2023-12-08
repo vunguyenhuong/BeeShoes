@@ -29,6 +29,7 @@ public class BillRequest extends PageableRequest {
     private Integer paymentMethod;
     private BigDecimal tienMat;
     private BigDecimal tienChuyenKhoan;
+    private String email;
     private String tradingCode;
     private Boolean waitPay;
 }

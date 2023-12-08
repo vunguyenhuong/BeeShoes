@@ -26,6 +26,7 @@ public interface BillService {
     ResponseObject createBillClientVnpay(BillClientRequest request, String code);
     Bill delete(Long id);
     Bill changeStatus(Long id, String status,Boolean isCancel);
+    Bill changeInfoCustomer(Long id, BillRequest request);
     List<StatisticBillStatus> statisticBillStatus();
 
     BillGiveBackInformationResponse getBillGiveBackInformation(String codeBill);

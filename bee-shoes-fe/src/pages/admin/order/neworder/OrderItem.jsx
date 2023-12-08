@@ -44,6 +44,7 @@ function OrderItem({ index, props, onSuccess }) {
 
   const [tienMat, setTienMat] = useState(0);
   const [tienChuyenKhoan, setTienChuyenKhoan] = useState(0);
+  const [totalWeight, setTotalWeight] = useState(0);
 
   useEffect(() => {
     setTienKhachDua(0);
@@ -94,6 +95,10 @@ function OrderItem({ index, props, onSuccess }) {
       const calculatedTotalMoney = response.data.reduce((total, item) => {
         return total + item.quantity * (item.discountPercent !== null ? item.discountValue : item.price);
       }, 0);
+      const calculateTotalWeight = response.data.reduce((total, item) => {
+        return total + item.weight * item.quantity;
+      }, 0);
+      setTotalWeight(calculateTotalWeight);
       setTotalMoney(calculatedTotalMoney);
       setLoading(false);
     })
@@ -143,7 +148,7 @@ function OrderItem({ index, props, onSuccess }) {
           to_ward_code: autoFillAddress.ward,
           height: 50,
           length: 20,
-          weight: 200,
+          weight: totalWeight,
           width: 20,
           cod_failed_amount: 2000,
           insurance_value: 10000,
@@ -164,6 +169,10 @@ function OrderItem({ index, props, onSuccess }) {
         console.log(e);
       });
   };
+
+  useEffect(() => {
+    caculateFee();
+  }, [totalWeight])
 
   useEffect(() => {
     if (voucher !== null) {
@@ -252,7 +261,7 @@ function OrderItem({ index, props, onSuccess }) {
             <li>Đơn giá:
               {record.discountPercent !== null ? (
                 <>
-                  <span className="text-danger"><FormatCurrency value={record.discountValue} /></span> <span className="text-decoration-line-through text-secondary"><FormatCurrency value={record.price} /></span>
+                  <span className="text-danger"><FormatCurrency value={record.discountValue} /></span> <span className="text-decoration-line-through text-secondary"><FormatCurrency value={record.shoePrice} /></span>
                 </>
               ) : (
                 <span className="text-danger"><FormatCurrency value={record.price} /></span>
@@ -319,40 +328,18 @@ function OrderItem({ index, props, onSuccess }) {
     if (listOrderDetail.length === 0) {
       toast.error("Hãy thêm gì đó vào giỏ hàng!");
     } else {
-      if (waitPay) {
-        request.put(`/bill/${props.id}`, data).then(response => {
-
-          onSuccess();
-        }).catch(e => {
-          console.log(e);
-        })
-        return;
-      } else {
-        if (paymentMethod === 2) {
-          if (tienMat <= 0 || tienMat === null) {
-            toast.error('Vui lòng nhập số tiền mặt cần thanh toán!');
-            return;
-          }
-          if (tienMat > totalMoney) {
-            toast.error('Tiền khách đưa phải < tổng tiền cần thanh toán!');
-          } else {
-            const bill = { ...data, id: props.id };
-            localStorage.setItem("checkout", JSON.stringify(bill));
-            try {
-              const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${tienChuyenKhoan}`);
-              if (response.status) {
-                window.location.href = response.data.data;
-              }
-            } catch (error) {
-              console.error("Error making axios request:", error);
-            }
-            return;
-          }
-        } else if (paymentMethod === 1) {
+      if (paymentMethod === 2) {
+        if (tienMat <= 0 || tienMat === null) {
+          toast.error('Vui lòng nhập số tiền mặt cần thanh toán!');
+          return;
+        }
+        if (tienMat > totalMoney) {
+          toast.error('Tiền khách đưa phải < tổng tiền cần thanh toán!');
+        } else {
           const bill = { ...data, id: props.id };
           localStorage.setItem("checkout", JSON.stringify(bill));
           try {
-            const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${bill.totalMoney}`);
+            const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${tienChuyenKhoan}`);
             if (response.status) {
               window.location.href = response.data.data;
             }
@@ -360,13 +347,25 @@ function OrderItem({ index, props, onSuccess }) {
             console.error("Error making axios request:", error);
           }
           return;
-        } else {
-          if (typeOrder === 0) {
-            if (tienKhachDua <= 0 || tienKhachDua === null) {
-              toast.error('Vui lòng nhập đủ tiền khách đưa!');
-              console.log(data);
-              return;
-            }
+        }
+      } else if (paymentMethod === 1) {
+        const bill = { ...data, id: props.id };
+        localStorage.setItem("checkout", JSON.stringify(bill));
+        try {
+          const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${bill.totalMoney - bill.moneyReduce + bill.moneyShip}`);
+          if (response.status) {
+            window.location.href = response.data.data;
+          }
+        } catch (error) {
+          console.error("Error making axios request:", error);
+        }
+        return;
+      } else {
+        if (typeOrder === 0 && !waitPay) {
+          if (tienKhachDua <= 0 || tienKhachDua === null) {
+            toast.error('Vui lòng nhập đủ tiền khách đưa!');
+            console.log(data);
+            return;
           }
         }
       }
@@ -374,7 +373,7 @@ function OrderItem({ index, props, onSuccess }) {
       Modal.confirm({
         title: "Xác nhận",
         maskClosable: true,
-        content: `Xác nhận ${waitPay ? 'chuyển sang trạng thái chờ thanh toán' : 'tạo hóa đơn'} ?`,
+        content: `Xác nhận ${waitPay ? 'chuyển đơn hàng sang trạng thái chờ thanh toán' : 'tạo hóa đơn'} ?`,
         okText: "Xác nhận",
         cancelText: "Hủy",
         onOk: async () => {
@@ -516,7 +515,7 @@ function OrderItem({ index, props, onSuccess }) {
                 <ChooseVoucher onSelectVoucher={(voucher) => setVoucher(voucher)} />
               </Row>
               <li className="mb-2">Tạm tính: <span className="float-end fw-semibold"><FormatCurrency value={totalMoney} /></span></li>
-              {typeOrder === 1 && <li className="mb-2">Phí vận chuyển: <span className="float-end fw-semibold"><FormatCurrency value={feeShip} /></span></li>}
+              {typeOrder === 1 && <li className="mb-2">Phí vận chuyển (tạm tính): <span className="float-end fw-semibold"><FormatCurrency value={feeShip} /></span></li>}
               <li className="mb-2">Giảm giá: <span className="float-end fw-semibold"><FormatCurrency value={moneyReduce} /></span></li>
               {voucher !== null && (
                 <li className="mb-2">

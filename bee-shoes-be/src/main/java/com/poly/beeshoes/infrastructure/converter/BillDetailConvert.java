@@ -38,7 +38,7 @@ public class BillDetailConvert {
         PromotionDetail promotionDetail = promotionDetailRepository.findByShoeDetailCode(request.getCode());
         entity.setShoeDetail(shoeDetail);
         entity.setBill(bill);
-        entity.setPrice(promotionDetail != null ? shoeDetail.getPrice().subtract(promotionDetail.getPromotionPrice()) : shoeDetail.getPrice());
+        entity.setPrice(promotionDetail != null ? promotionDetail.getPromotionPrice() : shoeDetail.getPrice());
         entity.setQuantity(entity.getQuantity() + request.getQuantity());
         return entity;
     }

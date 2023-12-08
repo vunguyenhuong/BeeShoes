@@ -55,7 +55,7 @@ function TemplateExportBill() {
                         <div className="">
                             <Barcode value={bill.code} fontSize={16} height={50} width={2} font="TimesNewRoman" />
                         </div>
-                        <div className="text-center fw-semibold">
+                        <div className="text-center fw-semibold text-nowrap px-1">
                             <ul className="list-unstyled">
                                 <li>HÓA ĐƠN BÁN HÀNG</li>
                                 <li>BILL OF SALE</li>

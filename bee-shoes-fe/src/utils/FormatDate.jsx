@@ -12,7 +12,7 @@ function FormatDate({ date }) {
       hour: "numeric",
       minute: "numeric",
       second: "numeric",
-      hour12: true,
+      hour12: false,
     };
 
     return date.toLocaleString("vi-VN", options);

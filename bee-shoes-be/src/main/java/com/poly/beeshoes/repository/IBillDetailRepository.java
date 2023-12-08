@@ -34,7 +34,9 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
         c.name AS color,
         sz.name AS size,
         bd.quantity AS quantity,
-        sd.price AS price,
+        sd.weight AS weight,
+        bd.price AS price,
+        sd.price AS shoePrice,
         pmd.promotion_price discountValue,
         MAX(pm.value) AS discountPercent,
         GROUP_CONCAT(DISTINCT img.name) AS images

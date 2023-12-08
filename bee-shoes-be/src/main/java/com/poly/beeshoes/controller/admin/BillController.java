@@ -58,6 +58,11 @@ public class BillController {
         return new ResponseObject(billService.orderBill(id, request));
     }
 
+    @PutMapping("/change-info-customer/{id}")
+    public ResponseObject changeInfoCustomer(@PathVariable Long id, @RequestBody BillRequest request){
+        return new ResponseObject(billService.changeInfoCustomer(id,request));
+    }
+
     @GetMapping("/change-status/{id}")
     public ResponseObject changeStatus(@PathVariable Long id, @RequestParam String note, @RequestParam(defaultValue = "false") Boolean isCancel) {
         return new ResponseObject(billService.changeStatus(id, note,isCancel));

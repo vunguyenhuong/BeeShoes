@@ -41,6 +41,8 @@ public class Bill extends PrimaryEntity {
     private String customerName;
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
+    @Column(name = "email", length = 20)
+    private String email;
     @Nationalized
     @Column(name = "address")
     private String address;

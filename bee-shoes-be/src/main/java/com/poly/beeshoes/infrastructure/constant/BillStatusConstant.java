@@ -10,4 +10,5 @@ public final class BillStatusConstant {
     public static final int HOAN_THANH = 6;
     public static final int DA_HUY = 7;
     public static final int TRA_HANG = 8;
+    public static final int CHINH_SUA_DON_HANG = 500;
 }

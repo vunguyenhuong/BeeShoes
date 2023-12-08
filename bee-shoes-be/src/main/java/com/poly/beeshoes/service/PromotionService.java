@@ -11,6 +11,7 @@ import java.util.List;
 public interface PromotionService {
     PageableObject<PromotionResponse> getAll(PromotionRequest request);
     ResponseObject create(PromotionRequest request);
+    ResponseObject update(Long id,PromotionRequest request);
     PromotionResponse getOne(Long id);
     List<Long> getListIdShoePromotion(Long idPromotion);
     List<Long> getListIdShoeDetailInPromotion(@Param("idPromotion") Long idPromotion);

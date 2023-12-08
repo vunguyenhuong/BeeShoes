@@ -3,6 +3,7 @@ package com.poly.tool;
 import com.poly.beeshoes.entity.*;
 import com.poly.beeshoes.infrastructure.common.GenCode;
 import com.poly.beeshoes.infrastructure.constant.AccountRoles;
+import com.poly.beeshoes.infrastructure.sercurity.config.SecurityConfiguration;
 import com.poly.beeshoes.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -10,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -247,14 +249,14 @@ public class DBGenerator implements CommandLineRunner {
 
         // Account
         Account nhanVien1 = new Account();
-        nhanVien1.setName("Nguyễn Thúy Hằng");
+        nhanVien1.setName("Vũ Nguyên Hướng");
         nhanVien1.setBirthday(new Date(99, 3, 16));
         nhanVien1.setAvatar("https://res.cloudinary.com/beeshoes/image/upload/v1691146814/products/pyxjixea5klgwiw9ziv6.jpg");
         nhanVien1.setCccd("535834053750");
-        nhanVien1.setEmail("Hangnt169@gmail.com");
+        nhanVien1.setEmail("admin@fpt.edu.vn");
         nhanVien1.setAccountRoles(AccountRoles.ROLE_EMLOYEE);
         nhanVien1.setGender("Nữ");
-        nhanVien1.setPassword("9c015d87");
+        nhanVien1.setPassword(new BCryptPasswordEncoder().encode("123456"));
         nhanVien1.setPhoneNumber("0395080515");
         nhanVien1.setUsername("Hangnt169");
         nhanVien1.setRole(nhanVien);

@@ -307,6 +307,32 @@ function OrderItem({ index, props, onSuccess }) {
     },
   ]
 
+  function generateUUID() {
+    // Public Domain/MIT
+    var d = new Date().getTime(); //Timestamp
+    var d2 =
+      (typeof performance !== "undefined" &&
+        performance.now &&
+        performance.now() * 1000) ||
+      0; //Time in microseconds since page-load or 0 if unsupported
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = Math.random() * 16; //random number between 0 and 16
+        if (d > 0) {
+          //Use timestamp until depleted
+          r = (d + r) % 16 | 0;
+          d = Math.floor(d / 16);
+        } else {
+          //Use microseconds since page-load if supported
+          r = (d2 + r) % 16 | 0;
+          d2 = Math.floor(d2 / 16);
+        }
+        return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+      }
+    );
+  }
+
   const handleCreate = async () => {
     const data = {};
     data.voucher = voucher === null ? null : voucher.id;
@@ -336,7 +362,7 @@ function OrderItem({ index, props, onSuccess }) {
         if (tienMat > totalMoney) {
           toast.error('Tiền khách đưa phải < tổng tiền cần thanh toán!');
         } else {
-          const bill = { ...data, id: props.id };
+          const bill = { ...data, id: generateUUID(), idBill: props.id };
           localStorage.setItem("checkout", JSON.stringify(bill));
           try {
             const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${tienChuyenKhoan}`);
@@ -349,7 +375,7 @@ function OrderItem({ index, props, onSuccess }) {
           return;
         }
       } else if (paymentMethod === 1) {
-        const bill = { ...data, id: props.id };
+        const bill = { ...data, id: generateUUID(), idBill: props.id };
         localStorage.setItem("checkout", JSON.stringify(bill));
         try {
           const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.id}&total=${bill.totalMoney - bill.moneyReduce + bill.moneyShip}`);

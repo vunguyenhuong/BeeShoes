@@ -15,16 +15,9 @@ function PaymentMethod({ bill, onSucess }) {
   const [totalPayment, setTotalPayment] = useState(0);
   const [extraMoney, setExtraMoney] = useState(null);
 
+  const [isRefund, setIsRefund] = useState(false);
+
   const [form] = Form.useForm();
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
 
   useEffect(() => {
     loadPaymentMethod();
@@ -103,78 +96,72 @@ function PaymentMethod({ bill, onSucess }) {
     <>
       <div className="mt-3">
         <div className="d-flex align-items-center">
-          <Title level={5} className="text-uppercase p-0 m-0 flex-grow-1 p-2">Lịch sử thanh toán</Title>
+          <Title level={5} className="text-danger text-uppercase p-0 m-0 flex-grow-1 p-2">Lịch sử thanh toán</Title>
           <div className="p-2">
-            {bill.status !== 7 ? (
-              totalPayment < (bill.totalMoney + bill?.moneyShip) ? (
-                <>
-                  <Button type="primary" onClick={showModal}>Xác nhận thanh toán</Button>
-                  <Modal
-                    title="Xác nhận thanh toán"
-                    open={isModalOpen}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                    footer={
-                      <>
-                        <Button onClick={() => setIsModalOpen(false)}>Hủy</Button>
-                        <Button onClick={() => form.submit()} type="primary">Thanh toán</Button>
-                      </>
-                    }
-                  >
-                    <Form layout="vertical" form={form} onFinish={handleCreatePaymentMethod}>
-                      {method === 0 ? (
-                        <Form.Item label="Tiền khách đưa" name="totalMoney" rules={[{ required: true, message: "Tiền khách đưa không được để trống!", },]}>
-                          <InputNumber
-                            className='w-100 mb-2'
-                            formatter={(value) =>
-                              ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                            }
-                            controls={false}
-                            min={0}
-                            suffix="VNĐ"
-                            placeholder="Nhập tiền khách đưa..."
-                            onChange={(e) => { setExtraMoney(e - bill.totalMoney + bill.moneyShip - totalPayment); }}
-                          />
-                        </Form.Item>
-                      ) : (
-                        <Form.Item label="Mã giao dịch" name={"tradingCode"} rules={[{ required: true, message: "Mã giao dịch không được để trống!", },]}>
-                          <Input />
-                        </Form.Item>
-                      )}
-                      <Form.Item label="Ghi chú" name="note" rules={[{ required: true, message: "Ghi chú không được để trống!", },]}>
-                        <TextArea />
-                      </Form.Item>
-                      <Row gutter={10} className="mt-3">
-                        <Col xl={12} onClick={() => setMethod(0)}>
-                          <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${method === 1 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
-                            <i className="fa-solid fa-coins" style={{ fontSize: "36px" }}></i>
-                            <span className="ms-2 fw-semibold text-dark">Tiền mặt</span>
-                          </div>
-                        </Col>
-                        <Col xl={12} onClick={() => setMethod(1)}>
-                          <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${method === 0 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
-                            <i class="fa-regular fa-credit-card" style={{ fontSize: "36px" }}></i>
-                            <span className="ms-2 fw-semibold text-dark">Chuyển khoản</span>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Form>
-                    <div className="mt-3 fw-semibold ">
-                      Số tiền cần thanh toán: <span className=" float-end fw-semibold text-danger">
-                        <FormatCurrency value={bill.totalMoney + bill.moneyShip - totalPayment} />
-                      </span>
-                      <br />
-                      Tiền thừa trả khách: <span className=" float-end text-success">
-                        <FormatCurrency value={extraMoney < 0 ? 0 : extraMoney} />
-                      </span>
-                    </div>
-                  </Modal>
-                </>
-              ) : (
-                <span className="text-success fw-semibold">Đơn hàng đã được thanh toán</span>
-              )) : ""}
+            {totalPayment < (bill.totalMoney + bill?.moneyShip) ? (
+              <>
+                <Button type="primary" className='text-dark bg-warning' onClick={() => setIsModalOpen(true)}>Xác nhận thanh toán</Button>
+              </>) : bill.status === 7 || bill.status === 8 ? (
+                <Button type="primary" danger onClick={() => { setIsModalOpen(true); setIsRefund(true) }}>Hoàn tiền</Button>
+              ) : ""}
           </div>
         </div>
+
+        <Modal title={`Xác nhận ${isRefund ? "hoàn tiền" : "thanh toán"}`} open={isModalOpen} onOk={() => { setIsModalOpen(false); setIsRefund(false) }} onCancel={() => { setIsModalOpen(false); setIsRefund(false) }} footer={
+          <>
+            <Button onClick={() => setIsModalOpen(false)}>Hủy</Button>
+            <Button onClick={() => form.submit()} type="primary">Thanh toán</Button>
+          </>
+        }>
+          <Form layout="vertical" form={form} onFinish={handleCreatePaymentMethod}>
+            {method === 0 ? (
+              <Form.Item label={`Tiền ${isRefund ? "trả khách" : "khách đưa"}`} name="totalMoney" rules={[{ required: true, message: `Tiền ${isRefund ? "trả khách" : "khách đưa"} không được để trống!`, },]}>
+                <InputNumber className='w-100 mb-2' formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} controls={false} min={0} suffix="VNĐ" placeholder="Nhập tiền khách đưa..." onChange={(e) => { setExtraMoney(e - (bill.totalMoney + bill.moneyShip - totalPayment)); }} />
+              </Form.Item>
+            ) : (
+              <Form.Item label="Mã giao dịch" name={"tradingCode"} rules={[{ required: true, message: "Mã giao dịch không được để trống!", },]}>
+                <Input />
+              </Form.Item>
+            )}
+            <Form.Item label="Ghi chú" name="note" rules={[{ required: true, message: "Ghi chú không được để trống!", },]}>
+              <TextArea />
+            </Form.Item>
+            {!isRefund && (
+              <Row gutter={10} className="mt-3">
+                <Col xl={12} onClick={() => setMethod(0)}>
+                  <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${method === 1 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
+                    <i className="fa-solid fa-coins" style={{ fontSize: "36px" }}></i>
+                    <span className="ms-2 fw-semibold text-dark">Tiền mặt</span>
+                  </div>
+                </Col>
+                <Col xl={12} onClick={() => setMethod(1)}>
+                  <div className={`py-2 border border-2 rounded-2 d-flex align-items-center justify-content-center ${method === 0 ? `text-secondary border-secondary` : 'border-warning text-warning'}`}>
+                    <i class="fa-regular fa-credit-card" style={{ fontSize: "36px" }}></i>
+                    <span className="ms-2 fw-semibold text-dark">Chuyển khoản</span>
+                  </div>
+                </Col>
+              </Row>
+            )}
+          </Form>
+          {isRefund ? <>
+            Cần phải trả lại khách: <span className=" float-end fw-semibold text-danger">
+              <FormatCurrency value={
+                bill.status === 7 ? bill.totalMoney : totalPayment - "số tiền sp hoàn trả"
+              } />
+            </span>
+          </> : (
+            <div className="mt-3 fw-semibold ">
+              Số tiền cần thanh toán: <span className=" float-end fw-semibold text-danger">
+                <FormatCurrency value={bill.totalMoney + bill.moneyShip - totalPayment} />
+              </span>
+              <br />
+              Tiền thừa trả khách: <span className=" float-end text-success">
+                <FormatCurrency value={extraMoney < 0 ? 0 : extraMoney} />
+              </span>
+            </div>
+          )}
+        </Modal>
+
         <Table columns={columns} pagination={false} dataSource={paymentMethod} />
       </div>
     </>

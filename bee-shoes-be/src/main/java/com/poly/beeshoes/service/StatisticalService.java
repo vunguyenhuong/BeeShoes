@@ -1,7 +1,7 @@
 package com.poly.beeshoes.service;
 
-import com.poly.beeshoes.dto.response.StatisticalDayResponse;
-import com.poly.beeshoes.dto.response.StatisticalMonthlyResponse;
+import com.poly.beeshoes.dto.response.statistic.StatisticalDayResponse;
+import com.poly.beeshoes.dto.response.statistic.StatisticalMonthlyResponse;
 
 import java.util.List;
 

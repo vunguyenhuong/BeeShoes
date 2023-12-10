@@ -101,10 +101,9 @@ function OrderItem({ index, props, onSuccess }) {
       setTotalWeight(calculateTotalWeight);
       setTotalMoney(calculatedTotalMoney);
       setLoading(false);
-    })
-      .catch((e) => {
-        console.log(e);
-      });
+    }).catch((e) => {
+      console.log(e);
+    });
   };
   const getCustomer = async (id) => {
     setCustomer(await request.get(`/customer/${id}`));
@@ -278,7 +277,7 @@ function OrderItem({ index, props, onSuccess }) {
       render: (quantity, record) => (
         <Form key={record.id}>
           <Form.Item initialValue={quantity} name={"quantity"} className="m-0 p-0">
-            <Input className="text-center" min={1} type="number" style={{ width: "64px" }} onChange={(e) => handleChangeQuantity(record.id, e.target.value)} />
+            <Input className="text-center" min={1} type="number" style={{ width: "64px" }} onPressEnter={(e) => handleChangeQuantity(record.id, e.target.value)} />
           </Form.Item>
         </Form>
       )
@@ -365,7 +364,7 @@ function OrderItem({ index, props, onSuccess }) {
           const bill = { ...data, idTransaction: generateUUID(), id: props.id };
           localStorage.setItem("checkout", JSON.stringify(bill));
           try {
-            const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.idTransaction}&total=${tienChuyenKhoan}`);
+            const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.idTransaction}&total=${Math.floor(tienChuyenKhoan)}`);
             if (response.status) {
               window.location.href = response.data.data;
             }
@@ -378,7 +377,7 @@ function OrderItem({ index, props, onSuccess }) {
         const bill = { ...data, idTransaction: generateUUID(), id: props.id };
         localStorage.setItem("checkout", JSON.stringify(bill));
         try {
-          const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.idTransaction}&total=${bill.totalMoney - bill.moneyReduce + bill.moneyShip}`);
+          const response = await axios.get(`http://localhost:8080/api/vn-pay/payment?id=${bill.idTransaction}&total=${Math.floor(bill.totalMoney - bill.moneyReduce + bill.moneyShip)}`);
           if (response.status) {
             window.location.href = response.data.data;
           }

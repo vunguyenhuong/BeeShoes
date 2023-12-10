@@ -1,9 +1,7 @@
 package com.poly.beeshoes.repository;
 
-import com.poly.beeshoes.dto.response.BillGiveBackInformationResponse;
-import com.poly.beeshoes.dto.response.BillProductGiveback;
-import com.poly.beeshoes.dto.response.StatisticalDayResponse;
-import com.poly.beeshoes.dto.response.StatisticalMonthlyResponse;
+import com.poly.beeshoes.dto.response.statistic.StatisticalDayResponse;
+import com.poly.beeshoes.dto.response.statistic.StatisticalMonthlyResponse;
 import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.dto.request.bill.BillSearchRequest;
@@ -50,29 +48,29 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
             AND ((:#{#req.idStaff} IS NULL OR b.account_id = :#{#req.idStaff}) OR (b.account_id is null ))
             AND (:#{#req.status} IS NULL OR b.status = :#{#req.status})
             AND (:#{#req.idCustomer} IS NULL OR b.customer_id = :#{#req.idCustomer})
-            AND b.deleted = FALSE 
+            AND (:#{#req.fromDate} IS NULL OR :#{#req.toDate} IS NULL OR (b.update_at BETWEEN :#{#req.fromDate} AND :#{#req.toDate}))
+            AND b.deleted = FALSE AND b.status NOT IN (1)
             """, nativeQuery = true)
     Page<BillResponse> getAll(@Param("req") BillSearchRequest request, Pageable pageable);
 
     @Query(value = """
-            SELECT
-                       CASE
-                           WHEN status = 1 THEN 'Đơn mới tạo'
-                           WHEN status = 2 THEN 'Chờ xác nhận'
-                           WHEN status = 3 THEN 'Xác nhận thông tin thanh toán'
-                           WHEN status = 4 THEN 'Chờ giao'
-                           WHEN status = 5 THEN 'Đang giao'
-                           WHEN status = 6 THEN 'Hoàn thành'
-                           WHEN status = 7 THEN 'Đã hủy'
-                           WHEN status = 8 THEN 'Trả hàng'
-                           ELSE 'Chờ thanh toán'
-                       END AS statusName,
-                       status as status,
-                       COUNT(*) AS totalCount
-                   FROM
-                       bill
-                   GROUP BY status
-                   ORDER BY status
+           SELECT
+           CASE
+               WHEN status = 2 THEN 'Chờ xác nhận'
+               WHEN status = 3 THEN 'Xác nhận thông tin thanh toán'
+               WHEN status = 4 THEN 'Chờ giao'
+               WHEN status = 5 THEN 'Đang giao'
+               WHEN status = 6 THEN 'Hoàn thành'
+               WHEN status = 7 THEN 'Đã hủy'
+               WHEN status = 8 THEN 'Trả hàng'
+               ELSE 'Chờ thanh toán'
+           END AS statusName,
+           status as status,
+           COUNT(*) AS totalCount
+           FROM bill b
+           WHERE b.status NOT IN (1)
+           GROUP BY status
+           ORDER BY status
             """,nativeQuery = true)
     List<StatisticBillStatus> statisticBillStatus();
 
@@ -83,62 +81,16 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
             AND (:#{#req.idStaff} IS NULL OR b.account.id = :#{#req.idStaff})
             AND (:#{#req.status} IS NULL OR b.status = :#{#req.status})
             AND b.deleted = FALSE 
+            AND b.status = 1
             ORDER BY b.createAt DESC
             """)
-    Page<Bill> getAllBill(@Param("req") BillSearchRequest request, Pageable pageable);
+    List<Bill> getNewBill(@Param("req") BillSearchRequest request);
 
     Bill findByCode(String code);
 
     Boolean existsByCode(String code);
 
     Page<Bill> findByAccountIdAndStatusAndDeletedFalse(Long idAccount, Integer status, Pageable pageable);
-
-    @Query(value = """
-            SELECT
-                bi.id AS idBill,
-                bi.code AS codeBill,
-                bi.customer_name AS nameCustomer,
-                bi.phone_number AS phoneNumber,
-                bi.status AS statusBill,
-                bi.type AS typeBill,
-                bi.address AS address,
-                bi.note AS note,
-                ac.id AS idAccount,
-                em.id AS idEmployee
-            FROM bill bi
-            LEFT JOIN account ac ON ac.id = bi.customer_id
-            LEFT JOIN account em ON em.id = bi.account_id
-            WHERE bi.code = :codeBill
-                        """, nativeQuery = true)
-    BillGiveBackInformationResponse getBillGiveBackInformation(@Param("codeBill") String codeBill);
-
-
-    @Query(value = """
-            SELECT
-                ROW_NUMBER() OVER (ORDER BY detail.id DESC) AS stt,
-                bd.id AS idBillDetail,
-                detail.id AS idProductDetail,
-                images.name AS image,
-                CONCAT(p.name ,'[ ',s2.name,' - ',c2.name,' ]') AS nameProduct,
-                bd.quantity AS quantity,
-                bd.price AS price,
-                c2.name AS codeColor,
-                bd.status AS statusBillDetail
-            FROM bill bi
-            JOIN bill_detail bd ON bi.id = bd.bill_id
-            JOIN shoe_detail detail ON bd.shoe_detail_id = detail.id
-            JOIN shoe p ON detail.shoe_id = p.id
-            JOIN (
-                SELECT shoe_detail_id, MAX(id) AS max_image_id
-                FROM images
-                GROUP BY shoe_detail_id
-            ) max_images ON detail.id = max_images.shoe_detail_id
-            LEFT JOIN  images ON max_images.max_image_id = images.id
-            JOIN size s2 on detail.size_id = s2.id
-            JOIN color c2 on detail.color_id = c2.id
-            WHERE bi.id = :idBill
-                        """, nativeQuery = true)
-    List<BillProductGiveback> getBillGiveBack(@Param("idBill") String idBill);
 
     @Query(value = """
                 SELECT

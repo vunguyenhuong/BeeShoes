@@ -224,8 +224,6 @@ public class VoucherServiceImpl implements VoucherService {
             }
             voucherRepository.save(voucher);
         }
-
-        System.out.println("Trạng thái của Voucher đã được cập nhật tự động bẳng cronJob.");
     }
 
 

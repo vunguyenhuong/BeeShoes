@@ -14,7 +14,7 @@ public class PromotionRequest extends PageableRequest {
     private Long id;
     private String code;
     private String name;
-    private Integer value;
+    private Float value;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Integer status;

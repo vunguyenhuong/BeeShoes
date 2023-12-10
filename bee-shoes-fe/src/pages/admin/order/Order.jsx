@@ -24,7 +24,7 @@ function Order() {
     {
       key: '2',
       label: `Danh sách hóa đơn`,
-      children: <Bill onLoad={new Date().getTime()} />,
+      children: <Bill onLoad={Math.random().toString(36).substring(2, 12)} />,
     }
   ];
 

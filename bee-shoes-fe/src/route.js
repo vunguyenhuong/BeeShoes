@@ -1,4 +1,3 @@
-import BaseUI from "./layouts/admin/BaseUI";
 import AddStaff from "./pages/admin/account/staff/AddStaff";
 import Staff from "./pages/admin/account/staff/Staff";
 import StaffDetail from "./pages/admin/account/staff/StaffDetail";
@@ -27,9 +26,7 @@ import Promotion from "./pages/admin/promotion/Promotion";
 import AddPromotion from "./pages/admin/promotion/AddPromotion";
 import PromotionDetail from "./pages/admin/promotion/update/PromotionDetail";
 import Statistic from "./pages/admin/statistic/Statistic";
-import Giveback from "./pages/admin/giveback/Giveback";
 import withAuth from "./auth";
-import DetailGiveBack from "./pages/admin/giveback/DetailGiveBack";
 import Payment from "./pages/admin/payment/Payment";
 
 const publicRouters = [
@@ -62,8 +59,6 @@ const publicRouters = [
   { path: "/admin/promotion", element: withAuth(Promotion) },
   { path: "/admin/promotion/:id", element: withAuth(PromotionDetail) },
   { path: "/admin/promotion/create", element: withAuth(AddPromotion) },
-  { path: "/admin/give-back", element: withAuth(Giveback) },
-  { path: "/admin/detail-give-back/:id", element: withAuth(DetailGiveBack) },
 
   { path: "/admin/vnpay-payment", element: withAuth(Payment) },
   // { path: '*', element: NotFound}

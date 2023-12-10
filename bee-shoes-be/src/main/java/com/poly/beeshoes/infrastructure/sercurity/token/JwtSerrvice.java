@@ -26,10 +26,10 @@ public class JwtSerrvice {
     public String genetateToken(Account account) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", account.getId());
-        claims.put("email", account.getUsername());
+        claims.put("email", account.getEmail());
         claims.put("role", account.getAccountRoles().name());
         claims.put("fullName", account.getName());
-        claims.put("avata", account.getAvatar());
+        claims.put("avatar", account.getAvatar());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(account.getEmail())
@@ -41,10 +41,10 @@ public class JwtSerrvice {
 
     public String genetateRefreshToken(Map<String, Object> extractClaims, Account account) {
         extractClaims.put("id", account.getId());
-        extractClaims.put("email", account.getUsername());
+        extractClaims.put("email", account.getEmail());
         extractClaims.put("role", account.getAccountRoles().name());
         extractClaims.put("fullName", account.getName());
-        extractClaims.put("avata", account.getAvatar());
+        extractClaims.put("avatar", account.getAvatar());
         return Jwts.builder()
                 .setClaims(extractClaims)
                 .setSubject(account.getEmail())

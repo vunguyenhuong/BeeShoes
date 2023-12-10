@@ -1,11 +1,7 @@
 package com.poly.beeshoes.service.impl;
 
-import com.poly.beeshoes.dto.request.UpdateBillDetailGiveBack;
-import com.poly.beeshoes.dto.request.UpdateBillGiveBack;
-import com.poly.beeshoes.dto.response.BillGiveBackInformationResponse;
-import com.poly.beeshoes.dto.response.BillProductGiveback;
+import com.poly.beeshoes.dto.request.giveback.GivebackRequest;
 import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
-import com.poly.beeshoes.entity.Account;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.entity.BillDetail;
 import com.poly.beeshoes.entity.BillHistory;
@@ -14,6 +10,7 @@ import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.entity.Voucher;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
+import com.poly.beeshoes.infrastructure.constant.BillDetailStatusConstant;
 import com.poly.beeshoes.infrastructure.constant.BillStatusConstant;
 import com.poly.beeshoes.infrastructure.constant.PaymentMethodConstant;
 import com.poly.beeshoes.infrastructure.constant.TyperOrderConstant;
@@ -39,10 +36,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BillServiceImpl implements BillService {
@@ -69,6 +64,11 @@ public class BillServiceImpl implements BillService {
     public PageableObject<BillResponse> getAll(BillSearchRequest request) {
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSizePage());
         return new PageableObject<>(billRepository.getAll(request, pageable));
+    }
+
+    @Override
+    public List<Bill> getNewBill(BillSearchRequest request) {
+        return billRepository.getNewBill(request);
     }
 
     @Override
@@ -358,7 +358,7 @@ public class BillServiceImpl implements BillService {
         BillHistory history = new BillHistory();
         history.setBill(bill);
         history.setStatus(BillStatusConstant.CHINH_SUA_DON_HANG);
-        history.setNote("Cập nhật thông tin khách hàng!");
+        history.setNote("Cập nhật thông tin khách hàng");
         billHistoryRepository.save(history);
         return billRepository.save(bill);
     }
@@ -369,38 +369,30 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public BillGiveBackInformationResponse getBillGiveBackInformation(String codeBill) {
-        var optional = billRepository.existsByCode(codeBill);
-        if (!optional) {
-            throw new RestApiException("Không tìm thấy mã  hóa đơn " + codeBill);
-        }
-        return billRepository.getBillGiveBackInformation(codeBill);
+    public ResponseObject givebackAll(Long idBill, String note) {
+        Bill bill = billRepository.findById(idBill).get();
+        bill.setStatus(BillStatusConstant.DA_HUY);
+        billRepository.save(bill);
+        billDetailRepository.findByBillId(idBill).forEach(billDetail -> {
+            billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
+            billDetailRepository.save(billDetail);
+        });
+
+        BillHistory billHistory = new BillHistory();
+        billHistory.setBill(bill);
+        billHistory.setNote(note);
+        billHistory.setStatus(BillStatusConstant.TRA_HANG);
+        billHistoryRepository.save(billHistory);
+        BillHistory history = new BillHistory();
+        history.setBill(bill);
+        history.setNote("Đơn hàng đã bị hủy");
+        history.setStatus(BillStatusConstant.DA_HUY);
+        billHistoryRepository.save(history);
+        return null;
     }
 
     @Override
-    public List<BillProductGiveback> getBillGiveBack(String idBill) {
-        return billRepository.getBillGiveBack(idBill);
+    public ResponseObject giveback(GivebackRequest request) {
+        return null;
     }
-
-    @Override
-    public Bill updateBillGiveBack(UpdateBillGiveBack
-                                           updateBillGiveBack, List<UpdateBillDetailGiveBack> updateBillDetailGiveBacks) {
-        Bill bill = billRepository.findById(updateBillGiveBack.getIdBill()).get();
-
-        if (bill == null) {
-            throw new RestApiException("Không tìm thấy mã hóa đơn.");
-        }
-
-        // todo: update points user by totalBillGiveBack
-        BigDecimal totalBill = bill.getTotalMoney();
-        BigDecimal totalBillGive = updateBillGiveBack.getTotalBillGiveBack();
-        int checkTotal = totalBill.compareTo(totalBillGive);
-
-        // todo update bill
-        bill.setStatus(BillStatusConstant.TRA_HANG);
-        bill.setTotalMoney(totalBill.subtract(totalBillGive));
-
-        return bill;
-    }
-
 }

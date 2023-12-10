@@ -47,17 +47,18 @@ public class PromotionServiceImpl implements PromotionService {
         }
         Promotion promotionSave = promotionRepository.save(promotionConvert.convertRequestToEntity(request));
         for (Long x: request.getProductDetails()) {
-            ShoeDetail shoeDetail = shoeDetailRepository.findById(x).get();
-            if(!promotionDetailRepository.existsByShoeDetailId(x)){
-                PromotionDetail promotionDetail = new PromotionDetail();
-                promotionDetail.setPromotion(promotionSave);
-                promotionDetail.setShoeDetail(shoeDetail);
-                promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(new BigDecimal(request.getValue()))));
-                promotionDetailRepository.save(promotionDetail);
-            }else {
-                throw new RestApiException(
-                        shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() + "-" + shoeDetail.getSize().getName() + "] đã được áp dụng khuyến mại!");
+            PromotionDetail check = promotionDetailRepository.findByShoeDetailId(x);
+            if(check != null) {
+                promotionDetailRepository.delete(check);
             }
+        }
+        for (Long x: request.getProductDetails()) {
+            ShoeDetail shoeDetail = shoeDetailRepository.findById(x).get();
+            PromotionDetail promotionDetail = new PromotionDetail();
+            promotionDetail.setPromotion(promotionSave);
+            promotionDetail.setShoeDetail(shoeDetail);
+            promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(new BigDecimal(request.getValue()))));
+            promotionDetailRepository.save(promotionDetail);
         }
         return new ResponseObject(request);
     }
@@ -73,17 +74,18 @@ public class PromotionServiceImpl implements PromotionService {
 
         Promotion promotionSave = promotionRepository.save(promotionConvert.convertRequestToEntity(promotion, request));
         for (Long x: request.getProductDetails()) {
-            ShoeDetail shoeDetail = shoeDetailRepository.findById(x).get();
-            if(!promotionDetailRepository.existsByShoeDetailId(x)){
-                PromotionDetail promotionDetail = new PromotionDetail();
-                promotionDetail.setPromotion(promotionSave);
-                promotionDetail.setShoeDetail(shoeDetail);
-                promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(new BigDecimal(request.getValue()))));
-                promotionDetailRepository.save(promotionDetail);
-            }else {
-                throw new RestApiException(
-                        shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() + "-" + shoeDetail.getSize().getName() + "] đã được áp dụng khuyến mại!");
+            PromotionDetail check = promotionDetailRepository.findByShoeDetailId(x);
+            if(check != null) {
+                promotionDetailRepository.delete(check);
             }
+        }
+        for (Long x: request.getProductDetails()) {
+            ShoeDetail shoeDetail = shoeDetailRepository.findById(x).get();
+            PromotionDetail promotionDetail = new PromotionDetail();
+            promotionDetail.setPromotion(promotionSave);
+            promotionDetail.setShoeDetail(shoeDetail);
+            promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(new BigDecimal(request.getValue()))));
+            promotionDetailRepository.save(promotionDetail);
         }
         return new ResponseObject(promotion);
     }

@@ -39,16 +39,16 @@ import java.util.List;
 @Entity
 @Table(name = "account")
 public class Account extends PrimaryEntity implements UserDetails {
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     private String username;
     @Column(name = "cccd")
     private String cccd;
     @Nationalized
     @Column(name = "name")
     private String name;
-    @Column(name = "phonenumber", unique = true)
+    @Column(name = "phonenumber")
     private String phoneNumber;
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     private String email;
     @Nationalized
     @Column(name = "password")

@@ -2,13 +2,12 @@ import React from "react";
 import BaseUI from "~/layouts/admin/BaseUI";
 import { useState, useEffect } from "react";
 import * as request from "~/utils/httpRequest";
-import { Badge, Button, Form, Input, Radio, Table, Tabs, Tag, Tooltip } from "antd";
+import { Badge, Button, DatePicker, Input, Table, Tabs, Tag, Tooltip } from "antd";
 import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
 import { Link } from "react-router-dom";
-import { useReactToPrint } from "react-to-print";
-import { useRef } from "react";
-import TemplateExportBill from "../export-pdf/TemplateExportBill";
+
+const { RangePicker } = DatePicker;
 
 const Bill = ({ onLoad }) => {
   const [listOrder, setListOrder] = useState([]);
@@ -16,17 +15,21 @@ const Bill = ({ onLoad }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const [pageSize, setPageSize] = useState(5);
-  const [status, setStatus] = useState(1);
+  const [status, setStatus] = useState(null);
   const [tabs, setTabs] = useState([]);
 
-  const loadOrders = (status, currentPage, pageSize, searchValue) => {
+  const [selectedDates, setSelectedDates] = useState([]);
+
+  const loadOrders = () => {
     request
       .get(`bill`, {
         params: {
           page: currentPage,
           sizePage: pageSize,
           status: status,
-          code: searchValue
+          code: searchValue,
+          fromDate: selectedDates?.fromDate,
+          toDate: selectedDates?.toDate
         }
       }).then((response) => {
         setListOrder(response.data);
@@ -41,13 +44,25 @@ const Bill = ({ onLoad }) => {
     }).catch(e => { console.log(e); })
   };
 
+  const handleDateChange = (dates) => {
+    if (dates !== null) {
+      setSelectedDates({
+        fromDate: dates[0].format('YYYY-MM-DD'),
+        toDate: dates[1].format('YYYY-MM-DD')
+      })
+    } else {
+      setSelectedDates(null);
+    }
+    console.log(selectedDates);
+  }
+
   useEffect(() => {
     loadOrders();
   }, [])
 
   useEffect(() => {
-    loadOrders(status, currentPage, pageSize, searchValue);
-  }, [currentPage, pageSize, searchValue, status, onLoad]);
+    loadOrders();
+  }, [currentPage, pageSize, searchValue, status, onLoad, selectedDates]);
 
   const items = [
     {
@@ -92,7 +107,7 @@ const Bill = ({ onLoad }) => {
       title: 'Tổng tiền',
       dataIndex: 'totalMoney',
       key: 'totalMoney',
-      render: (x, record) => x === null ? 0 : <FormatCurrency value={x + record.moneyShip} />
+      render: (x, record) => <span className="fw-semibold text-danger"><FormatCurrency value={x === null ? 0 : x + record.moneyShip} /></span>
     },
     {
       title: 'Loại đơn hàng',
@@ -100,6 +115,8 @@ const Bill = ({ onLoad }) => {
       key: 'type',
       render: (x) => (
         <Tag
+          style={{ width: '100px' }}
+          className="text-center"
           color={x === 0 ? "#87d068" : x === 1 ? "#108ee9" : "#2db7f5"}
           icon={x === 0 ? <i class="fas fa-shop me-1"></i> : x === 1 ? <i class="fas fa-truck-fast me-1"></i> : <i class="fas fa-plus me-1"></i>}
         >
@@ -122,7 +139,7 @@ const Bill = ({ onLoad }) => {
           <Tooltip title="Xem chi tiết">
             <Link to={`/admin/bill/${x}`}><Button type="text" icon={<i class="fas fa-ellipsis"></i>} /></Link>
           </Tooltip>
-          {record.status !== 1 | record.status !== 2 && (
+          {record.status !== 1 && (
             <Tooltip title="In hóa đơn">
               <Link className="px-2" target="blank" to={`/export-pdf/${record.id}`}><i class="fa-regular fa-file-lines"></i></Link>
             </Tooltip>
@@ -139,7 +156,8 @@ const Bill = ({ onLoad }) => {
           <h6>Danh sách hóa đơn</h6>
         </div>
         <div className="">
-          <Input onChange={(e) => setSearchValue(e.target.value)} placeholder="Tìm kiếm theo mã hóa đơn, tên khách hàng, số điện thoại..." style={{ width: "440px" }} />
+          <Input className="me-2" onChange={(e) => setSearchValue(e.target.value)} placeholder="Tìm kiếm theo mã hóa đơn, tên khách hàng, số điện thoại..." style={{ width: "440px" }} />
+          <RangePicker onChange={(dates) => handleDateChange(dates)} />
         </div>
       </div>
       <Tabs defaultActiveKey={1} items={items} tabBarGutter={74} onChange={(key) => {

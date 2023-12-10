@@ -4,6 +4,8 @@ import com.poly.beeshoes.infrastructure.common.PageableRequest;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Date;
+
 @Getter
 @Setter
 public class BillSearchRequest extends PageableRequest {
@@ -12,4 +14,6 @@ public class BillSearchRequest extends PageableRequest {
     private Integer status;
     private String code;
     private Boolean deleted;
+    private Date fromDate;
+    private Date toDate;
 }

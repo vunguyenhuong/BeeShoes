@@ -1,7 +1,7 @@
 package com.poly.beeshoes.service.impl;
 
-import com.poly.beeshoes.dto.response.StatisticalDayResponse;
-import com.poly.beeshoes.dto.response.StatisticalMonthlyResponse;
+import com.poly.beeshoes.dto.response.statistic.StatisticalDayResponse;
+import com.poly.beeshoes.dto.response.statistic.StatisticalMonthlyResponse;
 import com.poly.beeshoes.repository.IBillRepository;
 import com.poly.beeshoes.service.StatisticalService;
 import org.springframework.beans.factory.annotation.Autowired;

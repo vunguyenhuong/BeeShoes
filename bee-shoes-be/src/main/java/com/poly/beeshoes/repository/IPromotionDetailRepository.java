@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public interface IPromotionDetailRepository extends JpaRepository<PromotionDetail, Long> {
     Boolean existsByShoeDetailId(Long id);
-
     @Query(value = """
             SELECT GROUP_CONCAT(DISTINCT s.id) FROM promotion_detail pmd
             JOIN shoe_detail sd ON sd.id = pmd.shoe_detail_id
@@ -21,6 +20,8 @@ public interface IPromotionDetailRepository extends JpaRepository<PromotionDetai
             WHERE :idPromotion IS NULL OR pm.id = :idPromotion
             """, nativeQuery = true)
     List<String> getListIdShoePromotion(@Param("idPromotion") Long idPromotion);
+
+    PromotionDetail findByShoeDetailId(Long id);
 
     @Query(value = """
             SELECT pmd.shoe_detail_id FROM promotion_detail pmd

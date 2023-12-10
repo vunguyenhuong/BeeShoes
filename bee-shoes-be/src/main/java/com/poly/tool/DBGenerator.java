@@ -203,38 +203,6 @@ public class DBGenerator implements CommandLineRunner {
         images3.setShoeDetail(shoeDetail3);
         images3.setId(imagesRepository.save(images3).getId());
 
-        //Promotion
-        Promotion promotion1 = new Promotion();
-        promotion1.setCode("PRO1");
-        promotion1.setName("Khuyến mại % TEST");
-        promotion1.setStatus(1);
-        promotion1.setValue(5);
-        promotion1.setStartDate(LocalDateTime.of(2023, Month.OCTOBER, 15, 14, 0, 0));
-        promotion1.setEndDate(LocalDateTime.of(2033, Month.OCTOBER, 15, 14, 0, 0));
-        promotion1.setId(promotionRepository.save(promotion1).getId());
-
-        Promotion promotion2 = new Promotion();
-        promotion2.setCode("PRO2");
-        promotion2.setName("Khuyến mại TEST");
-        promotion2.setStatus(1);
-        promotion2.setValue(10);
-        promotion2.setStartDate(LocalDateTime.of(2023, Month.OCTOBER, 15, 14, 0, 0));
-        promotion2.setEndDate(LocalDateTime.of(2033, Month.OCTOBER, 15, 14, 0, 0));
-        promotion2.setId(promotionRepository.save(promotion2).getId());
-
-        //PromotionDetail
-        PromotionDetail promotionDetail1 = new PromotionDetail();
-        promotionDetail1.setPromotion(promotion1);
-        promotionDetail1.setShoeDetail(shoeDetail1);
-        promotionDetail1.setPromotionPrice(BigDecimal.valueOf(22500));
-        promotionDetail1.setId(promotionDetailRepository.save(promotionDetail1).getId());
-
-        PromotionDetail promotionDetail2 = new PromotionDetail();
-        promotionDetail2.setPromotion(promotion2);
-        promotionDetail2.setShoeDetail(shoeDetail2);
-        promotionDetail2.setPromotionPrice(BigDecimal.valueOf(740000));
-        promotionDetail2.setId(promotionDetailRepository.save(promotionDetail2).getId());
-
         // Cart
         // CartDetail
 

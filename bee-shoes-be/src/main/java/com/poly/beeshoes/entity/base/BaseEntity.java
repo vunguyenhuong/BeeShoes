@@ -12,6 +12,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 
@@ -37,15 +39,17 @@ public abstract class BaseEntity {
 
     @PrePersist
     public void prePersist(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         createAt = LocalDateTime.now();
         updateAt = LocalDateTime.now();
-        createBy = "Vũ Nguyên Hướng";
-        updateBy = "Vũ Nguyên Hướng";
+        createBy = authentication != null ? authentication.getName() : "BeeShoes";
+        updateBy = authentication != null ? authentication.getName() : "BeeShoes";
         deleted = false;
     }
     @PreUpdate
     public void preUpdate(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         updateAt = LocalDateTime.now();
-        updateBy = "Lại Thị Kim Chi";
+        updateBy = authentication != null ? authentication.getName() : "BeeShoes";
     }
 }

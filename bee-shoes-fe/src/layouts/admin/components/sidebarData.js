@@ -100,12 +100,12 @@ const sidebarData = [
       },
     ],
   },
-  {
-    key: "traHang",
-    title: "Trả hàng",
-    icon: "fa-right-left",
-    path: "/admin/give-back",
-  },
+  // {
+  //   key: "traHang",
+  //   title: "Trả hàng",
+  //   icon: "fa-right-left",
+  //   path: "/admin/give-back",
+  // },
   {
     key: "imagesGallery",
     title: "Thư viện hình ảnh",

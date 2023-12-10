@@ -3,27 +3,28 @@ import Title from "antd/es/typography/Title";
 import React from "react";
 import DetailAddress from "~/components/DetailAddress";
 import FormatCurrency from "~/utils/FormatCurrency";
+import ChangeInfoBill from "./ChangeInfoBill";
 
-function InfoBill({ props }) {
+function InfoBill({ props, onSuccess }) {
 
   return (
     <>
       <div className="mt-3">
-        <Title level={5} className="text-uppercase">Thông tin đơn hàng</Title>
+        <Title level={5} className="text-danger text-uppercase">Thông tin đơn hàng</Title>
         <Row gutter={24} className="fw-semibold">
           <Col xl={12}>
             <ul className="list-unstyled">
               <li className="mb-2">Trạng thái: <span className="float-end text-danger">{props.status === 0 ? " Chờ thanh toán" : props.status === 1 ? " Tạo đơn hàng" : props.status === 2 ? " Chờ xác nhận" : props.status === 3 ? " Xác nhận thông tin thanh toán" : props.status === 4 ? " Chờ giao" : props.status === 5 ? " Đang giao" : props.status === 6 ? " Hoàn thành" : props.status === 7 ? " Hủy" : " Tạo đơn hàng"}</span></li>
+              <li className="mb-2">Mã đơn hàng: <span className="float-end text-danger">{props?.code}</span></li>
               <li className="mb-2">Loại đơn hàng: <span className="float-end text-danger">{props.type === 0 ? " Tại quầy" : " Giao hàng"}</span></li>
-              <li className="mb-2">Tổng tiền: <span className="float-end text-danger"><FormatCurrency value={props.totalMoney} /></span></li>
             </ul>
           </Col>
           <Col xl={12}>
             <ul className="list-unstyled">
-              <li className="mb-2">Mã đơn hàng: <span className="float-end text-danger">{props?.code}</span></li>
               <li className="mb-2">Phí vận chuyển: <span className="float-end text-danger">{
                 props.type === 1 ? <FormatCurrency value={props.moneyShip} /> : "Không có"
               }</span></li>
+              <li className="mb-2">Tổng tiền: <span className="float-end text-danger"><FormatCurrency value={props.totalMoney} /></span></li>
               <li className="mb-2">Phải thanh toán: <span className="float-end text-danger"><FormatCurrency value={props.totalMoney + props.moneyShip} /></span></li>
             </ul>
           </Col>
@@ -45,13 +46,13 @@ function InfoBill({ props }) {
       <div>
         <div className="d-flex">
           <div className="flex-grow-1">
-            <Title level={5} className="text-uppercase">Thông tin khách hàng</Title>
+            <Title level={5} className="text-danger text-uppercase">Thông tin khách hàng</Title>
           </div>
           <div className="">
-            {props.status === 2 | props.status === 4 ? (
-              <>
-                Thay đổi thông tin
-              </>
+            {props.status <= 4 ? (
+              <ChangeInfoBill bill={props} onSuccess={() => {
+                onSuccess()
+              }} />
             ) : ""}
           </div>
         </div>
@@ -63,7 +64,7 @@ function InfoBill({ props }) {
             </Col>
             <Col xl={12}>
               <li className="mb-2">Email: <span className="float-end text-danger">{props.customer?.email === null | props.customer?.email === undefined ? "Không có" : props.customer?.email}</span></li>
-              <li className="mb-2">Địa chỉ: <span className="float-end text-danger">{props?.address !== null ? (
+              <li className="mb-2">Địa chỉ: <span className="float-end text-danger text-end" style={{ width: "24rem" }}>{props?.address !== null ? (
                 <>
                   {props.address?.split("##")[0]} ,
                   <DetailAddress war={props.address?.split("##")[1]}

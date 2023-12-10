@@ -1,7 +1,6 @@
 import { Col, Form, Select } from "antd";
 import { Option } from "antd/es/mentions";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import * as request from "~/utils/httpRequest";
 
 const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
@@ -77,7 +76,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
   return (
     <>
       <Col span={8}>
-        <Form.Item label="Tỉnh/thành phố" name={"province"} rules={[{ required: true, message: "Tỉnh thành phố không được để trống!" },]}>
+        <Form.Item label="Tỉnh/thành phố" name={"province"} initialValue={!prov ? null : parseInt(prov)} rules={[{ required: true, message: "Tỉnh thành phố không được để trống!" },]}>
           <Select showSearch onChange={handleProvinceChange} placeholder="Chọn tỉnh/thành phố..." optionFilterProp="children"
             filterOption={(input, option) => (option?.children ?? "").toLowerCase().includes(input.toLowerCase())}
             defaultValue={!prov ? null : parseInt(prov)}
@@ -92,7 +91,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
         </Form.Item>
       </Col>
       <Col span={8}>
-        <Form.Item label="Quận/huyện" name={"district"} rules={[{ required: true, message: "Quận huyện không được để trống!" },]}>
+        <Form.Item label="Quận/huyện" name={"district"} initialValue={!distr ? null : parseInt(distr)} rules={[{ required: true, message: "Quận huyện không được để trống!" },]}>
           <Select showSearch onChange={handleDistrictChange} placeholder="Chọn quận/huyện..." optionFilterProp="children"
             filterOption={(input, option) => (option?.children ?? "").toLowerCase().includes(input.toLowerCase())}
             defaultValue={!distr ? null : parseInt(distr)}
@@ -107,7 +106,7 @@ const GHNInfo = ({ dataAddress, prov, distr, war, disabledValue }) => {
         </Form.Item>
       </Col>
       <Col span={8}>
-        <Form.Item label="Xã/phường/thị trấn" name={"ward"} rules={[{ required: true, message: "Xã phường không được để trống!" },]}>
+        <Form.Item label="Xã/phường/thị trấn" initialValue={war} name={"ward"} rules={[{ required: true, message: "Xã phường không được để trống!" },]}>
           <Select showSearch onChange={handleWardChange} placeholder="Chọn xã/phường/thị trấn..." optionFilterProp="children"
             filterOption={(input, option) => (option?.children ?? "").toLowerCase().includes(input.toLowerCase())}
             defaultValue={war}

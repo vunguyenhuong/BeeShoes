@@ -11,6 +11,8 @@ import { getTokenEmpoloyee } from "~/helper/useCookies";
 function NewOrder() {
   const [listOrder, setListOrder] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [waitCreate, setWaitCreate] = useState(false);
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       loadOrders();
@@ -20,33 +22,33 @@ function NewOrder() {
   }, []);
 
   const loadOrders = () => {
-    request
-      .get(`bill`, {
-        params: {
-          idStaff: getTokenEmpoloyee().id,
-          status: 1
-        }
-      }).then((response) => {
-        setListOrder(response.data);
-        console.log(response.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    request.get(`/bill/new-bill`, {
+      params: {
+        idStaff: getTokenEmpoloyee().id,
+        status: 1
+      }
+    }).then((response) => {
+      setListOrder(response);
+      console.log(response);
+    }).catch((e) => {
+      console.log(e);
+    });
   };
 
   const handleCreate = () => {
-    request
-      .post("/bill", {})
-      .then((response) => {
+    setWaitCreate(true);
+    const timeout = setTimeout(async () => {
+      await request.post("/bill", {}).then((response) => {
         if (response.status === 200) {
           toast.success("Tạo mới thành công");
           loadOrders();
         }
-      })
-      .catch((e) => {
+      }).catch((e) => {
         toast.error(e.response.data);
       });
+      setWaitCreate(false);
+    }, 500);
+    return () => clearTimeout(timeout);
   };
 
   const handleDelete = (key) => {
@@ -71,9 +73,7 @@ function NewOrder() {
 
   if (loading) {
     return (
-      <>
-        <Loading></Loading>
-      </>
+      <Loading />
     )
   }
 
@@ -81,10 +81,9 @@ function NewOrder() {
     <>
       <div className="d-flex">
         <div className="flex-grow-1">
-          <Button onClick={() => handleCreate()} className="bg-warning text-dark" type="primary">Tạo mới đơn hàng</Button>
+          <Button onClick={() => handleCreate()} className="bg-warning text-dark" type="primary" loading={waitCreate}>Tạo mới đơn hàng</Button>
         </div>
         <div className="">
-
         </div>
       </div>
       <div className="mt-3">

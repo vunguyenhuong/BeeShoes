@@ -72,17 +72,18 @@ public class BillDetailServiceImpl implements BillDetailService {
         }
         BillDetail billDetail1 = billDetailRepository.save(billDetail);
 
-        Bill bill = billDetail.getBill();
+        Bill bill = billDetail1.getBill();
         if (bill.getStatus() != BillStatusConstant.TAO_DON_HANG) {
             Double caculateTotalMoney = 0.0;
             for (BillDetail x : billDetailRepository.findByBillId(billDetail.getBill().getId())) {
                 caculateTotalMoney += x.getQuantity() * x.getPrice().doubleValue();
             }
             bill.setTotalMoney(BigDecimal.valueOf(caculateTotalMoney).subtract(bill.getMoneyReduce()));
+
             if (bill.getStatus() == BillStatusConstant.CHO_GIAO || bill.getStatus() == BillStatusConstant.CHO_XAC_NHAN || bill.getStatus() == BillStatusConstant.CHO_THANH_TOAN) {
                 BillHistory billHistory = new BillHistory();
                 billHistory.setBill(bill);
-                billHistory.setNote("Đã thêm " + request.getQuantity() + " giày " + shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() + "-" + shoeDetail.getSize().getName() + "]");
+                billHistory.setNote("Đã thêm " + request.getQuantity() + " giày \"" + shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() + "-" + shoeDetail.getSize().getName() + "]\"");
                 billHistory.setStatus(BillStatusConstant.CHINH_SUA_DON_HANG);
                 billHistoryRepository.save(billHistory);
             }
@@ -115,7 +116,7 @@ public class BillDetailServiceImpl implements BillDetailService {
             if (bill.getStatus() == BillStatusConstant.CHO_GIAO || bill.getStatus() == BillStatusConstant.CHO_XAC_NHAN || bill.getStatus() == BillStatusConstant.CHO_THANH_TOAN) {
                 BillHistory billHistory = new BillHistory();
                 billHistory.setBill(bill);
-                billHistory.setNote("Đã xóa " + " giày " + shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() + "-" + shoeDetail.getSize().getName() + "]");
+                billHistory.setNote("Đã xóa " + " giày \"" + shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() + "-" + shoeDetail.getSize().getName() + "]\"");
                 billHistory.setStatus(BillStatusConstant.CHINH_SUA_DON_HANG);
                 billHistoryRepository.save(billHistory);
             }
@@ -150,7 +151,7 @@ public class BillDetailServiceImpl implements BillDetailService {
             if (bill.getStatus() == BillStatusConstant.CHO_GIAO || bill.getStatus() == BillStatusConstant.CHO_XAC_NHAN || bill.getStatus() == BillStatusConstant.CHO_THANH_TOAN) {
                 BillHistory billHistory = new BillHistory();
                 billHistory.setBill(bill);
-                billHistory.setNote("Đã sửa số lượng " + " giày " + shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() + "-" + shoeDetail.getSize().getName() + "] lên " + newQuantity);
+                billHistory.setNote("Đã sửa số lượng " + " giày \"" + shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() + "-" + shoeDetail.getSize().getName() + "]\" lên \"" + newQuantity + "\"");
                 billHistory.setStatus(BillStatusConstant.CHINH_SUA_DON_HANG);
                 billHistoryRepository.save(billHistory);
             }

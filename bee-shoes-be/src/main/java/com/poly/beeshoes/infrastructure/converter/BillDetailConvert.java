@@ -29,6 +29,7 @@ public class BillDetailConvert {
                 .bill(bill)
                 .price(promotionDetail != null ? promotionDetail.getPromotionPrice() : shoeDetail.getPrice())
                 .quantity(request.getQuantity())
+                .status(false)
                 .build();
     }
 

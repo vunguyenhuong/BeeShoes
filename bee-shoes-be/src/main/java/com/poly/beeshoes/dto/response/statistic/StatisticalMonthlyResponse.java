@@ -1,4 +1,4 @@
-package com.poly.beeshoes.dto.response;
+package com.poly.beeshoes.dto.response.statistic;
 
 import org.springframework.beans.factory.annotation.Value;
 

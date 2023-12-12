@@ -6,6 +6,7 @@ import com.poly.beeshoes.dto.request.shoedetail.ShoeDetailRequest;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.dto.request.shoedetail.FindShoeDetailRequest;
 import com.poly.beeshoes.dto.response.ShoeDetailResponse;
+import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,4 +21,5 @@ public interface ShoeDetailService {
 
     ResponseObject updateFast(List<ShoeDetailRequest> list);
     Map<String, BigDecimal> findMinAndMaxPrice();
+    ShoeDetailResponse getOneShoeDetail(Long id);
 }

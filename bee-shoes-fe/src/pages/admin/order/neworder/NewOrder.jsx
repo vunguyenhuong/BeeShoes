@@ -1,4 +1,4 @@
-import { Button, Modal, Tabs, message } from "antd";
+import { Button, Tabs } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -38,38 +38,42 @@ function NewOrder() {
   const handleCreate = () => {
     setWaitCreate(true);
     const timeout = setTimeout(async () => {
-      await request.post("/bill", {}).then((response) => {
-        if (response.status === 200) {
-          toast.success("Tạo mới thành công");
-          loadOrders();
-        }
-      }).catch((e) => {
-        toast.error(e.response.data);
-      });
-      setWaitCreate(false);
+      try {
+        await request.post("/bill", {}).then((response) => {
+          if (response.status === 200) {
+            toast.success("Tạo mới thành công");
+            loadOrders();
+          }
+        }).catch((e) => {
+          toast.error(e.response.data);
+        });
+        setWaitCreate(false);
+      } catch (e) {
+
+      }
     }, 500);
     return () => clearTimeout(timeout);
   };
 
-  const handleDelete = (key) => {
-    const idBill = listOrder[key].id;
-    Modal.confirm({
-      title: "Xác nhận",
-      maskClosable: true,
-      content: `Xác nhận xóa đơn hàng ${listOrder[key].code}?`,
-      okText: "Ok",
-      cancelText: "Cancel",
-      onOk: async () => {
-        request.remove(`/bill/${idBill}`).then(response => {
-          console.log(response);
-          message.success("Xóa thành công!");
-          loadOrders();
-        }).catch(e => {
-          console.log(e);
-        })
-      },
-    });
-  }
+  // const handleDelete = (key) => {
+  //   const idBill = listOrder[key].id;
+  //   Modal.confirm({
+  //     title: "Xác nhận",
+  //     maskClosable: true,
+  //     content: `Xác nhận xóa đơn hàng ${listOrder[key].code}?`,
+  //     okText: "Ok",
+  //     cancelText: "Cancel",
+  //     onOk: async () => {
+  //       request.remove(`/bill/${idBill}`).then(response => {
+  //         console.log(response);
+  //         message.success("Xóa thành công!");
+  //         loadOrders();
+  //       }).catch(e => {
+  //         console.log(e);
+  //       })
+  //     },
+  //   });
+  // }
 
   if (loading) {
     return (

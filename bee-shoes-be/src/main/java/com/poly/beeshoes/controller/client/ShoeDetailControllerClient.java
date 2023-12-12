@@ -2,6 +2,7 @@ package com.poly.beeshoes.controller.client;
 
 import com.poly.beeshoes.dto.request.shoedetail.FindShoeDetailRequest;
 import com.poly.beeshoes.dto.request.shoedetail.ShoeDetailRequest;
+import com.poly.beeshoes.dto.response.ShoeDetailResponse;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
@@ -35,6 +36,10 @@ public class ShoeDetailControllerClient {
     @GetMapping("/{id}")
     public ShoeDetail getOne(@PathVariable Long id) {
         return shoeDetailService.getOne(id);
+    }
+    @GetMapping("/get-one/{id}")
+    public ResponseObject getOneShoeDetail(@PathVariable Long id){
+        return new ResponseObject(shoeDetailService.getOneShoeDetail(id));
     }
 
     @GetMapping("/find-min-max-price")

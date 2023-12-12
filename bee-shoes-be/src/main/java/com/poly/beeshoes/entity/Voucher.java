@@ -48,4 +48,6 @@ public class Voucher extends PrimaryEntity {
     @Column(name = "status")
     private Integer status;
 
+    @Column(name = "type")
+    private Boolean type;
 }

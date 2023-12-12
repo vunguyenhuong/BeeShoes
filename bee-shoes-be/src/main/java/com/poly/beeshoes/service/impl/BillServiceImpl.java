@@ -112,9 +112,9 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public Bill orderBill(Long id, BillRequest request) {
-        if(request.getVoucher() != null){
+        if (request.getVoucher() != null) {
             Voucher voucher = voucherRepository.findById(request.getVoucher()).get();
-            voucher.setQuantity(voucher.getQuantity()-1);
+            voucher.setQuantity(voucher.getQuantity() - 1);
             voucherRepository.save(voucher);
         }
         BillHistory history = new BillHistory();
@@ -123,7 +123,7 @@ public class BillServiceImpl implements BillService {
         history.setBill(bill);
         paymentMethod.setBill(bill);
 
-        if(request.getWaitPay()){
+        if (request.getWaitPay()) {
             bill.setStatus(BillStatusConstant.CHO_THANH_TOAN);
             history.setStatus(BillStatusConstant.CHO_THANH_TOAN);
             billHistoryRepository.save(history);
@@ -295,23 +295,23 @@ public class BillServiceImpl implements BillService {
 
         List<PaymentMethod> paymentMethods = paymentMethodRepository.findByBillId(bill.getId());
         Double totalPayment = 0.0;
-        for (PaymentMethod x: paymentMethods) {
-            totalPayment+=x.getTotalMoney().doubleValue();
+        for (PaymentMethod x : paymentMethods) {
+            totalPayment += x.getTotalMoney().doubleValue();
         }
 
-        if(isCancel){
-            for (BillDetail x: billDetailRepository.findByBillId(bill.getId())) {
+        if (isCancel) {
+            for (BillDetail x : billDetailRepository.findByBillId(bill.getId())) {
                 ShoeDetail shoeDetail = x.getShoeDetail();
-                shoeDetail.setQuantity(shoeDetail.getQuantity()+x.getQuantity());
+                shoeDetail.setQuantity(shoeDetail.getQuantity() + x.getQuantity());
                 shoeDetailRepository.save(shoeDetail);
             }
             history.setStatus(BillStatusConstant.DA_HUY);
             bill.setStatus(BillStatusConstant.DA_HUY);
-        }else {
+        } else {
             if (bill.getStatus() == BillStatusConstant.CHO_THANH_TOAN) {
                 if (BigDecimal.valueOf(totalPayment).compareTo(bill.getTotalMoney().add(bill.getMoneyShip())) < 0) {
                     throw new RestApiException("Vui lòng hoàn tất thanh toán!");
-                }else {
+                } else {
                     history.setStatus(BillStatusConstant.HOAN_THANH);
                     bill.setStatus(BillStatusConstant.HOAN_THANH);
                 }
@@ -393,6 +393,26 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public ResponseObject giveback(GivebackRequest request) {
-        return null;
+        BillDetail billDetail = billDetailRepository.findById(request.getBillDetail()).get();
+        Bill bill = billDetail.getBill();
+        if (request.getQuantity() > billDetail.getQuantity()) {
+            throw new RestApiException("Quá số lượng cho phép!");
+        }
+        if (request.getQuantity() == billDetail.getQuantity()) {
+            billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
+            bill.setTotalMoney(bill.getTotalMoney().subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
+            billRepository.save(bill);
+            billDetailRepository.save(billDetail);
+        }else if (request.getQuantity() < billDetail.getQuantity()){
+            BillDetail billDeReturn = new BillDetail();
+            billDeReturn.setQuantity(request.getQuantity());
+            billDeReturn.setBill(bill);
+            billDeReturn.setPrice(billDetail.getPrice());
+            billDeReturn.setStatus(BillDetailStatusConstant.TRA_HANG);
+            billDetailRepository.save(billDeReturn);
+            bill.setTotalMoney(bill.getTotalMoney().subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
+            billRepository.save(bill);
+        }
+        return new ResponseObject(billDetail);
     }
 }

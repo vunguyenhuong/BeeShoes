@@ -41,6 +41,7 @@ function PaymentMethod({ bill, onSucess }) {
     request.post(`/payment-method`, data).then((response) => {
       loadPaymentMethod();
       onSucess();
+      setIsModalOpen(false);
     }).catch((error) => {
       console.error(error);
       toast.error(error.response.data);

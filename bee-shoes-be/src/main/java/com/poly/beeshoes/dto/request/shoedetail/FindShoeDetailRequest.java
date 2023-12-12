@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @Builder
 public class FindShoeDetailRequest extends PageableRequest {
+    private Long id;
     private String shoe;
     private String color;
     private String size;

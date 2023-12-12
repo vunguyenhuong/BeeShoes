@@ -1,6 +1,7 @@
 import { Button, Form, Modal, Radio, Space } from 'antd'
 import TextArea from 'antd/es/input/TextArea';
 import React, { useState } from 'react'
+import { toast } from 'react-toastify';
 import * as request from "~/utils/httpRequest";
 
 function GivebackAll({ bill }) {
@@ -8,9 +9,11 @@ function GivebackAll({ bill }) {
     const [form] = Form.useForm();
     const handleSubmit = (data) => {
         request.get(`/bill/give-back-all/${bill.id}`, { params: { note: data.note } }).then(response => {
-
+            setIsModalOpen(false);
+            toast.success("Trả hàng thành công!");
         }).catch(e => {
             console.log(e);
+            toast.success("Có lỗi xảy ra!");
         })
     }
     return (

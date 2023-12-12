@@ -124,4 +124,9 @@ public class ShoeDetailServiceImpl implements ShoeDetailService {
     public Map<String, BigDecimal> findMinAndMaxPrice() {
         return shoeDetailRepository.findMinAndMaxPrice();
     }
+
+    @Override
+    public ShoeDetailResponse getOneShoeDetail(Long id) {
+        return shoeDetailRepository.getOneShoeDetail(id);
+    }
 }

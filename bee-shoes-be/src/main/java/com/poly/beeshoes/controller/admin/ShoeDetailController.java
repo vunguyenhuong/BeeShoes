@@ -1,5 +1,6 @@
 package com.poly.beeshoes.controller.admin;
 
+import com.poly.beeshoes.dto.response.ShoeDetailResponse;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
@@ -37,6 +38,11 @@ public class ShoeDetailController {
         return shoeDetailService.getOne(id);
     }
 
+    @GetMapping("/get-one/{id}")
+    public ResponseObject getOneShoeDetail(@PathVariable Long id){
+        return new ResponseObject(shoeDetailService.getOneShoeDetail(id));
+    }
+
     @GetMapping("/find-min-max-price")
     public Map<String, BigDecimal> findMinAndMaxPrice(){
         return shoeDetailService.findMinAndMaxPrice();
@@ -44,7 +50,6 @@ public class ShoeDetailController {
 
     @PostMapping
     public ResponseObject create(@RequestBody List<ShoeDetailRequest> list) {
-        list.forEach(request -> System.out.println(request));
         return new ResponseObject(shoeDetailService.create(list));
     }
 

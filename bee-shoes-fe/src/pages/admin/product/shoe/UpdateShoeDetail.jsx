@@ -4,7 +4,6 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import AddProperties from '~/components/Admin/Product/AddProperties';
-import ImageModalUpdate from '~/components/Admin/Product/ImageModalUpdate';
 import * as format from '~/utils/format';
 import * as request from "~/utils/httpRequest";
 
@@ -54,26 +53,36 @@ function UpdateShoeDetail({ props, onSuccess }) {
         setIsModalOpen(false);
     };
 
-    useEffect(() => {
-        request.get("/size", { params: { name: searchSize } }).then((response) => {
+    const loadSize = () => {
+        request.get("/size", { params: { name: searchSize, sizePage: 1_000_000 } }).then((response) => {
             setSize(response.data);
         }).catch((error) => {
             console.log(error);
         });
-    }, [searchSize])
-    useEffect(() => {
-        request.get("/color", { params: { name: searchColor } }).then((response) => {
+    }
+    const loadColor = () => {
+         request.get("/color", { params: { name: searchColor, sizePage: 1_000_000 } }).then((response) => {
             setColor(response.data);
         }).catch((error) => {
             console.log(error);
         });
-    }, [searchColor])
-    useEffect(() => {
-        request.get("/sole", { params: { name: searchSole } }).then((response) => {
+    }
+    const loadSole = () => {
+        request.get("/sole", { params: { name: searchSole, sizePage: 1_000_000 } }).then((response) => {
             setSole(response.data);
         }).catch((error) => {
             console.log(error);
         });
+    }
+
+    useEffect(() => {
+       loadSize();
+    }, [searchSize])
+    useEffect(() => {
+       loadColor();
+    }, [searchColor])
+    useEffect(() => {
+        loadSole();
     }, [searchSole])
 
     const handleSelectImg = (img) => {
@@ -99,7 +108,7 @@ function UpdateShoeDetail({ props, onSuccess }) {
                                         <>
                                             {menu}
                                             <Space className="my-2 ms-2">
-                                                <AddProperties placeholder={"kích cỡ"} name={"size"} />
+                                                <AddProperties placeholder={"kích cỡ"} name={"size"} onSuccess={() => loadSize()}/>
                                             </Space>
                                         </>
                                     )}
@@ -120,7 +129,7 @@ function UpdateShoeDetail({ props, onSuccess }) {
                                         <>
                                             {menu}
                                             <Space className="my-2 ms-2">
-                                                <AddProperties placeholder={"màu sắc"} name={"color"} />
+                                                <AddProperties placeholder={"màu sắc"} name={"color"} onSuccess={() => loadColor()}/>
                                             </Space>
                                         </>
                                     )}
@@ -141,7 +150,7 @@ function UpdateShoeDetail({ props, onSuccess }) {
                                         <>
                                             {menu}
                                             <Space className="my-2 ms-2">
-                                                <AddProperties placeholder={"đế giày"} name={"sole"} />
+                                                <AddProperties placeholder={"đế giày"} name={"sole"} onSuccess={() => loadSole()}/>
                                             </Space>
                                         </>
                                     )}
@@ -202,7 +211,7 @@ function UpdateShoeDetail({ props, onSuccess }) {
                                     </div>
                                 ))}
                                 <div style={{ width: "100px", height: "100px" }} className="position-relative rounded-0 border border-warning d-flex align-items-center justify-content-center mt-2">
-                                    <ImageModalUpdate handleChange={handleSelectImg} sttModal={props.id} />
+                                    
                                 </div>
                             </div>
                         </Col>

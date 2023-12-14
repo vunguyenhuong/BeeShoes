@@ -20,8 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,8 +45,26 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     @Transactional(rollbackFor = RestApiException.class)
     public ResponseObject create(PromotionRequest request) {
+        if (request.getName().length() > 20) {
+            throw new RestApiException("Mã khuyến mại không được vượt quá 20 kí tự.");
+        }
+        if (!isCodeUnique(request.getCode())) {
+            throw new RestApiException("Mã khuyến mại đã tồn tại");
+        }
+        if (request.getName().length() > 50) {
+            throw new RestApiException("Tên khuyến mại không được vượt quá 50 kí tự.");
+        }
         if(request.getValue() <= 0 || request.getValue() >= 100){
-            throw new RestApiException("Vui lòng nhập giá trị hợp lệ!");
+            throw new RestApiException("Vui lòng nhập giá trị (%) hợp lệ!");
+        }
+        if (request.getStartDate().isAfter(request.getEndDate())) {
+            throw new RestApiException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc.");
+        }
+        if (request.getStartDate().isEqual(request.getEndDate())) {
+            throw new RestApiException("Ngày giờ bắt đầu không được trùng với ngày giờ kết thúc.");
+        }
+        if (request.getStartDate().isBefore(LocalDateTime.now(ZoneOffset.UTC))) {
+            throw new RestApiException("Ngày bắt đầu phải từ ngày hiện tại trở đi.");
         }
         Promotion promotionSave = promotionRepository.save(promotionConvert.convertRequestToEntity(request));
         for (Long x: request.getProductDetails()) {
@@ -68,9 +89,29 @@ public class PromotionServiceImpl implements PromotionService {
     public ResponseObject update(Long id, PromotionRequest request) {
         deleteAll(id);
         Promotion promotion = promotionRepository.findById(id).get();
-        if(request.getValue() <= 0 || request.getValue() >= 100){
-            throw new RestApiException("Vui lòng nhập giá trị hợp lệ!");
+
+        if (request.getName().length() > 20) {
+            throw new RestApiException("Mã khuyến mại không được vượt quá 20 kí tự.");
         }
+
+        if(!promotion.getCode().equalsIgnoreCase(request.getCode())){
+            if (!isCodeUnique(request.getCode())) {
+                throw new RestApiException("Mã khuyến mại đã tồn tại");
+            }
+        }
+        if (request.getName().length() > 50) {
+            throw new RestApiException("Tên khuyến mại không được vượt quá 50 kí tự.");
+        }
+        if(request.getValue() <= 0 || request.getValue() >= 100){
+            throw new RestApiException("Vui lòng nhập giá trị (%) hợp lệ!");
+        }
+//        if (request.getStartDate().isAfter(request.getEndDate())) {
+//            throw new RestApiException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc.");
+//        }
+        if (request.getStartDate().isEqual(request.getEndDate())) {
+            throw new RestApiException("Ngày giờ bắt đầu không được trùng với ngày giờ kết thúc.");
+        }
+
 
         Promotion promotionSave = promotionRepository.save(promotionConvert.convertRequestToEntity(promotion, request));
         for (Long x: request.getProductDetails()) {
@@ -114,4 +155,26 @@ public class PromotionServiceImpl implements PromotionService {
     public void deleteAll(Long idPromotion) {
         promotionDetailRepository.deleteAllById(promotionDetailRepository.findIdsByPromotionId(idPromotion));
     }
+    public void updateStatusPromotion() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        List<Promotion> promotions = promotionRepository.findAll();
+        for (Promotion promotion : promotions) {
+            LocalDateTime startDate = promotion.getStartDate();
+            LocalDateTime endDate = promotion.getEndDate();
+            if (currentDateTime.isBefore(startDate)) {
+                promotion.setStatus(0); // Chưa bắt đầu
+            } else if (currentDateTime.isAfter(startDate) && currentDateTime.isBefore(endDate)) {
+                promotion.setStatus(1); // Đang diễn ra
+            } else {
+                promotion.setStatus(2); // Đã kết thúc
+                promotion.setDeleted(true);
+            }
+            promotionRepository.save(promotion);
+        }
+    }
+    public boolean isCodeUnique(String code) {
+        Optional<Promotion> existingPromotion = promotionRepository.findByCode(code);
+        return existingPromotion.isEmpty();
+    }
+
 }

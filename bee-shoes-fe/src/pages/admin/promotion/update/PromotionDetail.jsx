@@ -49,6 +49,7 @@ function PromotionDetail() {
             setListShoeDetailId(response.data)
         }).catch(e => {
             console.log(e);
+          
         })
         setLoading(false);
     }
@@ -58,7 +59,10 @@ function PromotionDetail() {
             console.log(response);
             toast.success("Cập nhật thành công!");
             navigate('/admin/promotion');
-        }).catch(e => { console.log(e); })
+        }).catch(e => {
+            console.log(e);
+            toast.error(e.response.data); 
+        })
     }
 
     if (loading) {

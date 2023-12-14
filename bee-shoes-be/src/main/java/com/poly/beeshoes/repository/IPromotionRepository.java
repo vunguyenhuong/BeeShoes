@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface IPromotionRepository extends JpaRepository<Promotion, Long> {
     @Query(value = """
@@ -21,6 +23,7 @@ public interface IPromotionRepository extends JpaRepository<Promotion, Long> {
             p.end_date AS endDate, p.status AS status
             FROM promotion p 
             WHERE (:#{#req.name} IS NULL OR p.name LIKE %:#{#req.name}%)
+            AND (:#{#req.status} IS NULL OR p.status = :#{#req.status})
             """, nativeQuery = true)
     Page<PromotionResponse> getAllPromotion(@Param("req") PromotionRequest request, Pageable pageable);
 
@@ -35,4 +38,6 @@ public interface IPromotionRepository extends JpaRepository<Promotion, Long> {
             WHERE p.id = :id
             """, nativeQuery = true)
     PromotionResponse getOnePromotion(@Param("id") Long id);
+
+    Optional<Promotion> findByCode(String code);
 }

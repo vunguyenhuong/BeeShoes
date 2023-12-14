@@ -1,21 +1,62 @@
-import { Button, Col, Input, Radio, Row, Table } from 'antd';
+import {Breadcrumb, Button, Col, Input, Radio, Row, Table } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import FormatDate from '~/utils/FormatDate';
 import httpRequest from '~/utils/httpRequest';
+import * as request from "~/utils/httpRequest";
 import VoucherStatus from '../voucher/VoucherSatus';
+import { FaHome } from "react-icons/fa";
 
 function Promotion() {
     const [promotions, setPromotions] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+  
+    const [searchValue, setSearchValue] = useState("");
+    const [statusValue, setStatusValue] = useState("");
+    const [pageSize, setPageSize] = useState(5);
 
     useEffect(() => {
-        httpRequest.get('/promotion').then(response => {
-            setPromotions(response.data.data);
-        }).catch(e => {
-            console.log(e);
-        })
-    }, [])
+       loadDataPromotions();
+       const intervalId = setInterval(() => {
+        loadDataPromotions();
+        console.log('e');
+      }, 1000);
+      return () => {
+        clearInterval(intervalId);
+      };
+    }, [searchValue, pageSize, currentPage, statusValue]);
 
+const loadDataPromotions =async () => {  
+    // httpRequest.get('/promotion').then(response => {
+    //     setPromotions(response.data.data);
+    // }).catch(e => {
+    //     console.log(e);
+    // })
+    try {
+        const response = await request.get("/promotion", {
+          params: {
+            name: searchValue,
+            page: currentPage,
+            sizePage: pageSize,
+            status: statusValue,
+          },
+        });
+        setPromotions(response.data);
+        setTotalPages(response.totalPages);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+  
+// const loadDataPromotions =async () => {  
+//     httpRequest.get('/promotion').then(response => {
+//         setPromotions(response.data.data);
+//     }).catch(e => {
+//         console.log(e);
+//     })
+
+//  };
     const columns = [
         {
             title: '#',
@@ -69,12 +110,18 @@ function Promotion() {
     ]
     return (
         <>
-            <h6 className="fw-semibold">Danh sách khuyến mại</h6>
+        <Breadcrumb
+          className="mb-2"
+          items={[
+            { href: "/", title: <FaHome /> },
+            { title: "Danh sách khuyến mại" },
+          ]}
+        />
             <Row gutter={12}>
                 <Col span={8}>
                     <label className="mb-1">Tìm kiếm </label>
                     <Input
-                        // onChange={(event) => setSearchValue(event.target.value)}
+                        onChange={(event) => setSearchValue(event.target.value)}
                         placeholder="Tìm kiếm khuyến mại theo tên, mã ..."
                     //
                     />
@@ -84,10 +131,10 @@ function Promotion() {
                     <label className="mb-1">ㅤ</label>
                     <Radio.Group
                         defaultValue={""}
-                    // onChange={(event) => {
-                    //     setStatusValue(event.target.value);
-                    //     setCurrentPage(1);
-                    // }}
+                    onChange={(event) => {
+                        setStatusValue(event.target.value);
+                        setCurrentPage(1);
+                    }}
                     >
                         <Radio value={""}>Tất cả</Radio>
                         <Radio value={0}>Sắp diễn ra</Radio>
@@ -120,14 +167,14 @@ function Promotion() {
             <Table className="mt-3" columns={columns} dataSource={promotions}
                 pagination={{
                     showSizeChanger: true,
-                    // current: currentPage,
-                    // pageSize: pageSize,
+                    current: currentPage,
+                    pageSize: pageSize,
                     pageSizeOptions: [5, 10, 20, 50, 100],
                     showQuickJumper: true,
-                    // total: totalPages * pageSize,
+                    total: totalPages * pageSize,
                     onChange: (page, pageSize) => {
-                        // setCurrentPage(page);
-                        // setPageSize(pageSize);
+                        setCurrentPage(page);
+                        setPageSize(pageSize);
                     },
                 }} />
 

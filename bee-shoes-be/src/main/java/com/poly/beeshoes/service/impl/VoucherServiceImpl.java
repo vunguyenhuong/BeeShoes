@@ -164,9 +164,9 @@ public class VoucherServiceImpl implements VoucherService {
         if (request.getMinBillValue().compareTo(BigDecimal.ZERO) <= 0) {
             throw new RestApiException("Đơn tối thiểu phải lớn hơn hoặc bằng 0. ");
         }
-        if (request.getStartDate().isAfter(request.getEndDate())) {
-            throw new RestApiException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc.");
-        }
+//        if (request.getStartDate().isAfter(request.getEndDate())) {
+//            throw new RestApiException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc.");
+//        }
         Voucher voucherSave = voucherRepository.save(voucherConvert.convertRequestToEntity(id, request));
         if (voucherSave != null) {
             updateStatus(voucherToUpdate);
@@ -186,7 +186,7 @@ public class VoucherServiceImpl implements VoucherService {
         return voucherRepository.existsByCode(code);
     }
 
-    public void updateStatus() {
+    public void updateStatusVoucher() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         List<Voucher> vouchers = voucherRepository.findAll();
         for (Voucher voucher : vouchers) {

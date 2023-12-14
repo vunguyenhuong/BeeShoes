@@ -16,7 +16,7 @@ function AddPromotion() {
   const handleCreatePromotion = (data) => {
     if(productIds.length === 0){
       toast.error("Vui lòng chọn sản phẩm áp dụng")
-    }
+    }else{
     Modal.confirm({
       title: "Xác nhận",
       maskClosable: true,
@@ -35,7 +35,7 @@ function AddPromotion() {
         console.log(data);
       },
     });
-  };
+  }};
 
   useEffect(() => {
 

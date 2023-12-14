@@ -46,7 +46,7 @@ function AddVoucherForm() {
             navigate("/admin/voucher");
           }
         }).catch((e) => {
-          toast.error(e.response.data.message);
+          toast.error(e.response.data);
         });
         console.log(data);
       },
@@ -88,7 +88,19 @@ function AddVoucherForm() {
                 </Col>
                 <Col xl={12}>
                   <Form.Item label={"Giá trị đơn tối thiểu"} name={"minBillValue"} rules={[{ required: true, message: "Đơn tối thiểu không được để trống!", },]} >
-                    <InputNumber defaultValue={1} style={{ width: "100%" }} step={10000} formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} parser={(value) => value !== null && value !== undefined ? value.replace(/\$\s?|(,*)/g, "") : ""} controls={false} min={0} suffix="VNĐ" placeholder="Nhập giá trị đơn tối thiểu..." onFocus={handleInputFocus} value={inputValue} />
+                    {/* <InputNumber  style={{ width: "100%" }} step={10000} formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} parser={(value) => value !== null && value !== undefined ? value.replace(/\$\s?|(,*)/g, "") : ""} controls={false} min={0} suffix="VNĐ" placeholder="Nhập giá trị đơn tối thiểu..." onFocus={handleInputFocus} value={inputValue} /> */}
+                    <InputNumber
+                      style={{ width: "100%" }}
+                      step={10000}
+                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      parser={(value) => (value !== null && value !== undefined ? value.replace(/(,*)/g, "") : "")}
+                      controls={false}
+                      min={0}
+                      suffix="VNĐ"
+                      placeholder="Nhập giá trị đơn tối thiểu..."
+                      onFocus={handleInputFocus}
+                      value={inputValue}
+/>
                   </Form.Item>
                 </Col>
                 <Col xl={12}>

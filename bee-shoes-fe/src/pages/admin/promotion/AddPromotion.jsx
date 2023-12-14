@@ -10,13 +10,13 @@ import { Link, useNavigate } from "react-router-dom";
 function AddPromotion() {
   const [form] = Form.useForm();
   const [productIds, setProductIds] = useState([]);
-
+  const navigate = useNavigate();
   const [productDetail, setProductDetail] = useState([]);
 
   const handleCreatePromotion = (data) => {
     if(productIds.length === 0){
       toast.error("Vui lòng chọn sản phẩm áp dụng")
-    }
+    }else{
     Modal.confirm({
       title: "Xác nhận",
       maskClosable: true,
@@ -28,6 +28,7 @@ function AddPromotion() {
         request.post('/promotion', data).then(response => {
           console.log(response);
           toast.success("Thêm thành công!");
+          navigate('/admin/promotion');
         }).catch(e => {
           console.log(e);
           toast.error(e.response.data);
@@ -35,7 +36,7 @@ function AddPromotion() {
         console.log(data);
       },
     });
-  };
+  }};
 
   useEffect(() => {
 

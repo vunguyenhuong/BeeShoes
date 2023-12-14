@@ -17,10 +17,21 @@ public interface VoucherResponse {
     String getCode();
 
     String getName();
+
     Integer getQuantity();
+
     Float getPercentReduce();
+
     BigDecimal getMinBillValue();
+
     Integer getStatus();
+
+    LocalDateTime getStartDate();
+
     LocalDateTime getEndDate();
+
+    String getCustomer();
+
+    Boolean getType();
 }
 

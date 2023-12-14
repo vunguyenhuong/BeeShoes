@@ -31,7 +31,6 @@ public class VoucherConvert {
         voucher.setQuantity(request.getQuantity());
         voucher.setPercentReduce(Float.valueOf(request.getPercentReduce()));
         voucher.setMinBillValue(new BigDecimal(request.getMinBillValue().toString()));
-        voucher.setCode(request.getCode());
         voucher.setStartDate(request.getStartDate());
         voucher.setEndDate(request.getEndDate());
         voucher.setType(request.getType());

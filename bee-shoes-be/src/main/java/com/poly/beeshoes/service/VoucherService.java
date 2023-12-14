@@ -11,7 +11,7 @@ public interface VoucherService {
     List<VoucherResponse> getAccountVoucher(Long id,VoucherRequest request);
     List<VoucherResponse> getPublicVoucher(VoucherRequest request);
     PageableObject<VoucherResponse> getAll(VoucherRequest request);
-    Voucher getOne(Long id);
+    VoucherResponse getOne(Long id);
 
     Voucher add(VoucherRequest voucher);
 

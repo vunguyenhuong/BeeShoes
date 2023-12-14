@@ -537,7 +537,7 @@ function OrderItem({ index, props, onSuccess }) {
                 }} /> Giao hàng</>}
               </li>
               <Row gutter={10}>
-                <ChooseVoucher onSelectVoucher={(voucher) => setVoucher(voucher)} />
+                <ChooseVoucher onSelectVoucher={(voucher) => setVoucher(voucher)} customerId={customer?.id} />
               </Row>
               <li className="mb-2">Tạm tính: <span className="float-end fw-semibold"><FormatCurrency value={totalMoney} /></span></li>
               {typeOrder === 1 && <li className="mb-2">Phí vận chuyển (tạm tính): <span className="float-end fw-semibold"><FormatCurrency value={feeShip} /></span></li>}
@@ -546,18 +546,23 @@ function OrderItem({ index, props, onSuccess }) {
                 <li className="mb-2">
                   <Tooltip>
                     <Alert message={
-                      <>
-                        Áp dụng thành công Voucher "{voucher?.name}"
-                        <span className="float-end text-danger" onClick={() => {
-                          setVoucher(null);
-                          setMoneyReduce(0);
-                        }}>
-                          <Tooltip title="Bỏ chọn Voucher" >
-                            <i className="fas fa-xmark-circle"></i>
-                          </Tooltip>
-                        </span>
-
-                      </>}
+                      <div className="d-flex align-items-center">
+                        <div className="flex-grow-1">
+                          Áp dụng thành công Voucher <span className="fw-semibold">{voucher?.name}</span>
+                          <br />
+                          Giảm <span className="text-danger fw-semibold">{voucher?.percentReduce}%</span> đơn tối thiểu <span className="text-danger fw-semibold"><FormatCurrency value={voucher?.minBillValue} /></span>
+                        </div>
+                        <div className="">
+                          <span className="float-end text-danger" onClick={() => {
+                            setVoucher(null);
+                            setMoneyReduce(0);
+                          }}>
+                            <Tooltip title="Bỏ chọn Voucher" >
+                              <i className="fas fa-xmark-circle"></i>
+                            </Tooltip>
+                          </span>
+                        </div>
+                      </div>}
                       type="success" />
                   </Tooltip>
                 </li>

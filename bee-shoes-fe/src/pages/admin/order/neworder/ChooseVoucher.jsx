@@ -1,4 +1,4 @@
-import { AutoComplete, Badge, Button, Col, Divider, Input, Modal, Radio, Tag } from 'antd'
+import { AutoComplete, Badge, Button, Col, Divider, Empty, Input, Modal, Radio, Tag } from 'antd'
 import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -6,23 +6,33 @@ import FormatCurrency from '~/utils/FormatCurrency';
 import FormatDate from '~/utils/FormatDate';
 import * as request from "~/utils/httpRequest";
 
-function ChooseVoucher({ onSelectVoucher }) {
+function ChooseVoucher({ onSelectVoucher, customerId }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [listVoucher, setListVoucher] = useState([]);
+    const [privateVoucher, setPrivateVoucher] = useState([]);
+    const [publicVoucher, setPublicVoucher] = useState([]);
     const [searchValue, setSearchValue] = useState("");
 
     const [selectedVoucher, setSelectedVoucher] = useState({});
 
     const loadData = (searchValue) => {
-        request.get('/voucher', {
+        request.get('/voucher/public', {
             params: {
                 name: searchValue,
                 deleted: false,
-                sizePage: 5
             }
         }).then(response => {
-            setListVoucher(response.data);
+            setPublicVoucher(response.data);
+            console.log(response.data);
+        }).catch(e => {
+            console.log(e);
+        })
+        request.get(`/voucher/private/${customerId}`, {
+            params: {
+                name: searchValue,
+                deleted: false,
+            }
+        }).then(response => {
+            setPrivateVoucher(response.data);
             console.log(response.data);
         }).catch(e => {
             console.log(e);
@@ -52,11 +62,11 @@ function ChooseVoucher({ onSelectVoucher }) {
             </Col>
 
             <Modal title="Chọn Voucher" open={isModalOpen} onOk={() => setIsModalOpen(false)} onCancel={() => setIsModalOpen(false)} footer={""} width={500}>
-                <div className="" style={{ maxHeight: '64vh', overflowY: 'auto',overflowX: 'hidden' }}>
+                <div className="" style={{ maxHeight: '64vh', overflowY: 'auto', overflowX: 'hidden' }}>
                     <div className="container">
                         <Input placeholder='Tìm kiếm voucher theo mã, tên...' onChange={(e) => setSearchValue(e.target.value)} />
                         <h6 className='mt-2'>Voucher dành riêng cho bạn</h6>
-                        {listVoucher.map((item, index) => (
+                        {privateVoucher.length === 0 ? <Empty description="Danh sách voucher trống" /> : privateVoucher.map((item, index) => (
                             <div onClick={() => { setSelectedVoucher(item); onSelectVoucher(item) }} className={`d-flex align-items-center position-relative pt-2 mt-3 border border-2 rounded-2 px-2 ${selectedVoucher === item && 'border-warning'}`}>
                                 <div className="flex-grow-1">
                                     <ul className='list-unstyled'>
@@ -75,7 +85,7 @@ function ChooseVoucher({ onSelectVoucher }) {
                         ))}
                         <hr className='' />
                         <h6 >Các voucher khác</h6>
-                        {listVoucher.map((item, index) => (
+                        {publicVoucher.length === 0 ? <Empty description="Danh sách voucher trống" /> : publicVoucher.map((item, index) => (
                             <div onClick={() => { setSelectedVoucher(item); onSelectVoucher(item) }} className={`d-flex align-items-center position-relative pt-2 mt-3 border border-2 rounded-2 px-2 ${selectedVoucher === item && 'border-warning'}`}>
                                 <div className="flex-grow-1">
                                     <ul className='list-unstyled'>
@@ -92,7 +102,6 @@ function ChooseVoucher({ onSelectVoucher }) {
                                 </span>
                             </div>
                         ))}
-
                     </div>
                 </div>
             </Modal>

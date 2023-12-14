@@ -366,7 +366,7 @@ const BillDetail = () => {
         <Radio.Group className="mb-3" onChange={(e) => { form.setFieldsValue({ note: e.target.value }) }}>
           <Space direction="vertical">
             <Radio value={'Đã xác nhận đơn hàng'}>Đã xác nhận đơn hàng</Radio>
-            <Radio value={'Đã đưa hàng cho shipper'}>Đã đưa hàng cho shipper</Radio>
+            <Radio value={'Đã bàn giao cho đơn vị vận chuyển'}>Đã bàn giao cho đơn vị vận chuyển</Radio>
             <Radio value={'Đã xác nhận thông tin thanh toán'}>Đã xác nhận thông tin thanh toán</Radio>
             <Radio value={'Đơn hàng đã được giao thành công'}>Đơn hàng đã được giao thành công</Radio>
             <Radio value={'Đã hủy đơn hàng'}>Đã hủy đơn hàng</Radio>

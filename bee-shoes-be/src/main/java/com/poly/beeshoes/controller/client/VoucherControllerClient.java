@@ -1,6 +1,7 @@
 package com.poly.beeshoes.controller.client;
 
 import com.poly.beeshoes.dto.request.VoucherRequest;
+import com.poly.beeshoes.dto.response.VoucherResponse;
 import com.poly.beeshoes.entity.Voucher;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
@@ -52,7 +53,7 @@ public class VoucherControllerClient {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Voucher> getOne(@PathVariable Long id) {
+    public ResponseEntity<VoucherResponse> getOne(@PathVariable Long id) {
         return new ResponseEntity<>(voucherService.getOne(id), HttpStatus.OK);
     }
 }

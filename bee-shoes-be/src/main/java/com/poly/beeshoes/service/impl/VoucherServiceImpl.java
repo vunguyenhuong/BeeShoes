@@ -1,17 +1,16 @@
 package com.poly.beeshoes.service.impl;
 
+import com.poly.beeshoes.dto.request.VoucherRequest;
+import com.poly.beeshoes.dto.response.VoucherResponse;
 import com.poly.beeshoes.entity.Account;
 import com.poly.beeshoes.entity.AccountVoucher;
 import com.poly.beeshoes.entity.Notification;
 import com.poly.beeshoes.entity.Voucher;
 import com.poly.beeshoes.infrastructure.common.FormatCommon;
-import com.poly.beeshoes.infrastructure.common.GenCode;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
-import com.poly.beeshoes.infrastructure.constant.Message;
+import com.poly.beeshoes.infrastructure.constant.NotificationType;
 import com.poly.beeshoes.infrastructure.converter.VoucherConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
-import com.poly.beeshoes.dto.request.VoucherRequest;
-import com.poly.beeshoes.dto.response.VoucherResponse;
 import com.poly.beeshoes.repository.IAccountRepository;
 import com.poly.beeshoes.repository.IAccountVoucherRepository;
 import com.poly.beeshoes.repository.INotificationRepository;
@@ -54,8 +53,8 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public List<VoucherResponse> getAccountVoucher(Long id,VoucherRequest request) {
-        return voucherRepository.getAccountVoucher(id,request);
+    public List<VoucherResponse> getAccountVoucher(Long id, VoucherRequest request) {
+        return voucherRepository.getAccountVoucher(id, request);
     }
 
     @Override
@@ -69,11 +68,11 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Voucher getOne(Long id) {
+    public VoucherResponse getOne(Long id) {
         for (Voucher voucher : voucherRepository.findAll()) {
             updateStatus(voucher);
         }
-        return voucherRepository.findById(id).get();
+        return voucherRepository.getOneVoucher(id);
     }
 
     @Override
@@ -102,7 +101,7 @@ public class VoucherServiceImpl implements VoucherService {
         if (Float.valueOf(request.getPercentReduce()) <= 0) {
             throw new RestApiException("Phần trăm giảm phải lớn hơn 0. ");
         }
-        if (request.getMinBillValue().compareTo(BigDecimal.ZERO) <= 0) {
+        if (request.getMinBillValue().compareTo(BigDecimal.ZERO) < 0) {
             throw new RestApiException("Đơn tối thiểu phải lớn hơn hoặc bằng 0. ");
         }
         if (request.getStartDate().isAfter(request.getEndDate())) {
@@ -119,24 +118,27 @@ public class VoucherServiceImpl implements VoucherService {
         Voucher voucherSave = voucherRepository.save(voucher);
         updateStatus(voucherSave);
         System.out.println(request);
-        if(!request.getCustomers().isEmpty()){
-            request.getCustomers().forEach(customerId -> {
-                AccountVoucher accountVoucher = new AccountVoucher();
-                Account account =accountRepository.findById(customerId).get();
-                accountVoucher.setVoucher(voucherSave);
-                accountVoucher.setAccount(account);
-                accountVoucherRepository.save(accountVoucher);
+        if (!voucherSave.getType()) {
+            if (!request.getCustomers().isEmpty()) {
+                request.getCustomers().forEach(customerId -> {
+                    AccountVoucher accountVoucher = new AccountVoucher();
+                    Account account = accountRepository.findById(customerId).get();
+                    accountVoucher.setVoucher(voucherSave);
+                    accountVoucher.setAccount(account);
+                    accountVoucherRepository.save(accountVoucher);
 
-                Notification notification = new Notification();
-                notification.setAccount(account);
-                notification.setTitle("Voucher dành riêng cho bạn [" + voucher.getCode() + "]");
-                notification.setContent("Bạn vừa nhận được Voucher giảm " +
-                        voucher.getPercentReduce() +"% cho đơn hàng từ "+
-                        FormatCommon.convertCurrency(voucher.getMinBillValue().doubleValue()) + "" +
-                        "##Ngày bắt đầu: " +FormatCommon.formatDate(voucher.getStartDate()) +
-                        "##Ngày hết hạn: " + FormatCommon.formatDate(voucher.getEndDate()));
-                notificationRepository.save(notification);
-            });
+                    Notification notification = new Notification();
+                    notification.setAccount(account);
+                    notification.setTitle("Voucher dành riêng cho bạn [" + voucher.getCode() + "]");
+                    notification.setContent("Bạn vừa nhận được Voucher giảm " +
+                            voucher.getPercentReduce() + "% cho đơn hàng từ " +
+                            FormatCommon.convertCurrency(voucher.getMinBillValue().doubleValue()) + "" +
+                            "##Ngày bắt đầu: " + FormatCommon.formatDate(voucher.getStartDate()) +
+                            "##Ngày hết hạn: " + FormatCommon.formatDate(voucher.getEndDate()));
+                    notification.setType(NotificationType.CHUA_DOC);
+                    notificationRepository.save(notification);
+                });
+            }
         }
         return voucher;
 
@@ -161,7 +163,7 @@ public class VoucherServiceImpl implements VoucherService {
             System.out.println("1212");
             throw new RestApiException("Phần trăm giảm phải là số");
         }
-        if (request.getMinBillValue().compareTo(BigDecimal.ZERO) <= 0) {
+        if (request.getMinBillValue().compareTo(BigDecimal.ZERO) < 0) {
             throw new RestApiException("Đơn tối thiểu phải lớn hơn hoặc bằng 0. ");
         }
         if (request.getStartDate().isAfter(request.getEndDate())) {
@@ -170,6 +172,33 @@ public class VoucherServiceImpl implements VoucherService {
         Voucher voucherSave = voucherRepository.save(voucherConvert.convertRequestToEntity(id, request));
         if (voucherSave != null) {
             updateStatus(voucherToUpdate);
+        }
+        if (!voucherSave.getType()) {
+            if (!request.getCustomers().isEmpty()) {
+                request.getCustomers().forEach(customerId -> {
+                    accountVoucherRepository.delete(accountVoucherRepository.findByAccountIdAndVoucherId(customerId, voucherSave.getId()));
+                });
+                request.getCustomers().forEach(customerId -> {
+                    AccountVoucher accountVoucher = new AccountVoucher();
+                    Account account = accountRepository.findById(customerId).get();
+                    accountVoucher.setVoucher(voucherSave);
+                    accountVoucher.setAccount(account);
+                    accountVoucherRepository.save(accountVoucher);
+
+                    Notification notification = new Notification();
+                    notification.setAccount(account);
+                    notification.setTitle("Voucher dành riêng cho bạn [" + voucherSave.getCode() + "]");
+                    notification.setContent("Bạn vừa nhận được Voucher giảm " +
+                            voucherSave.getPercentReduce() + "% cho đơn hàng từ " +
+                            FormatCommon.convertCurrency(voucherSave.getMinBillValue().doubleValue()) + "" +
+                            "##Ngày bắt đầu: " + FormatCommon.formatDate(voucherSave.getStartDate()) +
+                            "##Ngày hết hạn: " + FormatCommon.formatDate(voucherSave.getEndDate()));
+                    notification.setType(NotificationType.CHUA_DOC);
+                    notificationRepository.save(notification);
+                });
+            }
+        } else {
+            accountVoucherRepository.deleteAll(accountVoucherRepository.findByVoucherId(voucherSave.getId()));
         }
         return voucherSave;
     }

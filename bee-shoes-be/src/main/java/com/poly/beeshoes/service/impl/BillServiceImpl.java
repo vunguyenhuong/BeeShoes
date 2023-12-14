@@ -2,9 +2,11 @@ package com.poly.beeshoes.service.impl;
 
 import com.poly.beeshoes.dto.request.giveback.GivebackRequest;
 import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
+import com.poly.beeshoes.entity.Account;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.entity.BillDetail;
 import com.poly.beeshoes.entity.BillHistory;
+import com.poly.beeshoes.entity.Notification;
 import com.poly.beeshoes.entity.PaymentMethod;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.entity.Voucher;
@@ -12,6 +14,7 @@ import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.constant.BillDetailStatusConstant;
 import com.poly.beeshoes.infrastructure.constant.BillStatusConstant;
+import com.poly.beeshoes.infrastructure.constant.NotificationType;
 import com.poly.beeshoes.infrastructure.constant.PaymentMethodConstant;
 import com.poly.beeshoes.infrastructure.constant.TyperOrderConstant;
 import com.poly.beeshoes.infrastructure.converter.BillConvert;
@@ -26,6 +29,7 @@ import com.poly.beeshoes.repository.IAccountRepository;
 import com.poly.beeshoes.repository.IBillDetailRepository;
 import com.poly.beeshoes.repository.IBillHistoryRepository;
 import com.poly.beeshoes.repository.IBillRepository;
+import com.poly.beeshoes.repository.INotificationRepository;
 import com.poly.beeshoes.repository.IPaymentMethodRepository;
 import com.poly.beeshoes.repository.IShoeDetailRepository;
 import com.poly.beeshoes.repository.IVoucherRepository;
@@ -47,6 +51,8 @@ public class BillServiceImpl implements BillService {
     private IBillHistoryRepository billHistoryRepository;
     @Autowired
     private BillConvert billConvert;
+    @Autowired
+    private INotificationRepository notificationRepository;
     @Autowired
     private IAccountRepository accountRepository;
     @Autowired
@@ -190,6 +196,21 @@ public class BillServiceImpl implements BillService {
         }
         billHistoryRepository.save(history);
         billRepository.save(bill);
+        if(bill.getCustomer()!=null){
+            Notification notification = new Notification();
+            notification.setType(NotificationType.CHUA_DOC);
+            notification.setAccount(bill.getCustomer());
+            if(bill.getStatus() == BillStatusConstant.HOAN_THANH){
+                notification.setTitle("Đơn hàng #" + bill.getCode() + " đã được mua thành công");
+                notification.setContent("Đơn hàng #" + bill.getCode() + " đã được mua thành công, hãy liên hệ với chúng tôi nếu sản phẩm có vấn đề");
+                notificationRepository.save(notification);
+            }else {
+                notification.setTitle("Đơn hàng #" + bill.getCode() + " đã được xác nhận và đang chờ vận chuyển đi");
+                notification.setContent("Đơn hàng #" + bill.getCode() + " đã được xác nhận và đang chờ vận chuyển đi." +
+                        " Trong thời gian này, bạn vẫn có thể thay đổi số lượng sản phẩm hoặc địa chỉ nhận hàng nếu cần thiết.");
+                notificationRepository.save(notification);
+            }
+        }
         return bill;
     }
 
@@ -233,6 +254,17 @@ public class BillServiceImpl implements BillService {
             billDetailRepository.save(billDetail);
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
             shoeDetailRepository.save(shoeDetail);
+        }
+        if(bill.getCustomer() != null){
+            Account account = bill.getCustomer();
+            Notification notification = new Notification();
+            notification.setTitle("Đơn hàng của bạn đã được đặt");
+            notification.setContent("Xin chào " + account.getName() + ", đơn hàng với mã vận đơn" +
+                    bill.getCode()+" đã được hệ thống ghi nhận và đang chờ nhân viên xác nhận. " +
+                    "Cảm ơn bạn đã dành thời gian cho BeeShoes!");
+            notification.setAccount(account);
+            notification.setType(NotificationType.CHUA_DOC);
+            notificationRepository.save(notification);
         }
         return new ResponseObject(bill);
     }
@@ -281,8 +313,18 @@ public class BillServiceImpl implements BillService {
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
             shoeDetailRepository.save(shoeDetail);
         }
-
-        return new ResponseObject("OK");
+        if(bill.getCustomer() != null){
+            Account account = bill.getCustomer();
+            Notification notification = new Notification();
+            notification.setTitle("Đơn hàng của bạn đã được đặt");
+            notification.setContent("Xin chào " + account.getName() + ", đơn hàng với mã vận đơn" +
+                    bill.getCode()+" đã được hệ thống ghi nhận và đang chờ nhân viên xác nhận. " +
+                    "Cảm ơn bạn đã dành thời gian cho BeeShoes!");
+            notification.setAccount(account);
+            notification.setType(NotificationType.CHUA_DOC);
+            notificationRepository.save(notification);
+        }
+        return new ResponseObject(bill);
     }
 
     @Override
@@ -302,7 +344,6 @@ public class BillServiceImpl implements BillService {
         for (PaymentMethod x : paymentMethods) {
             totalPayment += x.getTotalMoney().doubleValue();
         }
-
         if (isCancel) {
             for (BillDetail x : billDetailRepository.findByBillId(bill.getId())) {
                 ShoeDetail shoeDetail = x.getShoeDetail();
@@ -344,6 +385,32 @@ public class BillServiceImpl implements BillService {
         }
 
         Bill billSave = billRepository.save(bill);
+
+        if(billSave.getCustomer() != null){
+            Account account = bill.getCustomer();
+            Notification notification = new Notification();
+            notification.setTitle(billSave.getStatus() == BillStatusConstant.HOAN_THANH
+                    ? "Đơn hàng #" + billSave.getCode() + " đã được giao thành công"
+                    : billSave.getStatus() == BillStatusConstant.DANG_GIAO
+            ? "Đơn hàng #" + billSave.getCode() + " đang trên đường giao đến bạn"
+                    : billSave.getStatus() == BillStatusConstant.CHO_GIAO
+            ? "Đơn hàng #" + billSave.getCode() + " đã được xác nhận"
+                    : billSave.getStatus() == BillStatusConstant.DA_HUY
+            ? "Đơn hàng #" + billSave.getCode() + " đã bị hủy"
+                    : "");
+            notification.setContent(billSave.getStatus() == BillStatusConstant.HOAN_THANH
+                    ? "Xin chào "+account.getName() +". Đơn hàng #" + billSave.getCode() + " đã được giao thành công"
+                    : billSave.getStatus() == BillStatusConstant.DANG_GIAO
+                    ? "Xin chào "+account.getName() +". Đơn hàng #" + billSave.getCode() + " đang trên đường giao đến bạn. Hãy chú ý điện thoại để nhân viên giao hàng có thể liên lạc được với bạn nhé!"
+                    : billSave.getStatus() == BillStatusConstant.CHO_GIAO
+                    ? "Xin chào "+account.getName() +". Đơn hàng #" + billSave.getCode() + " đã được xác nhận và chờ vận chuyển"
+                    : billSave.getStatus() == BillStatusConstant.DA_HUY
+                    ? "Xin chào "+account.getName() +". Đơn hàng #" + billSave.getCode() + " đã bị hủy"
+                    : "");
+            notification.setAccount(account);
+            notification.setType(NotificationType.CHUA_DOC);
+            notificationRepository.save(notification);
+        }
         if (billSave != null) {
             billHistoryRepository.save(history);
         }

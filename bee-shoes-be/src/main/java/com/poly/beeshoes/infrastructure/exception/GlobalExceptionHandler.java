@@ -27,12 +27,12 @@ public class GlobalExceptionHandler {
         return new ErrorResponse("Vui lòng nhập đầy đủ thông tin!", errorMap);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public String handleAllOtherExceptions(Exception ex) {
-        return ex.getMessage();
-    }
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ResponseBody
+//    public String handleAllOtherExceptions(Exception ex) {
+//        return ex.getMessage();
+//    }
 }
 
 

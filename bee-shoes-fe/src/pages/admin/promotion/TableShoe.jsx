@@ -2,7 +2,6 @@ import { Table } from "antd";
 import Input from "antd/es/input/Input";
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import * as request from "~/utils/httpRequest";
 
 function TableShoe({ setProductIds, setRowKeys }) {

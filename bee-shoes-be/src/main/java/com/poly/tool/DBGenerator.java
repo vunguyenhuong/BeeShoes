@@ -150,59 +150,6 @@ public class DBGenerator implements CommandLineRunner {
         sole3.setName("Đặc");
         sole3.setId(soleRepository.save(sole3).getId());
 
-        // ShoeDetail
-        ShoeDetail shoeDetail1 = new ShoeDetail();
-        shoeDetail1.setCode(GenCode.genCodeByName(shoe1.getName()
-                + colorBlack.getName() + size37.getName() + sole1.getName()));
-        shoeDetail1.setPrice(BigDecimal.valueOf(450000));
-        shoeDetail1.setQuantity(50);
-        shoeDetail1.setWeight(1.5);
-        shoeDetail1.setShoe(shoe1);
-        shoeDetail1.setColor(colorBlack);
-        shoeDetail1.setSize(size37);
-        shoeDetail1.setSole(sole1);
-        shoeDetail1.setId(shoeDetailRepository.save(shoeDetail1).getId());
-
-        ShoeDetail shoeDetail2 = new ShoeDetail();
-        shoeDetail2.setCode(GenCode.genCodeByName(shoe2.getName()
-                + colorWhite.getName() + size39.getName() + sole3.getName()));
-        shoeDetail2.setPrice(BigDecimal.valueOf(750000));
-        shoeDetail2.setQuantity(30);
-        shoeDetail2.setWeight(1.0);
-        shoeDetail2.setShoe(shoe2);
-        shoeDetail2.setColor(colorWhite);
-        shoeDetail2.setSize(size39);
-        shoeDetail2.setSole(sole3);
-        shoeDetail2.setId(shoeDetailRepository.save(shoeDetail2).getId());
-
-        ShoeDetail shoeDetail3 = new ShoeDetail();
-        shoeDetail3.setCode(GenCode.genCodeByName(shoe1.getName()
-                + colorWhite.getName() + size40.getName() + sole1.getName()));
-        shoeDetail3.setPrice(BigDecimal.valueOf(650000));
-        shoeDetail3.setQuantity(25);
-        shoeDetail3.setWeight(1.5);
-        shoeDetail3.setShoe(shoe1);
-        shoeDetail3.setColor(colorWhite);
-        shoeDetail3.setSize(size40);
-        shoeDetail3.setSole(sole1);
-        shoeDetail3.setId(shoeDetailRepository.save(shoeDetail3).getId());
-
-        // Image
-        Images images1 = new Images();
-        images1.setName("http://res.cloudinary.com/beeshoes/image/upload/v1696177712/account/sancw2l5mkss2nkyg3fv.webp");
-        images1.setShoeDetail(shoeDetail1);
-        images1.setId(imagesRepository.save(images1).getId());
-
-        Images images2 = new Images();
-        images2.setName("http://res.cloudinary.com/beeshoes/image/upload/v1696179651/account/dkx9yf7dfvbammb5ipg3.jpg");
-        images2.setShoeDetail(shoeDetail2);
-        images2.setId(imagesRepository.save(images2).getId());
-
-        Images images3 = new Images();
-        images3.setName("http://res.cloudinary.com/beeshoes/image/upload/v1696179651/account/dkx9yf7dfvbammb5ipg3.jpg");
-        images3.setShoeDetail(shoeDetail3);
-        images3.setId(imagesRepository.save(images3).getId());
-
         // Cart
         // CartDetail
 
@@ -290,7 +237,7 @@ public class DBGenerator implements CommandLineRunner {
         address3.setId(addressRepository.save(address3).getId());
 
         Address address4 = new Address();
-        address4.setName("iam Dũng");
+        address4.setName("Dũng");
         address4.setSpecificAddress("Số 7");
         address4.setPhoneNumber("0387888999");
         address4.setDistrict("2255");
@@ -308,31 +255,6 @@ public class DBGenerator implements CommandLineRunner {
         address5.setWard("220909");
         address5.setAccount(khachHang2);
         address5.setId(addressRepository.save(address5).getId());
-
-        // notification
-
-        // Voucher
-        Voucher voucher1 = new Voucher();
-        voucher1.setName("Voucher for you");
-        voucher1.setCode("VC01");
-        voucher1.setStartDate(LocalDateTime.of(2023, Month.OCTOBER, 10, 23, 58, 0));
-        voucher1.setEndDate(LocalDateTime.of(2033, Month.OCTOBER, 10, 23, 58, 0));
-        voucher1.setQuantity(25);
-        voucher1.setPercentReduce(5.5F);
-        voucher1.setMinBillValue(BigDecimal.valueOf(1000));
-        voucher1.setId(voucherRepository.save(voucher1).getId());
-
-
-        // AccountVoucher
-        AccountVoucher accountVoucher1 = new AccountVoucher();
-        accountVoucher1.setAccount(khachHang1);
-        accountVoucher1.setVoucher(voucher1);
-        accountVoucher1.setId(accountVoucherRepository.save(accountVoucher1).getId());
-        // BillHistory
-
-        // PaymentMethod
-
-
     }
 
     public static void main(String[] args) {

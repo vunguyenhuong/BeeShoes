@@ -26,16 +26,4 @@ public class GenCode {
     public static String randomPassword(){
         return UUID.randomUUID().toString().substring(0, 8);
     }
-    public static String randomCodeVoucher() {
-        SecureRandom secureRandom = new SecureRandom();
-        StringBuilder code = new StringBuilder(CODE_LENGTH);
-
-        for (int i = 0; i < CODE_LENGTH; i++) {
-            int randomIndex = secureRandom.nextInt(CHARACTERS.length());
-            char randomChar = CHARACTERS.charAt(randomIndex);
-            code.append(randomChar);
-        }
-
-        return code.toString();
-    }
 }

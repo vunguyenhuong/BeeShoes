@@ -10,7 +10,7 @@ import AddProperties from "./AddProperties";
 
 function AddShoeModal({ onAddSuccess }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [form] = Form.useForm();
   const [searchCate, setSearchCate] = useState(null);
   const [cateList, setCateList] = useState([]);
   const [searchBrand, setSearchBrand] = useState(null);
@@ -23,12 +23,11 @@ function AddShoeModal({ onAddSuccess }) {
     console.log(data);
     request.post('/shoe', data).then(response => {
       toast.success("Thêm thành công!");
+      onAddSuccess();
+      form.resetFields();
       setIsModalOpen(false);
     }).catch(e => {
-      console.log(e)
-      if (e.response.status === 500) {
-        toast.error(e.response.data);
-      }
+      form.resetFields();
       toast.error(e.response.data.message);
     })
     // setIsModalOpen(false);
@@ -37,16 +36,23 @@ function AddShoeModal({ onAddSuccess }) {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
+  const loadCate = () => {
     request.get('/category', { params: { name: searchCate } }).then((response) => {
       setCateList(response.data);
     });
-  }, [searchCate])
+  }
 
-  useEffect(() => {
+  const loadBrand = () => {
     request.get('/brand', { params: { name: searchBrand } }).then((response) => {
       setBrandList(response.data);
     });
+  }
+  useEffect(() => {
+    loadCate();
+  }, [searchCate])
+
+  useEffect(() => {
+    loadBrand();
   }, [searchBrand])
 
   return (
@@ -55,7 +61,7 @@ function AddShoeModal({ onAddSuccess }) {
         <FaPlusCircle />
       </Button>
       <Modal title="Thêm giày" open={isModalOpen} onCancel={handleCancel} footer="">
-        <Form onFinish={handleOk} layout="vertical">
+        <Form onFinish={handleOk} layout="vertical" form={form}>
           <Form.Item label={"Tên giày"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!" }]}>
             <Input placeholder="Nhập tên giày..." />
           </Form.Item>
@@ -66,7 +72,7 @@ function AddShoeModal({ onAddSuccess }) {
                 <>
                   {menu}
                   <Space className="my-2 ms-2">
-                    <AddProperties placeholder={"danh mục"} name={"category"} />
+                    <AddProperties placeholder={"danh mục"} name={"category"} onSuccess={() => loadCate()} />
                   </Space>
                 </>
               )}>
@@ -85,7 +91,7 @@ function AddShoeModal({ onAddSuccess }) {
                 <>
                   {menu}
                   <Space className="my-2 ms-2">
-                    <AddProperties placeholder={"thương hiệu"} name={"brand"} />
+                    <AddProperties placeholder={"thương hiệu"} name={"brand"} onSuccess={() => loadBrand()} />
                   </Space>
                 </>
               )}>

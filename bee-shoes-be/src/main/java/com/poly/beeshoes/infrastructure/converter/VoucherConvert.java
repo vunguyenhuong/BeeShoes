@@ -22,6 +22,7 @@ public class VoucherConvert {
                 .minBillValue(new BigDecimal(request.getMinBillValue().toString()))
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
+                .type(request.getType())
                 .build();
     }
     public Voucher convertRequestToEntity(Long id, VoucherRequest request){
@@ -33,6 +34,7 @@ public class VoucherConvert {
         voucher.setCode(request.getCode());
         voucher.setStartDate(request.getStartDate());
         voucher.setEndDate(request.getEndDate());
+        voucher.setType(request.getType());
         return voucher;
     }
 

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Projection(types = {Voucher.class})
 public interface VoucherResponse {
@@ -20,5 +21,6 @@ public interface VoucherResponse {
     Float getPercentReduce();
     BigDecimal getMinBillValue();
     Integer getStatus();
+    LocalDateTime getEndDate();
 }
 

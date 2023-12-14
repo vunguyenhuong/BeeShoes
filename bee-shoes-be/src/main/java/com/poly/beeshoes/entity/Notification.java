@@ -1,5 +1,6 @@
 package com.poly.beeshoes.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.poly.beeshoes.entity.base.PrimaryEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,8 +22,9 @@ import org.hibernate.annotations.Nationalized;
 @Entity
 @Table(name = "notification")
 public class Notification extends PrimaryEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "account_id")
+    @JsonIgnore
     private Account account;
     @Column(name = "type")
     private Integer type;

@@ -202,7 +202,9 @@ public class BillServiceImpl implements BillService {
     public ResponseObject createBillClient(BillClientRequest request) {
         Bill bill = new Bill();
         BillHistory billHistory = new BillHistory();
-        bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
+        if(request.getAccount()!=null){
+            bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
+        }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
         bill.setCode(this.genBillCode());
         bill.setType(1);
@@ -232,14 +234,16 @@ public class BillServiceImpl implements BillService {
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
             shoeDetailRepository.save(shoeDetail);
         }
-        return new ResponseObject("OK");
+        return new ResponseObject(bill);
     }
 
     @Override
     public ResponseObject createBillClientVnpay(BillClientRequest request, String code) {
         Bill bill = new Bill();
         BillHistory billHistory = new BillHistory();
-        bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
+        if(request.getAccount()!=null){
+            bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
+        }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
         bill.setCode(this.genBillCode());
         bill.setType(1);

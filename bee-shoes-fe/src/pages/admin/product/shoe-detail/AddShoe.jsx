@@ -59,33 +59,47 @@ function AddProduct() {
     console.log(items)
   }
 
-  useEffect(() => {
+  const loadShoe = () => {
     request.get("/shoe", { params: { name: searchProduct } }).then((response) => {
       setProduct(response.data);
     }).catch((error) => {
       console.log(error);
     });
-  }, [searchProduct])
-  useEffect(() => {
-    request.get("/size", { params: { name: searchSize, status: false } }).then((response) => {
+  }
+
+  const loadSize = () => {
+    request.get("/size", { params: { name: searchSize, status: false, sizePage: 1_000_000 } }).then((response) => {
       setSize(response.data);
     }).catch((error) => {
       console.log(error);
     });
-  }, [searchSize])
-  useEffect(() => {
-    request.get("/color", { params: { name: searchColor, status: false } }).then((response) => {
-      setColor(response.data);
-    }).catch((error) => {
-      console.log(error);
-    });
-  }, [searchColor])
-  useEffect(() => {
-    request.get("/sole", { params: { name: searchSole, status: false } }).then((response) => {
+  }
+  const loadSole = () => {
+    request.get("/sole", { params: { name: searchSole, status: false, sizePage: 1_000_000 } }).then((response) => {
       setSole(response.data);
     }).catch((error) => {
       console.log(error);
     });
+  }
+  const loadColor = () => {
+    request.get("/color", { params: { name: searchColor, status: false, sizePage: 1_000_000 } }).then((response) => {
+      setColor(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
+  useEffect(() => {
+    loadShoe();
+  }, [searchProduct])
+  useEffect(() => {
+    loadSize();
+  }, [searchSize])
+  useEffect(() => {
+    loadColor();
+  }, [searchColor])
+  useEffect(() => {
+    loadSole()
   }, [searchSole])
 
   const handleCreate = () => {
@@ -179,7 +193,7 @@ function AddProduct() {
                         <>
                           {menu}
                           <Space className="my-2 ms-2">
-                            <AddProperties placeholder={"đế giày"} name={"sole"} />
+                            <AddProperties placeholder={"đế giày"} name={"sole"} onSuccess={() => loadSole()}/>
                           </Space>
                         </>
                       )}
@@ -209,7 +223,7 @@ function AddProduct() {
                         <>
                           {menu}
                           <Space className="my-2 ms-2">
-                            <AddProperties placeholder={"kích cỡ"} name={"size"} />
+                            <AddProperties placeholder={"kích cỡ"} name={"size"} onSuccess={() => loadSize()} />
                           </Space>
                         </>
                       )}
@@ -238,7 +252,7 @@ function AddProduct() {
                         <>
                           {menu}
                           <Space className="my-2 ms-2">
-                            <AddProperties placeholder={"màu sắc"} name={"color"} />
+                            <AddProperties placeholder={"màu sắc"} name={"color"} onSuccess={() => loadColor()}/>
                           </Space>
                         </>
                       )}

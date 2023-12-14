@@ -1,0 +1,32 @@
+package com.poly.beeshoes.controller.client;
+
+import com.poly.beeshoes.infrastructure.common.ResponseObject;
+import com.poly.beeshoes.service.impl.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/client/api/notification")
+public class NotificationControllerClient {
+    @Autowired
+    private NotificationService notificationService;
+    @GetMapping("/{id}")
+    public ResponseObject getByAccount(@PathVariable Long id,@RequestParam(defaultValue = "", required = false) String title){
+        return new ResponseObject(notificationService.getByAccount(id,title));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        notificationService.delete(id);
+    }
+
+    @DeleteMapping("/delete-all/{id}")
+    public void deleteAll(@PathVariable Long id){
+        notificationService.deleteAllByAccount(id);
+    }
+}

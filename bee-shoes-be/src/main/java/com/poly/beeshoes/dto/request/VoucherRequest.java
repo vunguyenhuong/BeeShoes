@@ -10,11 +10,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 public class VoucherRequest extends PageableRequest {
-    @NotNull(message = "Mã Voucher không được để trống!")
     private String code;
     @NotNull(message = "Tên Voucher không được để trống!")
     private String name;
@@ -31,6 +31,8 @@ public class VoucherRequest extends PageableRequest {
     @NotNull(message = "Ngày kết thúc không được để trống!")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate;
+    private Boolean type;
+    private List<Long> customers;
 
     //    filter
     private Boolean deleted;

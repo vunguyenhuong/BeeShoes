@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,21 +26,29 @@ public class VoucherController {
     @Autowired
     private VoucherService voucherService;
 
+    @GetMapping("/private/{id}")
+    public ResponseObject getAccountVoucher(@PathVariable Long id){
+        return new ResponseObject(voucherService.getAccountVoucher(id));
+    }
+
+    @GetMapping("/public")
+    public ResponseObject getPublicVoucher(){
+        return new ResponseObject(voucherService.getPublicVoucher());
+    }
+
     @GetMapping
     public PageableObject getAll(final VoucherRequest request) {
         return voucherService.getAll(request);
     }
 
     @PostMapping("add")
-    public ResponseObject addVoucher(@ModelAttribute @Valid VoucherRequest request) {
-
+    public ResponseObject addVoucher(@RequestBody @Valid VoucherRequest request) {
         return new ResponseObject(voucherService.add(request));
 
     }
 
     @PutMapping("/update/{id}")
-    public ResponseObject updateVocher(@ModelAttribute @Valid VoucherRequest request, @PathVariable Long id) {
-
+    public ResponseObject updateVocher(@RequestBody @Valid VoucherRequest request, @PathVariable Long id) {
         return new ResponseObject(voucherService.update(id, request));
     }
 

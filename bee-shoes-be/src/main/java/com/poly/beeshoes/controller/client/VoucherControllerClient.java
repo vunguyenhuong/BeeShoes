@@ -24,6 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class VoucherControllerClient {
     @Autowired
     private VoucherService voucherService;
+    @GetMapping("/private/{id}")
+    public ResponseObject getAccountVoucher(@PathVariable Long id){
+        return new ResponseObject(voucherService.getAccountVoucher(id));
+    }
+    @GetMapping("/public")
+    public ResponseObject getPublicVoucher(){
+        return new ResponseObject(voucherService.getPublicVoucher());
+    }
 
     @GetMapping
     public PageableObject getAll(final VoucherRequest request) {

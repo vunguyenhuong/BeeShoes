@@ -1,32 +1,15 @@
-import {
-  Breadcrumb,
-  Button,
-  Col,
-  Divider,
-  Input,
-  Modal,
-  Radio,
-  Row,
-  Select,
-  Space,
-  Table,
-  message,
-} from "antd";
+import { Breadcrumb, Button, Col, Input, Radio, Row, Table, } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Pagination from "~/components/Pagination";
 import BaseUI from "~/layouts/admin/BaseUI";
 import * as request from "~/utils/httpRequest";
-import FormatDate from "~/utils/FormatDate";
-import { Empty } from "antd";
-import { FaHome, FaTrash } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 
 import FormatCurrency from "~/utils/FormatCurrency";
 import VoucherSatus from "./VoucherSatus";
 
 function Voucher() {
   const [voucherList, setVoucherList] = useState([]);
-  const [currentPageState, setCurrentPageState] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -34,27 +17,12 @@ function Voucher() {
   const [statusValue, setStatusValue] = useState("");
   const [pageSize, setPageSize] = useState(5);
 
-  const indexOfLastItem = currentPage * pageSize;
-  const indexOfFirstItem = indexOfLastItem - pageSize;
-  const [reloadInterval, setReloadInterval] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("voucher");
-
-  const handleOptionChange = (value) => {
-    setSelectedOption(value);
-  };
-
   useEffect(() => {
     loadVoucher();
-    // Khởi tạo interval khi component được tạo
     const intervalId = setInterval(() => {
       loadVoucher();
-      console.log("test");
+      console.log('e');
     }, 1000);
-
-    // Lưu intervalId vào state để sau này có thể xóa interval
-    setReloadInterval(intervalId);
-
-    // Hủy interval khi component unmount
     return () => {
       clearInterval(intervalId);
     };
@@ -63,7 +31,6 @@ function Voucher() {
 
 
   const loadVoucher = async () => {
-
     try {
       const response = await request.get("/voucher", {
         params: {
@@ -73,7 +40,6 @@ function Voucher() {
           status: statusValue,
         },
       });
-      // console.log(response );
       setVoucherList(response.data);
       setTotalPages(response.totalPages);
     } catch (e) {
@@ -81,16 +47,11 @@ function Voucher() {
     }
   };
 
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber < 1) pageNumber = 1;
-    setCurrentPage(pageNumber);
-  };
   const columns = [
     {
       title: '#',
       dataIndex: 'index',
       key: 'index',
-      render: (text, record, index) => indexOfFirstItem + index + 1,
     },
     {
       title: 'Mã',

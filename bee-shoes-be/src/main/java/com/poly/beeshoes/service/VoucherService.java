@@ -5,7 +5,11 @@ import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.dto.request.VoucherRequest;
 import com.poly.beeshoes.dto.response.VoucherResponse;
 
+import java.util.List;
+
 public interface VoucherService {
+    List<VoucherResponse> getAccountVoucher(Long id);
+    List<VoucherResponse> getPublicVoucher();
     PageableObject<VoucherResponse> getAll(VoucherRequest request);
     Voucher getOne(Long id);
 

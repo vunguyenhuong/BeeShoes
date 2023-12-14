@@ -121,7 +121,7 @@ function AddCustomer() {
             ) : (
               <div className="d-flex align-items-center justify-content-center">
                 <div className="position-relative rounded-circle border border-warning mt-2 d-flex align-items-center justify-content-center" style={{ width: "162px", height: "162px" }}>
-                  <Input type="file" accept="image/*" onChange={handleImageSelect} className="position-absolute opacity-0 py-5" />
+                  <Input type="file" accept="image/*" onChange={handleImageSelect} className="position-absolute opacity-0 py-5" required />
                   <div className="text-center text-secondary">
                     <i className="fas fa-plus"></i> <br />
                     <span>Chọn ảnh đại diện</span>
@@ -140,12 +140,12 @@ function AddCustomer() {
             <h6>Thông tin chi tiết</h6>
             <Divider />
             <Row gutter={10}>
-              <Col span={12}>
+              {/* <Col span={12}>
               <Form.Item label={"Mã định danh (Số CMT/CCCD)"} name={"cccd"} rules={[{ required: true, message: "Mã định danh không được để trống!", },{ pattern: '^([0-9]{9}|[0-9]{12})$', message: "Mã định danh phải có 9 hoặc 12 kí tự!" }]}>
                   <Input placeholder="Nhập mã định danh..." />
                 </Form.Item>
-              </Col>
-              <Col span={12}>
+              </Col> */}
+              <Col span={24}>
                 <Form.Item label={"Giới tính"} name={"gender"} rules={[{ required: true, message: "Giới tính không được để trống!", },]}>
                   <Radio.Group>
                     <Radio value={"Nam"}>Nam</Radio>

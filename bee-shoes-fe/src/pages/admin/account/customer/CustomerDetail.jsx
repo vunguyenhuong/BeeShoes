@@ -142,7 +142,7 @@ function CustomerDetail() {
           items={[
             { href: "/", title: <FaHome /> },
             { href: "/admin/customer", title: "Danh sách khách hàng" },
-            { title: `${customer.name} - ${customer.cccd}` },
+            { title: `${customer.name} - ${customer.username}` },
           ]}
         />
         <Row gutter={24}>
@@ -200,9 +200,9 @@ function CustomerDetail() {
               >
                 <Input placeholder="Nhập username..." />
               </Form.Item>
-              <Form.Item label={"Mã định danh (Số CMT/CCCD)"} name={"cccd"} rules={[{ required: true, message: "Mã định danh không được để trống!", },{ pattern: '^([0-9]{9}|[0-9]{12})$', message: "Mã định danh phải có 9 hoặc 12 kí tự!" }]}>
+              {/* <Form.Item label={"Mã định danh (Số CMT/CCCD)"} name={"cccd"} rules={[{ required: true, message: "Mã định danh không được để trống!", },{ pattern: '^([0-9]{9}|[0-9]{12})$', message: "Mã định danh phải có 9 hoặc 12 kí tự!" }]}>
                   <Input placeholder="Nhập mã định danh..." />
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item label={"Tên khách hàng"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!" },  {  pattern: /^[^\d!@#$%^&*()_+={}\\:;"'<>,.?/`~|-]+$/, message: "Tên phải là chữ"}]}>
               <Input placeholder="Nhập tên khách hàng..." />
             </Form.Item>

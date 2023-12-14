@@ -112,7 +112,7 @@ function CustomerInfo({ handleSelect }) {
       formData.append("address.province", dataAddress.province);
       formData.append("address.defaultAddress", true);
 
-      formData.append("cccd", data.cccd);
+      // formData.append("cccd", data.cccd);
       formData.append("username", data.username);
       formData.append("name", data.name);
       formData.append("gender", data.gender);
@@ -263,7 +263,7 @@ function CustomerInfo({ handleSelect }) {
           </Col>
           <Col span={16}>
             <Row gutter={10}>
-              <Col span={12}>
+              {/* <Col span={12}>
                 <Form.Item
                   label={"Mã định danh (Số CMT/CCCD)"}
                   name={"cccd"}
@@ -280,8 +280,8 @@ function CustomerInfo({ handleSelect }) {
                 >
                   <Input placeholder="Nhập mã định danh..." />
                 </Form.Item>
-              </Col>
-              <Col span={12}>
+              </Col> */}
+              <Col span={24}>
                 <Form.Item
                   label={"Giới tính"}
                   name={"gender"}

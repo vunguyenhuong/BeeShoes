@@ -15,7 +15,7 @@ import java.util.Date;
 public class AccountRequest extends PageableRequest {
     @NotNull(message = "Username không được để trống!")
     private String username;
-    @NotNull(message = "Mã định danh không được để trống!")
+
     private String cccd;
     @NotNull(message = "Tên không được để trống!")
     private String name;

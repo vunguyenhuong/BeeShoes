@@ -72,7 +72,6 @@ function VoucherDetail() {
           console.log(response);
           toast.success("Cập nhật thành công!");
           loadVoucher(form, id);
-          navigate('/admin/voucher');
         }).catch((e) => {
           toast.error(e.response.data);
         });

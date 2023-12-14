@@ -14,7 +14,7 @@ function AddPromotion() {
   const [productDetail, setProductDetail] = useState([]);
 
   const handleCreatePromotion = (data) => {
-    if(productIds.length === 0){
+    if(productDetail.length === 0){
       toast.error("Vui lòng chọn sản phẩm áp dụng")
     }else{
     Modal.confirm({

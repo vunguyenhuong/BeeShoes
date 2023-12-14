@@ -175,9 +175,7 @@ public class VoucherServiceImpl implements VoucherService {
         }
         if (!voucherSave.getType()) {
             if (!request.getCustomers().isEmpty()) {
-                request.getCustomers().forEach(customerId -> {
-                    accountVoucherRepository.delete(accountVoucherRepository.findByAccountIdAndVoucherId(customerId, voucherSave.getId()));
-                });
+                accountVoucherRepository.deleteAll(accountVoucherRepository.findByVoucherId(voucherSave.getId()));
                 request.getCustomers().forEach(customerId -> {
                     AccountVoucher accountVoucher = new AccountVoucher();
                     Account account = accountRepository.findById(customerId).get();

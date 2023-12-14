@@ -25,8 +25,11 @@ public interface IVoucherRepository extends JpaRepository<Voucher, Long> {
             FROM voucher v 
             JOIN account_voucher av ON v.id = av.voucher_id
             WHERE av.account_id = :idAccount
+            AND (:#{#req.name} IS NULL OR :#{#req.name} = '' OR v.name LIKE %:#{#req.name}% OR v.code LIKE %:#{#req.name}%)
+            AND (:#{#req.deleted} IS NULL OR v.deleted = :#{#req.deleted})
+            AND (:#{#req.status} IS NULL OR v.status = :#{#req.status})
             """, nativeQuery = true)
-    List<VoucherResponse> getAccountVoucher(@Param("idAccount") Long idAccount);
+    List<VoucherResponse> getAccountVoucher(@Param("idAccount") Long idAccount,@Param("req") VoucherRequest request);
 
     @Query(value = """
             SELECT v.id AS id,
@@ -42,7 +45,7 @@ public interface IVoucherRepository extends JpaRepository<Voucher, Long> {
             AND (:#{#req.status} IS NULL OR v.status = :#{#req.status})
             AND v.type = true;
 """, nativeQuery = true)
-    List<VoucherResponse> getPublicVoucher();
+    List<VoucherResponse> getPublicVoucher(@Param("req") VoucherRequest request);
     @Query(value = """
             SELECT v.id AS id,
             ROW_NUMBER() OVER(ORDER BY v.create_at DESC) AS indexs,

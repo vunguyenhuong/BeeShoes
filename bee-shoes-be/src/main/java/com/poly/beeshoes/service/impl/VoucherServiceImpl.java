@@ -54,13 +54,13 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public List<VoucherResponse> getAccountVoucher(Long id) {
-        return voucherRepository.getAccountVoucher(id);
+    public List<VoucherResponse> getAccountVoucher(Long id,VoucherRequest request) {
+        return voucherRepository.getAccountVoucher(id,request);
     }
 
     @Override
-    public List<VoucherResponse> getPublicVoucher() {
-        return voucherRepository.getPublicVoucher();
+    public List<VoucherResponse> getPublicVoucher(VoucherRequest request) {
+        return voucherRepository.getPublicVoucher(request);
     }
 
     @Override

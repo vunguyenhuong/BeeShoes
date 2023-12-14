@@ -27,13 +27,13 @@ public class VoucherController {
     private VoucherService voucherService;
 
     @GetMapping("/private/{id}")
-    public ResponseObject getAccountVoucher(@PathVariable Long id){
-        return new ResponseObject(voucherService.getAccountVoucher(id));
+    public ResponseObject getAccountVoucher(@PathVariable Long id,VoucherRequest request){
+        return new ResponseObject(voucherService.getAccountVoucher(id,request));
     }
 
     @GetMapping("/public")
-    public ResponseObject getPublicVoucher(){
-        return new ResponseObject(voucherService.getPublicVoucher());
+    public ResponseObject getPublicVoucher(VoucherRequest request){
+        return new ResponseObject(voucherService.getPublicVoucher(request));
     }
 
     @GetMapping

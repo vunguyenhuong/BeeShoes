@@ -67,6 +67,8 @@ function VoucherDetail() {
       okText: "Ok",
       cancelText: "Cancel",
       onOk: () => {
+        setLoading(true);
+        setTimeout(() => {
         data.customers = listCustomer;
         request.put(`/voucher/update/${id}`, data).then((response) => {
           console.log(response);
@@ -74,7 +76,9 @@ function VoucherDetail() {
           loadVoucher(form, id);
         }).catch((e) => {
           toast.error(e.response.data);
+          setLoading(false);
         });
+      }, 1000);
       },
     });
   };

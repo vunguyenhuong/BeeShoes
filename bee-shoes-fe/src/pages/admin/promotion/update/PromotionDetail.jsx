@@ -62,13 +62,17 @@ function PromotionDetail() {
             okText: "Ok",
             cancelText: "Cancel",
             onOk: () => {
+            setLoading(true);
+            setTimeout(() => {
              httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
             console.log(response);
             toast.success("Cập nhật thành công!");
         }).catch(e => {
             console.log(e);
             toast.error(e.response.data); 
-        })
+            setLoading(false);
+        });
+      }, 1000);
             },
           });
         // httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {

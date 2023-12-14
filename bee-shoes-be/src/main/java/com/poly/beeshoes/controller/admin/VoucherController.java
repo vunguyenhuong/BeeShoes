@@ -57,4 +57,8 @@ public class VoucherController {
     public ResponseEntity<VoucherResponse> getOne(@PathVariable Long id) {
         return new ResponseEntity<>(voucherService.getOne(id), HttpStatus.OK);
     }
+    @PutMapping("/update/end-date/{id}")
+    public ResponseObject updateEndDate( @PathVariable Long id) {
+        return new ResponseObject(voucherService.updateEndDate(id));
+    }
 }

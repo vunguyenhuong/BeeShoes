@@ -1,4 +1,4 @@
-import {Breadcrumb, Button, Col, Input, Radio, Row, Table } from 'antd';
+import {Breadcrumb, Button, Col, Input, Radio, Row, Table, Modal } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import FormatDate from '~/utils/FormatDate';
@@ -6,8 +6,10 @@ import httpRequest from '~/utils/httpRequest';
 import * as request from "~/utils/httpRequest";
 import VoucherStatus from '../voucher/VoucherSatus';
 import { FaHome } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 function Promotion() {
+    const { confirm } = Modal;
     const [promotions, setPromotions] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -57,6 +59,33 @@ const loadDataPromotions =async () => {
 //     })
 
 //  };
+const showDeleteConfirm = (item) => {
+    confirm({
+      title: "Xác nhận ",
+      content: "Bạn có chắc muốn kết thúc khuyến mại này không?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "Đóng",
+      onOk() {
+        request
+        .put(`/promotion/update/end-date/${item.id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            loadDataPromotions();
+            toast.success("Kết thúc thành công!");
+       }
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error(e.response.data);
+      });
+    },
+    onCancel() {
+      console.log("Cancel");
+    },
+  });
+  };
+
     const columns = [
         {
             title: '#',
@@ -98,13 +127,20 @@ const loadDataPromotions =async () => {
             render: (x) => <VoucherStatus status={x} />
         },
         {
-            title: 'Hành động',
+            title: 'Thao tác',
             dataIndex: 'id',
             key: 'id',
-            render: (x) => (
-                <Link to={`/admin/promotion/${x}`} className="btn btn-sm text-warning">
-                    <i className="fas fa-edit"></i>
-                </Link>
+            render: (x,item) => (
+                <>
+                    <Link to={`/admin/promotion/${x}`} className="btn btn-sm text-warning">
+                        <i className="fas fa-edit"></i>
+                    </Link>
+                    <Button
+                        type="text"
+                        icon={<i class="fa-solid fa-calendar-xmark text-danger"></i>}
+                        onClick={() => showDeleteConfirm(item)}    
+                    />
+                </>
             )
         },
     ]

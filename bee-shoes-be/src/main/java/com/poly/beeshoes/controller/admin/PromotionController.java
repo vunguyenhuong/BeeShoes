@@ -56,4 +56,10 @@ public class PromotionController {
     public void deleteAllPromotionDetailByPromotion(@PathVariable Long id){
         service.deleteAll(id);
     }
+
+    @PutMapping("/promotion/end-date/{id}")
+    public ResponseObject updateEndDate( @PathVariable Long id) {
+        return new ResponseObject(service.updateEndDate(id));
+    }
+
 }

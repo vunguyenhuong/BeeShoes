@@ -1,14 +1,15 @@
-import { Breadcrumb, Button, Col, Input, Radio, Row, Table, } from "antd";
+import { Breadcrumb, Button, Col, Input, Radio, Row, Table,Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BaseUI from "~/layouts/admin/BaseUI";
 import * as request from "~/utils/httpRequest";
 import { FaHome } from "react-icons/fa";
-
+import { toast } from "react-toastify";
 import FormatCurrency from "~/utils/FormatCurrency";
 import VoucherSatus from "./VoucherSatus";
 
 function Voucher() {
+  const { confirm } = Modal;
   const [voucherList, setVoucherList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -16,6 +17,8 @@ function Voucher() {
   const [searchValue, setSearchValue] = useState("");
   const [statusValue, setStatusValue] = useState("");
   const [pageSize, setPageSize] = useState(5);
+
+  
 
   useEffect(() => {
     loadVoucher();
@@ -45,6 +48,33 @@ function Voucher() {
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const showDeleteConfirm = (item) => {
+    confirm({
+      title: "Xác nhận ",
+      content: "Bạn có chắc muốn kết thúc voucher này không?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "Đóng",
+      onOk() {
+        request
+        .put(`/voucher/update/end-date/${item.id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            loadVoucher();
+            toast.success("Kết thúc thành công!");
+       }
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error(e.response.data);
+      });
+    },
+    onCancel() {
+      console.log("Cancel");
+    },
+  });
   };
 
   const columns = [
@@ -91,10 +121,17 @@ function Voucher() {
       title: 'Thao tác',
       dataIndex: 'id',
       key: 'action',
-      render: (x) => (
-        <Link to={`/admin/voucher/${x}`} className="btn btn-sm text-warning">
-          <i className="fas fa-edit"></i>
-        </Link>
+      render: (x, item) => (
+        <>
+          <Link to={`/admin/voucher/${x}`} className="btn btn-sm text-warning">
+            <i className="fas fa-edit"></i>
+          </Link>
+          <Button
+              type="text"
+              icon={<i class="fa-solid fa-calendar-xmark text-danger"></i>}
+              onClick={() => showDeleteConfirm(item)}    
+          />
+        </>
       )
     },
   ];

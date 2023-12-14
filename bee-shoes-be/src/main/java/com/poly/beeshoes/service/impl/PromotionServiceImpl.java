@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +46,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     @Transactional(rollbackFor = RestApiException.class)
     public ResponseObject create(PromotionRequest request) {
-        if (request.getName().length() > 20) {
+        if (request.getCode().length() > 20) {
             throw new RestApiException("Mã khuyến mại không được vượt quá 20 kí tự.");
         }
         if (!isCodeUnique(request.getCode())) {
@@ -90,7 +91,7 @@ public class PromotionServiceImpl implements PromotionService {
         deleteAll(id);
         Promotion promotion = promotionRepository.findById(id).get();
 
-        if (request.getName().length() > 20) {
+        if (request.getCode().length() > 20) {
             throw new RestApiException("Mã khuyến mại không được vượt quá 20 kí tự.");
         }
 
@@ -105,9 +106,9 @@ public class PromotionServiceImpl implements PromotionService {
         if(request.getValue() <= 0 || request.getValue() >= 100){
             throw new RestApiException("Vui lòng nhập giá trị (%) hợp lệ!");
         }
-//        if (request.getStartDate().isAfter(request.getEndDate())) {
-//            throw new RestApiException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc.");
-//        }
+        if (request.getStartDate().isAfter(request.getEndDate())) {
+            throw new RestApiException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc.");
+        }
         if (request.getStartDate().isEqual(request.getEndDate())) {
             throw new RestApiException("Ngày giờ bắt đầu không được trùng với ngày giờ kết thúc.");
         }
@@ -169,9 +170,30 @@ public class PromotionServiceImpl implements PromotionService {
                 promotion.setStatus(2); // Đã kết thúc
                 promotion.setDeleted(true);
             }
+            if (endDate.isEqual(startDate)) {
+                promotion.setStatus(2); // Đã kết thúc
+                promotion.setDeleted(true);
+            }
             promotionRepository.save(promotion);
         }
     }
+
+    @Override
+    public Promotion updateEndDate(Long id) {
+        Promotion promotionToUpdate = promotionRepository.findById(id).orElse(null);
+        LocalDateTime currentDate = LocalDateTime.now();
+        if(promotionToUpdate.getStatus()==2) {
+            throw new RestApiException("Khuyến mại này đã kết thúc rồi!");
+        }
+        if(promotionToUpdate.getStatus()==0){
+            LocalDateTime startDate = currentDate.with(LocalTime.MIN);
+            promotionToUpdate.setStartDate(startDate);
+        }
+        promotionToUpdate.setEndDate(currentDate);
+        promotionToUpdate.setStatus(2); // Đã kết thúc
+        return promotionRepository.save(promotionToUpdate);
+    }
+
     public boolean isCodeUnique(String code) {
         Optional<Promotion> existingPromotion = promotionRepository.findByCode(code);
         return existingPromotion.isEmpty();

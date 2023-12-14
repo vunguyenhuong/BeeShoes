@@ -5,6 +5,7 @@ import { FaHome } from "react-icons/fa";
 import TableShoe from "./TableShoe";
 import TableShoeDetail from "./TableShoeDetail";
 import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 
 function AddPromotion() {
   const [form] = Form.useForm();
@@ -43,19 +44,17 @@ function AddPromotion() {
 
   return (
     <>
-      <div className="d-flex mb-3">
-        <div className="flex-grow-1">
-          <Breadcrumb
-            className="mb-2"
-            items={[
-              { href: "/", title: <FaHome /> },
-              { link: "/admin/promotion", title: "Danh sách khuyến mại" },
-              { title: "Thêm khuyến mại" },
-            ]}
-          />
-        </div>
-      </div>
-      <h6>Thêm khuyến mại</h6>
+      <Breadcrumb className="mb-2">
+        <Breadcrumb.Item>
+          <Link to="/">
+            <FaHome /> Trang chủ
+          </Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to="/admin/promotion">Danh sách khuyến mại</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>Thêm khuyến mại</Breadcrumb.Item>
+      </Breadcrumb>
       <Form onFinish={handleCreatePromotion} layout="vertical" form={form}>
         <Row gutter={10}>
           <Col xl={12}>

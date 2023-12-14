@@ -21,7 +21,7 @@ public interface VoucherService {
 
     boolean isVoucherCodeExists(String code);
 
-    void updateStatus();
+    void updateStatusVoucher();
 
     void createScheduledVoucher();
 }

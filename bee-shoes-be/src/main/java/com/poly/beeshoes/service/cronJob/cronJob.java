@@ -1,5 +1,6 @@
 package com.poly.beeshoes.service.cronJob;
 
+import com.poly.beeshoes.service.PromotionService;
 import com.poly.beeshoes.service.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -12,23 +13,33 @@ public class cronJob {
 
     @Autowired
     private VoucherService voucherService;
+    @Autowired
+    private PromotionService promotionService;
 
     @Scheduled(cron = "*/30 * * * * ?")// 30s chạy một lần
     public void autoUpdateStatusVoucher() {
         try {
-            voucherService.updateStatus();
+            voucherService.updateStatusVoucher();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    @Scheduled(cron = "0 0 0 * * ?") // Chạy vào lúc 00:00:00 mỗi ngày
-//    @Scheduled(cron = "*/15 * * * * ?") // Chạy vào lúc 00:00:00 mỗi ngày
-    public void createScheduledVoucher() {
-        System.out.println(".");
+    @Scheduled(cron = "*/30 * * * * ?")// 30s chạy một lần
+    public void autoUpdateStatusPromotion() {
         try {
-            voucherService.createScheduledVoucher();
+            promotionService.updateStatusPromotion();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+//    @Scheduled(cron = "0 0 0 * * ?") // Chạy vào lúc 00:00:00 mỗi ngày
+////    @Scheduled(cron = "*/15 * * * * ?") // Chạy vào lúc 00:00:00 mỗi ngày
+//    public void createScheduledVoucher() {
+//        System.out.println(".");
+//        try {
+//            voucherService.createScheduledVoucher();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

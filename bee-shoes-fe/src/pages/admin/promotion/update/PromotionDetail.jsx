@@ -1,9 +1,9 @@
-import { Breadcrumb, Button, Col, Form, Input, Row } from 'antd'
+import { Breadcrumb, Button, Col, Form, Input, Row, Modal } from 'antd'
 import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react'
 import { FaHome } from 'react-icons/fa'
-import { useNavigate, useParams } from 'react-router-dom';
+import {Link, useNavigate, useParams } from 'react-router-dom';
 import Loading from '~/components/Loading/Loading';
 import httpRequest from '~/utils/httpRequest';
 import TableShoe from '../TableShoe';
@@ -55,7 +55,14 @@ function PromotionDetail() {
     }
 
     const handleUpdate = (data) => {
-        httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
+        Modal.confirm({
+            title: "Xác nhận",
+            maskClosable: true,
+            content: "Xác nhận thêm khuyến mại mới?",
+            okText: "Ok",
+            cancelText: "Cancel",
+            onOk: () => {
+             httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
             console.log(response);
             toast.success("Cập nhật thành công!");
             navigate('/admin/promotion');
@@ -63,6 +70,16 @@ function PromotionDetail() {
             console.log(e);
             toast.error(e.response.data); 
         })
+            },
+          });
+        // httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
+        //     console.log(response);
+        //     toast.success("Cập nhật thành công!");
+        //     navigate('/admin/promotion');
+        // }).catch(e => {
+        //     console.log(e);
+        //     toast.error(e.response.data); 
+        // })
     }
 
     if (loading) {

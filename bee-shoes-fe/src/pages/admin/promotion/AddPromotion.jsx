@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 function AddPromotion() {
   const [form] = Form.useForm();
   const [productIds, setProductIds] = useState([]);
-
+  const navigate = useNavigate();
   const [productDetail, setProductDetail] = useState([]);
 
   const handleCreatePromotion = (data) => {
@@ -28,6 +28,7 @@ function AddPromotion() {
         request.post('/promotion', data).then(response => {
           console.log(response);
           toast.success("Thêm thành công!");
+          navigate('/admin/promotion');
         }).catch(e => {
           console.log(e);
           toast.error(e.response.data);

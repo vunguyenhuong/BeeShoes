@@ -1,7 +1,7 @@
 import { Modal, Button, Col, Form, Input, InputNumber, Row, Radio, } from "antd";
 import { Breadcrumb } from "antd";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import BaseUI from "~/layouts/admin/BaseUI";
 import Loading from "~/components/Loading/Loading";
 import { FaHome } from "react-icons/fa";
@@ -12,6 +12,7 @@ import TableCustomer from "./TableCustomer";
 function VoucherDetail() {
   const { id } = useParams();
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [voucher, setVoucher] = useState({});
   const [listCustomer, setListCustomer] = useState([]);
@@ -71,8 +72,9 @@ function VoucherDetail() {
           console.log(response);
           toast.success("Cập nhật thành công!");
           loadVoucher(form, id);
+          navigate('/admin/voucher');
         }).catch((e) => {
-          toast.error(e.response.data.message);
+          toast.error(e.response.data);
         });
       },
     });

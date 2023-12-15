@@ -252,8 +252,8 @@ function ShoeInfo() {
       title: "Xác nhận",
       maskClosable: true,
       content: `Xác nhận cập nhật ${selectedRowKeys.length} sản phẩm ?`,
-      okText: "Ok",
-      cancelText: "Cancel",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
       onOk: () => {
         request.put('/shoe-detail/update-fast', listUpdate).then(response => {
           toast.success("Cập nhật thành công!");

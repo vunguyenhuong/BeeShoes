@@ -98,8 +98,8 @@ function CustomerDetail() {
       title: "Xác nhận",
       maskClosable: true,
       content: "Xác nhận cập nhật khách hàng ?",
-      okText: "Ok",
-      cancelText: "Cancel",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
       onOk: () => {
         setLoading(true);
         request

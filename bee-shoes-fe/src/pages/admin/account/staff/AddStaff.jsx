@@ -68,8 +68,8 @@ function AddStaff() {
         title: "Xác nhận",
         maskClosable: true,
         content: "Xác nhận thêm nhân viên ?",
-        okText: "Ok",
-        cancelText: "Cancel",
+        okText: "Xác nhận",
+        cancelText: "Hủy",
         onOk: () => {
           request
           .post("/staff", formData, { headers: { "Content-Type": "multipart/form-data", }, })

@@ -24,9 +24,9 @@ function ItemAddress({ props, onSuccess }) {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn cập nhật địa chỉ này? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .put(`/address/${props.id}`, data)
@@ -56,7 +56,7 @@ function ItemAddress({ props, onSuccess }) {
   //     title: "Xác nhận ",
   //     icon: <ExclamationCircleFilled />,
   //     content: "Bạn có chắc muốn sửa trạng thái mặc định địa chỉ này? ",
-  //     okText: "OK",
+  //     okText: "Xác nhận",
   //     okType: "danger",
   //     cancelText: "Đóng",
   //     onOk() {
@@ -83,9 +83,9 @@ function ItemAddress({ props, onSuccess }) {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn xóa địa chỉ này? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .remove(`/address/${props.id}`)

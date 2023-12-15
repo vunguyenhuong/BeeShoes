@@ -74,8 +74,8 @@ function ShowProductModal({ idBill, onClose }) {
                 title: "Xác nhận",
                 maskClosable: true,
                 content: "Xác nhận thêm sản phẩm ?",
-                okText: "Ok",
-                cancelText: "Cancel",
+                okText: "Xác nhận",
+                cancelText: "Hủy",
                 onOk: () => {
                     data.shoeDetail = shoeDetail?.code;
                     data.bill = idBill;

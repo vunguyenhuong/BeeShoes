@@ -1,4 +1,4 @@
-import { Button, Col, Input, Radio, Row, Table, } from "antd";
+import { Button, Col, Input, Radio, Row, Table,Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BaseUI from "~/layouts/admin/BaseUI";
@@ -49,8 +49,8 @@ function Staff() {
   //         )}
   //       </div>
   //     ),
-  //     okText: "Ok",
-  //     cancelText: "Cancel",
+  //     okText: "Xác nhận",
+  //     cancelText: "Hủy",
   //     onOk: () => {
   //       request
   //         .put(`/staff/${staff.id}`, {
@@ -116,9 +116,11 @@ function Staff() {
       dataIndex: 'id',
       key: 'action',
       render: (x) => (
-        <Link to={`/admin/staff/${x}`} className="btn btn-sm text-warning">
-          <i className="fas fa-edit"></i>
-        </Link>
+        <Tooltip placement="top" title="Chỉnh sửa">
+          <Link to={`/admin/staff/${x}`} className="btn btn-sm text-warning">
+            <i className="fas fa-edit"></i>
+          </Link>
+        </Tooltip>
       )
     },
   ];

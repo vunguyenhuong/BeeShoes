@@ -73,9 +73,9 @@ function AddressCustomerDetail() {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn thêm địa chỉ mới? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .post("/address", data)

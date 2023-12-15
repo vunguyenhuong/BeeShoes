@@ -89,7 +89,7 @@ function QrCode({ title, onQrSuccess }) {
                 data-bs-dismiss="modal"
                 onClick={handleToggleCamera}
               >
-                Close
+                Đóng
               </button>
             </div>
           </div>

@@ -8,6 +8,7 @@ import {
   Row,
   Switch,
   Table,
+  Tooltip
 } from "antd";
 import React from "react";
 import { useState } from "react";
@@ -120,6 +121,7 @@ function Color() {
       className: "text-center",
       render: (x, item) => (
         <>
+         <Tooltip placement="top" title="Chỉnh sửa">
           <Link to={"/admin/color"}>
             <button
               type="primary"
@@ -132,6 +134,7 @@ function Color() {
               <i className="fas fa-edit"></i>
             </button>
           </Link>
+          </Tooltip>
         </>
       ),
     },
@@ -142,9 +145,9 @@ function Color() {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn sửa trạng thái hoạt động? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .remove(`/color/${item.id}`)
@@ -169,9 +172,9 @@ function Color() {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn thêm màu mới? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .post("/color", data)
@@ -203,9 +206,9 @@ function Color() {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn cập nhật màu sắc? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .put(`/color/${item.id}`, data)

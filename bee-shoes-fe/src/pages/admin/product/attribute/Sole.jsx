@@ -144,9 +144,9 @@ function Sole() {
       title: "Xác nhận",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn sửa trạng thái hoạt động?",
-      okText: "Ok",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .remove(`/sole/${item.id}`)
@@ -171,9 +171,9 @@ function Sole() {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn thêm đế giày mới? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .post("/sole", data)
@@ -205,9 +205,9 @@ function Sole() {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn cập nhật tên đế giày? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .put(`/sole/${item.id}`, data)

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/client/api/bill-detail")
 public class BillDetailControllerClient {
@@ -45,8 +47,8 @@ public class BillDetailControllerClient {
     }
 
     @GetMapping("/update-quantity/{id}")
-    public ResponseObject updateQuantity(@PathVariable Long id, @RequestParam(required = false, defaultValue = "0") Integer newQuantity) {
-        return new ResponseObject(billDetailService.updateQuantity(id, newQuantity));
+    public ResponseObject updateQuantity(@PathVariable Long id, @RequestParam(required = false, defaultValue = "0") Integer newQuantity,@RequestParam BigDecimal price) {
+        return new ResponseObject(billDetailService.updateQuantity(id, newQuantity, price));
     }
 
     @DeleteMapping("/{id}")

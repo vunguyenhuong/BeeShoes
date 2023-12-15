@@ -3,9 +3,12 @@ package com.poly.beeshoes.controller.client;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationControllerClient {
     @Autowired
     private NotificationService notificationService;
+//    @MessageMapping("/sendNotification")
+//    @SendTo("/topic/notification")
     @GetMapping("/{id}")
     public ResponseObject getByAccount(@PathVariable Long id,@RequestParam(defaultValue = "", required = false) String title){
         return new ResponseObject(notificationService.getByAccount(id,title));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseObject updateType(@PathVariable Long id){
+        return notificationService.updateType(id);
     }
 
     @DeleteMapping("/{id}")

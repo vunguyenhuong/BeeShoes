@@ -79,7 +79,7 @@ function ShowProductModal({ idBill, onClose }) {
                 onOk: () => {
                     data.shoeDetail = shoeDetail?.code;
                     data.bill = idBill;
-                    data.price = shoeDetail?.price;
+                    data.price = shoeDetail?.discountValue !== null ? shoeDetail?.discountValue : shoeDetail?.price;
                     data.quantity = 1;
                     request.post('/bill-detail', data).then(response => {
                         toast.success('Thêm thành công!');

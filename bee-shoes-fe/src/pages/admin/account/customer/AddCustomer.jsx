@@ -145,17 +145,9 @@ function AddCustomer() {
                   <Input placeholder="Nhập mã định danh..." />
                 </Form.Item>
               </Col> */}
-              <Col span={24}>
-                <Form.Item label={"Giới tính"} name={"gender"} rules={[{ required: true, message: "Giới tính không được để trống!", },]}>
-                  <Radio.Group>
-                    <Radio value={"Nam"}>Nam</Radio>
-                    <Radio value={"Nữ"}>Nữ</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Col>
               <Col span={12}>
-                <Form.Item label={"Ngày sinh"} name={"birthday"} rules={[{ required: true, message: "Ngày sinh không được để trống!", },]} >
-                  <Input type="date" />
+                <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", },{ pattern: '^0[0-9]{9}$', message: "SDT không đúng định dạng!" }, ]} >
+                  <Input placeholder="Nhập số điện thoại ..." />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -164,11 +156,19 @@ function AddCustomer() {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", },{ pattern: '^0[0-9]{9}$', message: "SDT không đúng định dạng!" }, ]} >
-                  <Input placeholder="Nhập số điện thoại ..." />
+                <Form.Item label={"Ngày sinh"} name={"birthday"} rules={[{ required: true, message: "Ngày sinh không được để trống!", },]} >
+                  <Input type="date" />
                 </Form.Item>
               </Col>
               <Col span={12}>
+                <Form.Item label={"Giới tính"} name={"gender"} rules={[{ required: true, message: "Giới tính không được để trống!", },]}>
+                  <Radio.Group>
+                    <Radio value={"Nam"}>Nam</Radio>
+                    <Radio value={"Nữ"}>Nữ</Radio>
+                  </Radio.Group>
+                </Form.Item>
+              </Col>
+              <Col span={24}>
                 <Form.Item label={"Địa chỉ cụ thể"} name={"specificAddress"} rules={[{ required: true, message: "Địa chỉ cụ thể không được để trống!", },]} >
                   <Input placeholder="Nhập địa chỉ cụ thể ..." />
                 </Form.Item>

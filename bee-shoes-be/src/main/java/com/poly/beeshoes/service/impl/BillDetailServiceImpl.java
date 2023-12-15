@@ -67,6 +67,9 @@ public class BillDetailServiceImpl implements BillDetailService {
         if (existBillDetail != null) {
             existBillDetail.setPrice(promotionDetail != null ? promotionDetail.getPromotionPrice() : shoeDetail.getPrice());
             existBillDetail.setQuantity(existBillDetail.getQuantity() + request.getQuantity());
+            if(existBillDetail.getPrice().compareTo(request.getPrice()) < 0){
+                existBillDetail.setPrice(request.getPrice());
+            }
             existBillDetail.setStatus(true);
             return billDetailRepository.save(existBillDetail);
         }
@@ -126,7 +129,7 @@ public class BillDetailServiceImpl implements BillDetailService {
     }
 
     @Override
-    public BillDetail updateQuantity(Long id, Integer newQuantity) {
+    public BillDetail updateQuantity(Long id, Integer newQuantity, BigDecimal price) {
         BillDetail billDetail = billDetailRepository.findById(id).get();
         ShoeDetail shoeDetail = billDetail.getShoeDetail();
         if (newQuantity > (shoeDetail.getQuantity() + billDetail.getQuantity())) {
@@ -137,6 +140,9 @@ public class BillDetailServiceImpl implements BillDetailService {
         }
         shoeDetail.setQuantity(shoeDetail.getQuantity() + billDetail.getQuantity() - newQuantity);
         billDetail.setQuantity(newQuantity);
+        if(billDetail.getPrice().compareTo(price) < 0){
+            billDetail.setPrice(price);
+        }
         billDetailRepository.save(billDetail);
         shoeDetailRepository.save(shoeDetail);
 

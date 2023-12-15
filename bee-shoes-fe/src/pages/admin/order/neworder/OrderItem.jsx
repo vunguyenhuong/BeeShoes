@@ -185,10 +185,11 @@ function OrderItem({ index, props, onSuccess }) {
     }
   }, [voucher, totalMoney])
 
-  const handleChangeQuantity = (id, quantity) => {
-    request.get(`/bill-detail/update-quantity/${id}`, {
+  const handleChangeQuantity = (record, quantity) => {
+    request.get(`/bill-detail/update-quantity/${record.id}`, {
       params: {
-        newQuantity: quantity
+        newQuantity: quantity,
+        price: record.discountValue === null ? record.price : record.discountValue
       }
     }).then(response => {
       loadListOrderDetail();
@@ -277,7 +278,7 @@ function OrderItem({ index, props, onSuccess }) {
       render: (quantity, record) => (
         <Form key={record.id}>
           <Form.Item initialValue={quantity} name={"quantity"} className="m-0 p-0">
-            <Input className="text-center" min={1} type="number" style={{ width: "64px" }} onPressEnter={(e) => handleChangeQuantity(record.id, e.target.value)} />
+            <Input className="text-center" min={1} type="number" style={{ width: "64px" }} onPressEnter={(e) => handleChangeQuantity(record, e.target.value)} />
           </Form.Item>
         </Form>
       )

@@ -13,6 +13,7 @@ public class BillDetailRequest extends PageableRequest {
     private Long id;
     @NotNull(message = "Đơn giá không được để trống!")
     private Integer quantity;
+    private BigDecimal price;
     private Long bill;
     private String shoeDetail;
 

@@ -3,7 +3,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react'
 import { FaHome } from 'react-icons/fa'
-import {Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Loading from '~/components/Loading/Loading';
 import httpRequest from '~/utils/httpRequest';
 import TableShoe from '../TableShoe';
@@ -49,7 +49,7 @@ function PromotionDetail() {
             setListShoeDetailId(response.data)
         }).catch(e => {
             console.log(e);
-          
+
         })
         setLoading(false);
     }
@@ -62,23 +62,16 @@ function PromotionDetail() {
             okText: "Ok",
             cancelText: "Cancel",
             onOk: () => {
-             httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
-            console.log(response);
-            toast.success("Cập nhật thành công!");
-        }).catch(e => {
-            console.log(e);
-            toast.error(e.response.data); 
-        })
+                httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
+                    console.log(response);
+                    toast.success("Cập nhật thành công!");
+                    loadPromotion();
+                }).catch(e => {
+                    console.log(e);
+                    toast.error(e.response.data);
+                })
             },
-          });
-        // httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
-        //     console.log(response);
-        //     toast.success("Cập nhật thành công!");
-        //     navigate('/admin/promotion');
-        // }).catch(e => {
-        //     console.log(e);
-        //     toast.error(e.response.data); 
-        // })
+        });
     }
 
     if (loading) {

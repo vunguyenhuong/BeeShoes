@@ -29,8 +29,16 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
                 sd.quantity AS quantity,
                 sd.weight AS weight,
                 sd.price AS price,
-                sd.price - sd.price / 100 * MAX(pm.value) AS discountValue,
-                MAX(pm.value) AS discountPercent,
+                CASE 
+                    WHEN CURRENT_TIMESTAMP BETWEEN pm.start_date AND pm.end_date 
+                        THEN pmd.promotion_price
+                    ELSE NULL
+                END AS discountValue,
+                CASE 
+                    WHEN CURRENT_TIMESTAMP BETWEEN pm.start_date AND pm.end_date 
+                        THEN MAX(pm.value)
+                    ELSE NULL
+                END AS discountPercent,
                 GROUP_CONCAT(DISTINCT img.name) AS images,
                 sd.deleted AS status
             FROM
@@ -49,7 +57,7 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
                 AND (:#{#req.sole} IS NULL OR :#{#req.sole} = '' OR sd.sole_id IN (:#{#req.soles}))
                 AND (:#{#req.name} IS NULL OR :#{#req.name} = '' OR CONCAT(s.name, ' ', c.name, ' ', sz.name, ' ') LIKE %:#{#req.name}%)
             GROUP BY
-                sd.id, s.update_at, s.name, c.name, sz.name, sd.code, sl.name, sd.quantity, sd.weight, sd.price, sd.deleted;
+                sd.id, s.update_at, s.name, c.name, sz.name, sd.code, sl.name, sd.quantity, sd.weight, sd.price, sd.deleted,pm.start_date, pm.end_date, pmd.promotion_price;
             """, nativeQuery = true)
     Page<ShoeDetailResponse> getAll(@Param("req") FindShoeDetailRequest request, Pageable pageable);
 
@@ -65,8 +73,16 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
                 sd.quantity AS quantity,
                 sd.weight AS weight,
                 sd.price AS price,
-                sd.price - sd.price / 100 * MAX(pm.value) AS discountValue,
-                MAX(pm.value) AS discountPercent,
+                CASE 
+                    WHEN CURRENT_TIMESTAMP BETWEEN pm.start_date AND pm.end_date 
+                        THEN pmd.promotion_price
+                    ELSE NULL
+                END AS discountValue,
+                CASE 
+                    WHEN CURRENT_TIMESTAMP BETWEEN pm.start_date AND pm.end_date 
+                        THEN MAX(pm.value)
+                    ELSE NULL
+                END AS discountPercent,
                 GROUP_CONCAT(DISTINCT img.name) AS images,
                 sd.deleted AS status
             FROM
@@ -78,11 +94,12 @@ public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
                 LEFT JOIN images img ON img.shoe_detail_id = sd.id
                 LEFT JOIN promotion_detail pmd ON pmd.shoe_detail_id = sd.id
                 LEFT JOIN promotion pm ON pm.id = pmd.promotion_id
-            WHERE :id = sd.id
+            WHERE ? = sd.id
             GROUP BY
-                sd.id, s.update_at, s.name, c.name, sz.name, sd.code, sl.name, sd.quantity, sd.weight, sd.price, sd.deleted;
-            """, nativeQuery = true)
+                sd.id, s.update_at, s.name, c.name, sz.name, sd.code, sl.name, sd.quantity, sd.weight, sd.price, sd.deleted, pm.start_date, pm.end_date, pmd.promotion_price;
+    """, nativeQuery = true)
     ShoeDetailResponse getOneShoeDetail(@Param("id") Long id);
+
 
     ShoeDetail findByShoeIdAndColorIdAndSizeId(Long idShoe, Long idColor, Long idSize);
 

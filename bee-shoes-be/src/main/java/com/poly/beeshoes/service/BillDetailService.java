@@ -5,6 +5,8 @@ import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.dto.request.billdetail.BillDetailRequest;
 import com.poly.beeshoes.dto.response.BillDetailResponse;
 
+import java.math.BigDecimal;
+
 public interface BillDetailService {
     PageableObject<BillDetailResponse> getAll(BillDetailRequest request);
 
@@ -13,5 +15,5 @@ public interface BillDetailService {
     BillDetail update(Long id,BillDetailRequest request);
     BillDetail delete(Long id);
 
-    BillDetail updateQuantity(Long id, Integer newQuantity);
+    BillDetail updateQuantity(Long id, Integer newQuantity, BigDecimal price);
 }

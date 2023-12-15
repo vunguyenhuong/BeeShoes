@@ -21,8 +21,8 @@ function AddPromotion() {
       title: "Xác nhận",
       maskClosable: true,
       content: "Xác nhận thêm khuyến mại mới?",
-      okText: "Ok",
-      cancelText: "Cancel",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
       onOk: () => {
         data.productDetails = productDetail
         request.post('/promotion', data).then(response => {

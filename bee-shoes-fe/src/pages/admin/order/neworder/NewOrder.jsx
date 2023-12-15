@@ -61,8 +61,8 @@ function NewOrder() {
   //     title: "Xác nhận",
   //     maskClosable: true,
   //     content: `Xác nhận xóa đơn hàng ${listOrder[key].code}?`,
-  //     okText: "Ok",
-  //     cancelText: "Cancel",
+  //     okText: "Xác nhận",
+  //     cancelText: "Hủy",
   //     onOk: async () => {
   //       request.remove(`/bill/${idBill}`).then(response => {
   //         console.log(response);

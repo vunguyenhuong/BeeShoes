@@ -20,9 +20,9 @@ function ItemAddress({ props, onSuccess }) {
             title: "Xác nhận ",
             icon: <ExclamationCircleFilled />,
             content: "Bạn có chắc muốn cập nhật địa chỉ này? ",
-            okText: "OK",
+            okText: "Xác nhận",
             okType: "danger",
-            cancelText: "Đóng",
+            cancelText: "Hủy",
             onOk() {
                 request.put(`/address/${props.id}`, data).then(response => {
                     console.log(response);

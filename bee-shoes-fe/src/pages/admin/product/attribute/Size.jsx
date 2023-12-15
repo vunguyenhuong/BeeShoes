@@ -9,6 +9,7 @@ import {
   Switch,
   Table,
   message,
+  Tooltip
 } from "antd";
 import React from "react";
 import { useState } from "react";
@@ -99,21 +100,21 @@ function Size() {
       className: "text-center",
       render: (text) => moment(text).format("DD-MM-YYYY"),
     },
-    {
-      title: "Hoạt động",
-      dataIndex: "status",
-      key: "status",
-      className: "text-center",
-      render: (x, item) => (
-        <Switch
-          className={!x ? "bg-warning" : ""}
-          checkedChildren={<i class="fa-solid fa-check"></i>}
-          unCheckedChildren={<i class="fa-solid fa-xmark"></i>}
-          checked={!x}
-          onChange={() => showDeleteConfirm(item)}
-        />
-      ),
-    },
+    // {
+    //   title: "Hoạt động",
+    //   dataIndex: "status",
+    //   key: "status",
+    //   className: "text-center",
+    //   render: (x, item) => (
+    //     <Switch
+    //       className={!x ? "bg-warning" : ""}
+    //       checkedChildren={<i class="fa-solid fa-check"></i>}
+    //       unCheckedChildren={<i class="fa-solid fa-xmark"></i>}
+    //       checked={!x}
+    //       onChange={() => showDeleteConfirm(item)}
+    //     />
+    //   ),
+    // },
     {
       title: "Thao tác",
       dataIndex: "id",
@@ -121,18 +122,20 @@ function Size() {
       className: "text-center",
       render: (x, item) => (
         <>
-          <Link to={"/admin/size"}>
-            <button
-              type="primary"
-              onClick={() => {
-                setItem(item);
-                showModalUpdate(item);
-              }}
-              className="btn btn-sm text-warning"
-            >
-              <i className="fas fa-edit"></i>
-            </button>
-          </Link>
+         <Tooltip placement="top" title="Chỉnh sửa">
+            <Link to={"/admin/size"}>
+              <button
+                type="primary"
+                onClick={() => {
+                  setItem(item);
+                  showModalUpdate(item);
+                }}
+                className="btn btn-sm text-warning"
+              >
+                <i className="fas fa-edit"></i>
+              </button>
+            </Link>
+          </Tooltip>
         </>
       ),
     },
@@ -143,9 +146,9 @@ function Size() {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn sửa trạng thái hoạt động?",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .remove(`/size/${item.id}`)
@@ -170,9 +173,9 @@ function Size() {
       title: "Xác nhận",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn thêm size mới? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .post("/size", data)
@@ -204,9 +207,9 @@ function Size() {
       title: "Xác nhận ",
       icon: <ExclamationCircleFilled />,
       content: "Bạn có chắc muốn cập nhật số size? ",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
           .put(`/size/${item.id}`, data)

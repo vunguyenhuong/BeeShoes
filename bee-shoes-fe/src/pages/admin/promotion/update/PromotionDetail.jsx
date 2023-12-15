@@ -59,8 +59,8 @@ function PromotionDetail() {
             title: "Xác nhận",
             maskClosable: true,
             content: "Xác nhận thêm khuyến mại mới?",
-            okText: "Ok",
-            cancelText: "Cancel",
+            okText: "Xác nhận",
+            cancelText: "Hủy",
             onOk: async () => {
                 await httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
                     console.log(response);

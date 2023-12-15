@@ -123,8 +123,8 @@ function CustomerInfo({ handleSelect }) {
         title: "Xác nhận",
         maskClosable: true,
         content: "Xác nhận thêm khách hàng ?",
-        okText: "Ok",
-        cancelText: "Cancel",
+        okText: "Xác nhận",
+        cancelText: "Hủy",
         onOk: () => {
           request.post("/customer", formData, { headers: { "Content-Type": "multipart/form-data", }, }).then((response) => {
             console.log(response);

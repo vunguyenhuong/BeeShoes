@@ -79,7 +79,7 @@ function ImagesGallery() {
                 class="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
-                Close
+               Đóng
               </button>
               <button type="button" class="btn btn-primary">
                 Save

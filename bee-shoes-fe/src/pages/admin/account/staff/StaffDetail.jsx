@@ -69,8 +69,8 @@ function StaffDetail() {
       title: "Xác nhận",
       maskClosable: true,
       content: "Xác nhận cập nhật nhân viên ?",
-      okText: "Ok",
-      cancelText: "Cancel",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
       onOk: () => {
         setLoading(true);
         request.put(`/staff/${id}`, formData, { headers: { "Content-Type": "multipart/form-data", }, }).then((response) => {

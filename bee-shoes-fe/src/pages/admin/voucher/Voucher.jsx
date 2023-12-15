@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Col, Input, Radio, Row, Table,Modal } from "antd";
+import { Breadcrumb, Button, Col, Input, Radio, Row, Table,Modal, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BaseUI from "~/layouts/admin/BaseUI";
@@ -54,9 +54,9 @@ function Voucher() {
     confirm({
       title: "Xác nhận ",
       content: "Bạn có chắc muốn kết thúc voucher này không?",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
         .put(`/voucher/update/end-date/${item.id}`)
@@ -123,14 +123,17 @@ function Voucher() {
       key: 'action',
       render: (x, item) => (
         <>
+           <Tooltip placement="top" title="Chỉnh sửa">
           <Link to={`/admin/voucher/${x}`} className="btn btn-sm text-warning">
             <i className="fas fa-edit"></i>
           </Link>
+          </Tooltip>
+          <Tooltip placement="top" title="Hủy">
           <Button
               type="text"
               icon={<i class="fa-solid fa-calendar-xmark text-danger"></i>}
               onClick={() => showDeleteConfirm(item)}    
-          />
+          /></Tooltip>
         </>
       )
     },

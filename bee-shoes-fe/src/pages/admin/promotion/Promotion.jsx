@@ -1,4 +1,4 @@
-import {Breadcrumb, Button, Col, Input, Radio, Row, Table, Modal } from 'antd';
+import {Breadcrumb, Button, Col, Input, Radio, Row, Table, Modal, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import FormatDate from '~/utils/FormatDate';
@@ -63,9 +63,9 @@ const showDeleteConfirm = (item) => {
     confirm({
       title: "Xác nhận ",
       content: "Bạn có chắc muốn kết thúc khuyến mại này không?",
-      okText: "OK",
+      okText: "Xác nhận",
       okType: "danger",
-      cancelText: "Đóng",
+      cancelText: "Hủy",
       onOk() {
         request
         .put(`/promotion/update/end-date/${item.id}`)
@@ -132,14 +132,18 @@ const showDeleteConfirm = (item) => {
             key: 'id',
             render: (x,item) => (
                 <>
-                    <Link to={`/admin/promotion/${x}`} className="btn btn-sm text-warning">
-                        <i className="fas fa-edit"></i>
-                    </Link>
-                    <Button
-                        type="text"
-                        icon={<i class="fa-solid fa-calendar-xmark text-danger"></i>}
-                        onClick={() => showDeleteConfirm(item)}    
-                    />
+                    <Tooltip placement="top" title="Chỉnh sửa">
+                            <Link to={`/admin/promotion/${x}`} className="btn btn-sm text-warning">
+                                <i className="fas fa-edit"></i>
+                            </Link>
+                    </Tooltip>
+                    <Tooltip placement="top" title="Hủy">
+                        <Button
+                            type="text"
+                            icon={<i class="fa-solid fa-calendar-xmark text-danger"></i>}
+                            onClick={() => showDeleteConfirm(item)}    
+                        />
+                    </Tooltip>
                 </>
             )
         },

@@ -64,8 +64,8 @@ function VoucherDetail() {
       title: "Xác nhận",
       maskClosable: true,
       content: "Xác nhận cập nhật Voucher ?",
-      okText: "Ok",
-      cancelText: "Cancel",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
       onOk: () => {
         setLoading(true);
         setTimeout(() => {

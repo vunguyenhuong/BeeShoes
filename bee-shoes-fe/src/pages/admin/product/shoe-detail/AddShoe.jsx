@@ -131,8 +131,8 @@ function AddProduct() {
       title: "Xác nhận",
       maskClosable: true,
       content: "Xác nhận thêm sản phẩm ?",
-      okText: "Ok",
-      cancelText: "Cancel",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
       onOk: async () => {
         await request.post('/shoe-detail', data).then(response => {
           toast.success("Thêm thành công!");

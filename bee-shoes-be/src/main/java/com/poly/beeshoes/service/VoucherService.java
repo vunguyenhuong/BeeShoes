@@ -23,5 +23,5 @@ public interface VoucherService {
 
     void updateStatusVoucher();
 
-    void createScheduledVoucher();
+    Voucher updateEndDate(Long id);
 }

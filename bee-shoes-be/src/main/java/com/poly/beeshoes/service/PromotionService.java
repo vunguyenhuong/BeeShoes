@@ -2,6 +2,7 @@ package com.poly.beeshoes.service;
 
 
 
+import com.poly.beeshoes.entity.Promotion;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.dto.request.PromotionRequest;
@@ -19,4 +20,5 @@ public interface PromotionService {
     List<Long> getListIdShoeDetailInPromotion(@Param("idPromotion") Long idPromotion);
     void deleteAll(Long idPromotion);
     void updateStatusPromotion();
+    Promotion updateEndDate(Long id);
 }

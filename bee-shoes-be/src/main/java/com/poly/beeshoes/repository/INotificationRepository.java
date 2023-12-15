@@ -17,7 +17,8 @@ public interface INotificationRepository extends JpaRepository<Notification, Lon
             n.title AS title,
             n.content AS content,
             n.action AS action,
-            n.create_at AS createAt
+            n.create_at AS createAt,
+            n.type AS type
             FROM notification n
             WHERE n.account_id = :id
             AND :title IS NULL OR :title = '' OR n.title LIKE %:title%

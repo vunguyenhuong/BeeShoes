@@ -61,8 +61,8 @@ function PromotionDetail() {
             content: "Xác nhận thêm khuyến mại mới?",
             okText: "Ok",
             cancelText: "Cancel",
-            onOk: () => {
-                httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
+            onOk: async () => {
+                await httpRequest.put(`/promotion/${id}`, { ...data, productDetails: listShoeDetailId }).then(response => {
                     console.log(response);
                     toast.success("Cập nhật thành công!");
                     loadPromotion();

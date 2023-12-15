@@ -14,5 +14,6 @@ public interface NotificationResponse {
     String getContent();
 
     String getAction();
+    Integer getType();
     String getCreateAt();
 }

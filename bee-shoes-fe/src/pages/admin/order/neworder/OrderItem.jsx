@@ -185,14 +185,15 @@ function OrderItem({ index, props, onSuccess }) {
     }
   }, [voucher, totalMoney])
 
-  const handleChangeQuantity = (record, quantity) => {
-    request.get(`/bill-detail/update-quantity/${record.id}`, {
+  const handleChangeQuantity = async (record, quantity) => {
+    await request.get(`/bill-detail/update-quantity/${record.id}`, {
       params: {
         newQuantity: quantity,
-        price: record.discountValue === null ? record.price : record.discountValue
+        price: record.discountValue === null ? record.shoePrice : record.discountValue
       }
     }).then(response => {
       loadListOrderDetail();
+      console.log(record);
     }).catch(e => {
       console.log(e);
       toast.error(e.response.data);
@@ -204,10 +205,10 @@ function OrderItem({ index, props, onSuccess }) {
       title: "Xác nhận",
       maskClosable: true,
       content: "Xác nhận xóa khỏi giỏ hàng ?",
-      okText: "Ok",
-      cancelText: "Cancel",
-      onOk: () => {
-        request.remove(`/bill-detail/${id}`).then(response => {
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: async () => {
+        await request.remove(`/bill-detail/${id}`).then(response => {
           toast.success("Xóa thành công!");
           loadListOrderDetail();
         }).catch(e => {

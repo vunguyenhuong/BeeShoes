@@ -100,21 +100,21 @@ function Sole() {
       className: "text-center",
       render: (text) => moment(text).format("DD-MM-YYYY"),
     },
-    {
-      title: "Hoạt động",
-      dataIndex: "status",
-      key: "status",
-      className: "text-center",
-      render: (x, item) => (
-        <Switch
-          className={x ? "" : "bg-warning"}
-          checkedChildren={<i class="fa-solid fa-check"></i>}
-          unCheckedChildren={<i class="fa-solid fa-xmark"></i>}
-          checked={!x}
-          onChange={() => showDeleteConfirm(item)}
-        />
-      ),
-    },
+    // {
+    //   title: "Hoạt động",
+    //   dataIndex: "status",
+    //   key: "status",
+    //   className: "text-center",
+    //   render: (x, item) => (
+    //     <Switch
+    //       className={x ? "" : "bg-warning"}
+    //       checkedChildren={<i class="fa-solid fa-check"></i>}
+    //       unCheckedChildren={<i class="fa-solid fa-xmark"></i>}
+    //       checked={!x}
+    //       onChange={() => showDeleteConfirm(item)}
+    //     />
+    //   ),
+    // },
     {
       title: "Thao tác",
       dataIndex: "id",

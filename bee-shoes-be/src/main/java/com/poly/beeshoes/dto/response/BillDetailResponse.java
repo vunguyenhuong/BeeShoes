@@ -36,4 +36,5 @@ public interface BillDetailResponse {
     String getImages();
 
     BigDecimal getTotalMoney();
+    Boolean getStatus();
 }

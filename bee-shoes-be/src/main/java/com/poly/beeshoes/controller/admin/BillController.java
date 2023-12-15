@@ -1,6 +1,7 @@
 package com.poly.beeshoes.controller.admin;
 
 
+import com.poly.beeshoes.dto.request.giveback.GivebackRequest;
 import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
 import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
@@ -69,5 +70,10 @@ public class BillController {
     @GetMapping("/give-back-all/{id}")
     public ResponseObject givebackAll(@PathVariable Long id, @RequestParam String note){
         return new ResponseObject(billService.givebackAll(id, note));
+    }
+
+    @PostMapping("/give-back")
+    public ResponseObject giveback(@RequestBody GivebackRequest request){
+        return new ResponseObject(billService.giveback(request));
     }
 }

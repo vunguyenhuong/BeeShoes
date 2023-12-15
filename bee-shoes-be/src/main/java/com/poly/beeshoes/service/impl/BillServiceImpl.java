@@ -196,15 +196,15 @@ public class BillServiceImpl implements BillService {
         }
         billHistoryRepository.save(history);
         billRepository.save(bill);
-        if(bill.getCustomer()!=null){
+        if (bill.getCustomer() != null) {
             Notification notification = new Notification();
             notification.setType(NotificationType.CHUA_DOC);
             notification.setAccount(bill.getCustomer());
-            if(bill.getStatus() == BillStatusConstant.HOAN_THANH){
+            if (bill.getStatus() == BillStatusConstant.HOAN_THANH) {
                 notification.setTitle("Đơn hàng #" + bill.getCode() + " đã được mua thành công");
                 notification.setContent("Đơn hàng #" + bill.getCode() + " đã được mua thành công, hãy liên hệ với chúng tôi nếu sản phẩm có vấn đề");
                 notificationRepository.save(notification);
-            }else {
+            } else {
                 notification.setTitle("Đơn hàng #" + bill.getCode() + " đã được xác nhận và đang chờ vận chuyển đi");
                 notification.setContent("Đơn hàng #" + bill.getCode() + " đã được xác nhận và đang chờ vận chuyển đi." +
                         " Trong thời gian này, bạn vẫn có thể thay đổi số lượng sản phẩm hoặc địa chỉ nhận hàng nếu cần thiết.");
@@ -223,7 +223,7 @@ public class BillServiceImpl implements BillService {
     public ResponseObject createBillClient(BillClientRequest request) {
         Bill bill = new Bill();
         BillHistory billHistory = new BillHistory();
-        if(request.getAccount()!=null){
+        if (request.getAccount() != null) {
             bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
         }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
@@ -256,12 +256,12 @@ public class BillServiceImpl implements BillService {
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
             shoeDetailRepository.save(shoeDetail);
         }
-        if(bill.getCustomer() != null){
+        if (bill.getCustomer() != null) {
             Account account = bill.getCustomer();
             Notification notification = new Notification();
             notification.setTitle("Đơn hàng của bạn đã được đặt");
             notification.setContent("Xin chào " + account.getName() + ", đơn hàng với mã vận đơn" +
-                    bill.getCode()+" đã được hệ thống ghi nhận và đang chờ nhân viên xác nhận. " +
+                    bill.getCode() + " đã được hệ thống ghi nhận và đang chờ nhân viên xác nhận. " +
                     "Cảm ơn bạn đã dành thời gian cho BeeShoes!");
             notification.setAccount(account);
             notification.setType(NotificationType.CHUA_DOC);
@@ -274,7 +274,7 @@ public class BillServiceImpl implements BillService {
     public ResponseObject createBillClientVnpay(BillClientRequest request, String code) {
         Bill bill = new Bill();
         BillHistory billHistory = new BillHistory();
-        if(request.getAccount()!=null){
+        if (request.getAccount() != null) {
             bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
         }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
@@ -315,12 +315,12 @@ public class BillServiceImpl implements BillService {
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
             shoeDetailRepository.save(shoeDetail);
         }
-        if(bill.getCustomer() != null){
+        if (bill.getCustomer() != null) {
             Account account = bill.getCustomer();
             Notification notification = new Notification();
             notification.setTitle("Đơn hàng của bạn đã được đặt");
             notification.setContent("Xin chào " + account.getName() + ", đơn hàng với mã vận đơn" +
-                    bill.getCode()+" đã được hệ thống ghi nhận và đang chờ nhân viên xác nhận. " +
+                    bill.getCode() + " đã được hệ thống ghi nhận và đang chờ nhân viên xác nhận. " +
                     "Cảm ơn bạn đã dành thời gian cho BeeShoes!");
             notification.setAccount(account);
             notification.setType(NotificationType.CHUA_DOC);
@@ -388,26 +388,26 @@ public class BillServiceImpl implements BillService {
 
         Bill billSave = billRepository.save(bill);
 
-        if(billSave.getCustomer() != null){
+        if (billSave.getCustomer() != null) {
             Account account = bill.getCustomer();
             Notification notification = new Notification();
             notification.setTitle(billSave.getStatus() == BillStatusConstant.HOAN_THANH
                     ? "Đơn hàng #" + billSave.getCode() + " đã được giao thành công"
                     : billSave.getStatus() == BillStatusConstant.DANG_GIAO
-            ? "Đơn hàng #" + billSave.getCode() + " đang trên đường giao đến bạn"
+                    ? "Đơn hàng #" + billSave.getCode() + " đang trên đường giao đến bạn"
                     : billSave.getStatus() == BillStatusConstant.CHO_GIAO
-            ? "Đơn hàng #" + billSave.getCode() + " đã được xác nhận"
+                    ? "Đơn hàng #" + billSave.getCode() + " đã được xác nhận"
                     : billSave.getStatus() == BillStatusConstant.DA_HUY
-            ? "Đơn hàng #" + billSave.getCode() + " đã bị hủy"
+                    ? "Đơn hàng #" + billSave.getCode() + " đã bị hủy"
                     : "");
             notification.setContent(billSave.getStatus() == BillStatusConstant.HOAN_THANH
-                    ? "Xin chào "+account.getName() +". Đơn hàng #" + billSave.getCode() + " đã được giao thành công"
+                    ? "Xin chào " + account.getName() + ". Đơn hàng #" + billSave.getCode() + " đã được giao thành công"
                     : billSave.getStatus() == BillStatusConstant.DANG_GIAO
-                    ? "Xin chào "+account.getName() +". Đơn hàng #" + billSave.getCode() + " đang trên đường giao đến bạn. Hãy chú ý điện thoại để nhân viên giao hàng có thể liên lạc được với bạn nhé!"
+                    ? "Xin chào " + account.getName() + ". Đơn hàng #" + billSave.getCode() + " đang trên đường giao đến bạn. Hãy chú ý điện thoại để nhân viên giao hàng có thể liên lạc được với bạn nhé!"
                     : billSave.getStatus() == BillStatusConstant.CHO_GIAO
-                    ? "Xin chào "+account.getName() +". Đơn hàng #" + billSave.getCode() + " đã được xác nhận và chờ vận chuyển"
+                    ? "Xin chào " + account.getName() + ". Đơn hàng #" + billSave.getCode() + " đã được xác nhận và chờ vận chuyển"
                     : billSave.getStatus() == BillStatusConstant.DA_HUY
-                    ? "Xin chào "+account.getName() +". Đơn hàng #" + billSave.getCode() + " đã bị hủy"
+                    ? "Xin chào " + account.getName() + ". Đơn hàng #" + billSave.getCode() + " đã bị hủy"
                     : "");
             notification.setAccount(account);
             notification.setType(NotificationType.CHUA_DOC);
@@ -461,31 +461,69 @@ public class BillServiceImpl implements BillService {
         history.setNote("Đơn hàng đã bị hủy");
         history.setStatus(BillStatusConstant.DA_HUY);
         billHistoryRepository.save(history);
+        if (bill.getCustomer() != null) {
+            Notification notification = new Notification();
+            notification.setType(NotificationType.CHUA_DOC);
+            notification.setAccount(bill.getCustomer());
+            notification.setTitle("Đơn hàng #" + bill.getCode() + " đã bị hủy");
+            notification.setTitle("Xin chào " + bill.getCustomer().getName() + ". Đơn hàng #" + bill.getCode() +
+                    " đã bị hủy do trả toàn bộ sản phẩm trong hóa đơn.");
+        }
         return null;
     }
 
     @Override
     public ResponseObject giveback(GivebackRequest request) {
         BillDetail billDetail = billDetailRepository.findById(request.getBillDetail()).get();
+        ShoeDetail shoeDetail = billDetail.getShoeDetail();
         Bill bill = billDetail.getBill();
+        BillDetail billReturnCheck = billDetailRepository.findByShoeDetailCodeAndBillIdAndStatus(shoeDetail.getCode(), bill.getId(), Boolean.TRUE);
+        if (request.getQuantity() <= 0) {
+            throw new RestApiException("Vui lòng nhập số lượng hợp lệ!");
+        }
         if (request.getQuantity() > billDetail.getQuantity()) {
             throw new RestApiException("Quá số lượng cho phép!");
         }
         if (request.getQuantity() == billDetail.getQuantity()) {
-            billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
-            bill.setTotalMoney(bill.getTotalMoney().subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
-            billRepository.save(bill);
-            billDetailRepository.save(billDetail);
-        }else if (request.getQuantity() < billDetail.getQuantity()){
-            BillDetail billDeReturn = new BillDetail();
-            billDeReturn.setQuantity(request.getQuantity());
-            billDeReturn.setBill(bill);
-            billDeReturn.setPrice(billDetail.getPrice());
-            billDeReturn.setStatus(BillDetailStatusConstant.TRA_HANG);
-            billDetailRepository.save(billDeReturn);
+            if (billReturnCheck != null) {
+                billReturnCheck.setQuantity(billReturnCheck.getQuantity() + request.getQuantity());
+                billDetailRepository.save(billReturnCheck);
+            } else {
+                billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
+                bill.setTotalMoney(bill.getTotalMoney().subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
+                billRepository.save(bill);
+                billDetailRepository.save(billDetail);
+            }
+        } else if (request.getQuantity() < billDetail.getQuantity()) {
+            if (billReturnCheck != null) {
+                billReturnCheck.setQuantity(billReturnCheck.getQuantity() + request.getQuantity());
+                billDetailRepository.save(billReturnCheck);
+            } else {
+                BillDetail billDeReturn = new BillDetail();
+                billDeReturn.setQuantity(request.getQuantity());
+                billDeReturn.setShoeDetail(shoeDetail);
+                billDeReturn.setBill(bill);
+                billDeReturn.setPrice(billDetail.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
+                billDeReturn.setStatus(BillDetailStatusConstant.TRA_HANG);
+                billDetailRepository.save(billDeReturn);
+            }
+            billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
+            if (billDetail.getQuantity() == 0) {
+                billDetailRepository.delete(billDetail);
+            }else {
+                billDetailRepository.save(billDetail);
+            }
             bill.setTotalMoney(bill.getTotalMoney().subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
             billRepository.save(bill);
         }
+
+        BillHistory history = new BillHistory();
+        history.setBill(bill);
+        history.setStatus(BillStatusConstant.TRA_HANG);
+        history.setNote("Trả sản phẩm \"" + shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() +
+                "-" + shoeDetail.getSize().getName() + "]\" - Số lượng: \"" + request.getQuantity() + "\". Lý do: " + request.getNote());
+        billHistoryRepository.save(history);
+
         return new ResponseObject(billDetail);
     }
 }

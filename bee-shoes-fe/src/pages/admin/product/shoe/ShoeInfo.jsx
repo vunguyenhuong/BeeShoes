@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, Row, Select, Table, Tooltip } from "antd";
+import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, Row, Select, Switch, Table, Tooltip } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -287,9 +287,6 @@ function ShoeInfo() {
               <Title level={5} className="my-2">Thông tin sản phẩm</Title>
             </div>
             <div className="">
-              <Tooltip placement="top" title="Xóa">
-                <Button type="primary" className="bg-danger me-1"><i className="fas fa-trash"></i></Button>
-              </Tooltip>
               <UpdateShoe props={product} onSuccess={() => { loadData(id); loadShoeDetail(id, currentPage, pageSize) }} />
             </div>
           </Col>

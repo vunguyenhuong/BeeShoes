@@ -6,6 +6,7 @@ import com.poly.beeshoes.entity.BillHistory;
 import com.poly.beeshoes.entity.PromotionDetail;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
+import com.poly.beeshoes.infrastructure.constant.BillDetailStatusConstant;
 import com.poly.beeshoes.infrastructure.constant.BillStatusConstant;
 import com.poly.beeshoes.infrastructure.converter.BillDetailConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
@@ -63,7 +64,7 @@ public class BillDetailServiceImpl implements BillDetailService {
         }
         shoeDetail.setQuantity(shoeDetail.getQuantity() - request.getQuantity());
         shoeDetailRepository.save(shoeDetail);
-        BillDetail existBillDetail = billDetailRepository.findByShoeDetailCodeAndBillId(request.getShoeDetail(), request.getBill());
+        BillDetail existBillDetail = billDetailRepository.findByShoeDetailCodeAndBillIdAndStatus(request.getShoeDetail(), request.getBill(), false);
         if (existBillDetail != null) {
             existBillDetail.setPrice(promotionDetail != null ? promotionDetail.getPromotionPrice() : shoeDetail.getPrice());
             existBillDetail.setQuantity(existBillDetail.getQuantity() + request.getQuantity());

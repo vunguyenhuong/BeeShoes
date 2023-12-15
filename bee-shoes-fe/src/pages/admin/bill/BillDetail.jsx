@@ -13,7 +13,7 @@ import FormatDate from "~/utils/FormatDate";
 import FormatCurrency from "~/utils/FormatCurrency";
 import "./timeline.css";
 import InfoBill from "./InfoBill";
-import { Button, Carousel, Divider, Form, Input, Modal, Radio, Space, Table, Tooltip } from "antd";
+import { Button, Carousel, Divider, Form, Input, InputNumber, Modal, Radio, Space, Table, Tooltip } from "antd";
 import PaymentMethod from "./PaymentMethod";
 import BillHistory from "./BillHistory";
 import TextArea from "antd/es/input/TextArea";
@@ -33,6 +33,7 @@ const BillDetail = () => {
   const [pageSize, setPageSize] = useState(3);
   const { id } = useParams();
   const [form] = Form.useForm();
+  const [formGiveback] = Form.useForm();
   const [loading, setLoading] = useState(true);
   const [cancelBill, setCancelBill] = useState(false);
 
@@ -115,6 +116,41 @@ const BillDetail = () => {
       console.log(e);
       toast.error(e.response.data);
     })
+  }
+
+  const handleGiveBack = (id) => {
+    Modal.confirm({
+      title: "Xác nhận",
+      maskClosable: true,
+      content: (
+        <>
+          <Form layout="vertical" form={formGiveback} onFinish={async (data) => {
+            data.billDetail = id;
+            await request.post(`/bill/give-back`, data).then(response => {
+              loadBillDetail();
+              loadBill();
+              loadBillHistory();
+              toast.success("Trả hàng thành công!");
+            }).catch(e => {
+              console.log(e);
+              toast.error(e.response.data);
+            })
+          }}>
+            <Form.Item label="Số lượng" name={"quantity"} rules={[{ required: true, message: "Số lượng không được để trống!", },]}>
+              <InputNumber placeholder="Nhập số lượng muốn trả hàng..." className="w-100" />
+            </Form.Item>
+            <Form.Item label="Lý do trả hàng" name={"note"} rules={[{ required: true, message: "Lý do trả hàng không được để trống!", },]}>
+              <TextArea placeholder="Nhập lý do trả hàng..." />
+            </Form.Item>
+          </Form>
+        </>
+      ),
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: async () => {
+        formGiveback.submit()
+      },
+    });
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -232,9 +268,11 @@ const BillDetail = () => {
               }
             </>
           ) : bill.status === 6 ? (
-            <Tooltip placement="top" title="Trả hàng">
-              <Button type="primary" danger icon={<i class="fa-solid fa-rotate-left"></i>}></Button>
-            </Tooltip>
+            record.status === false ? (
+              <Tooltip placement="top" title="Trả hàng">
+                <Button onClick={() => handleGiveBack(id)} type="primary" danger icon={<i class="fa-solid fa-rotate-left"></i>}></Button>
+              </Tooltip>
+            ) : ""
           ) : ""}
         </>
       )
@@ -256,8 +294,8 @@ const BillDetail = () => {
         </Link>
         <span className="breadcrumb-item">Hóa đơn {bill.code}</span>
       </nav>
-      <div className="container overflow-x-auto mb-3" >
-        <Timeline minEvents={8} placeholder maxEvents={billHistory.length}>
+      <div className="container overflow-x-auto mb-3">
+        <Timeline minEvents={8} placeholder maxEvents={billHistory.length} style={{ height: "400px" }}>
           {billHistory.map((item, index) => (
             <TimelineEvent
               key={index}
@@ -348,6 +386,7 @@ const BillDetail = () => {
       </div>
       <Table dataSource={listBillDetail} columns={columns}
         showHeader={false}
+        rowClassName={(record) => (record.status === true ? "bg-danger-subtle" : "")}
         pagination={{
           showSizeChanger: true,
           current: currentPage,

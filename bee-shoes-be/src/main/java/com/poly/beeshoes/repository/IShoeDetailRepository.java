@@ -1,5 +1,6 @@
 package com.poly.beeshoes.repository;
 
+import com.poly.beeshoes.entity.Shoe;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.dto.request.shoedetail.FindShoeDetailRequest;
 import com.poly.beeshoes.dto.response.ShoeDetailResponse;
@@ -11,11 +12,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @Repository
 public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
     ShoeDetail findByCode(String code);
+    List<ShoeDetail> findByShoe(Shoe shoe);
 
     @Query(value = """
             SELECT

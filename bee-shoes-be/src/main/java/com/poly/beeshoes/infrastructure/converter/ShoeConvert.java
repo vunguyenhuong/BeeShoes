@@ -18,6 +18,7 @@ public class ShoeConvert {
                 .name(request.getName())
                 .category(categoryRepository.findById(request.getCategory()).get())
                 .brand(brandRepository.findById(request.getBrand()).get())
+                .description(request.getDescription())
                 .build();
         return shoe;
     }
@@ -25,6 +26,7 @@ public class ShoeConvert {
         entity.setName(request.getName());
         entity.setCategory(categoryRepository.findById(request.getCategory()).get());
         entity.setBrand(brandRepository.findById(request.getBrand()).get());
+        entity.setDescription(request.getDescription());
         return entity;
     }
 }

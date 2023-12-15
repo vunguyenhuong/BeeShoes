@@ -1,4 +1,5 @@
 import { Button, Form, Input, Modal, Select, Tooltip } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 import { Option } from 'antd/es/mentions';
 import React from 'react'
 import { useEffect } from 'react';
@@ -57,7 +58,8 @@ function UpdateShoe({ props, onSuccess }) {
                 <Form onFinish={handleOk} layout="vertical" initialValues={{
                     name: props.name,
                     category: props.category.id,
-                    brand: props.brand.id
+                    brand: props.brand.id,
+                    description: props.description
                 }}>
                     <Form.Item label={"Tên giày"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!" }]}>
                         <Input placeholder="Nhập tên giày..." />
@@ -81,6 +83,9 @@ function UpdateShoe({ props, onSuccess }) {
                                 </Option>
                             ))}
                         </Select>
+                    </Form.Item>
+                    <Form.Item label={"Mô tả"} name={"description"} rules={[{ required: true, message: "Mô tả không được để trống!" }]}>
+                        <TextArea />
                     </Form.Item>
                     <div className="d-flex justify-content-end">
                         <Button type="primary" htmlType="submit" className='bg-warning'><i className="fas fa-edit me-1"></i> Cập nhật</Button>

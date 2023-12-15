@@ -2,11 +2,13 @@ package com.poly.beeshoes.service.impl;
 
 import com.poly.beeshoes.dto.request.shoe.FindShoeReqeust;
 import com.poly.beeshoes.entity.Shoe;
+import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.converter.ShoeConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.dto.request.shoe.ShoeRequest;
 import com.poly.beeshoes.dto.response.ShoeResponse;
 import com.poly.beeshoes.dto.response.promotion.ShoePromotionResponse;
+import com.poly.beeshoes.repository.IShoeDetailRepository;
 import com.poly.beeshoes.repository.IShoeRepository;
 import com.poly.beeshoes.service.ShoeService;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
@@ -22,6 +24,8 @@ import java.util.List;
 public class ShoeServiceImpl implements ShoeService {
     @Autowired
     private IShoeRepository shoeRepository;
+    @Autowired
+    private IShoeDetailRepository shoeDetailRepository;
     @Autowired
     private ShoeConvert shoeConvert;
 
@@ -77,8 +81,15 @@ public class ShoeServiceImpl implements ShoeService {
     }
 
     @Override
-    public Shoe delete(Long id) {
-        return null;
+    public Shoe changeStatus(Long id) {
+        Shoe shoe = shoeRepository.findById(id).get();
+        shoe.setDeleted(shoe.getDeleted() == false ? true : false);
+        shoeRepository.save(shoe);
+        shoeDetailRepository.findByShoe(shoe).forEach(shoeDetail -> {
+            shoeDetail.setDeleted(shoeDetail.getDeleted() == false ? true : false);
+            shoeDetailRepository.save(shoeDetail);
+        });
+        return shoe;
     }
 
     @Override

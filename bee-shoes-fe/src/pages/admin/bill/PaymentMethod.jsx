@@ -15,6 +15,8 @@ function PaymentMethod({ bill, onSucess }) {
   const [totalPayment, setTotalPayment] = useState(0);
   const [extraMoney, setExtraMoney] = useState(null);
 
+  const [totalBillDetail, setTotalBillDetail] = useState(0);
+
   const [isRefund, setIsRefund] = useState(false);
 
   const [form] = Form.useForm();
@@ -32,6 +34,21 @@ function PaymentMethod({ bill, onSucess }) {
       setTotalPayment(caculateTotalPayment)
     }).catch((error) => {
       console.error(error);
+    });
+    request.get(`/bill-detail`, {
+      params: {
+        bill: bill.id,
+        page: 1,
+        status: true,
+        sizePage: 1_000_000,
+      }
+    }).then((response) => {
+      const calculatedTotalMoney = response.data.reduce((total, item) => {
+        return total + item.quantity * (item.discountPercent !== null ? item.discountValue : item.price);
+      }, 0);
+      setTotalBillDetail(calculatedTotalMoney);
+    }).catch((e) => {
+      console.log(e);
     });
   }
 
@@ -147,7 +164,7 @@ function PaymentMethod({ bill, onSucess }) {
           {isRefund ? <>
             Cần phải trả lại khách: <span className=" float-end fw-semibold text-danger">
               <FormatCurrency value={
-                bill.status === 7 ? bill.totalMoney : totalPayment - "số tiền sp hoàn trả"
+                bill.status === 7 ? bill.totalMoney : totalPayment - totalBillDetail
               } />
             </span>
           </> : (

@@ -20,9 +20,9 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
 
     List<BillDetail> findByBillId(Long id);
 
-    BillDetail findByShoeDetailCodeAndBillId(String codeShoeDetail, Long idBill);
+    BillDetail findByShoeDetailCodeAndBillIdAndStatus(String codeShoeDetail, Long idBill, Boolean status);
 
-    Boolean existsByShoeDetailIdAndBillId(Long idShoeDetail, Long idBill);
+    Boolean existsByShoeDetailIdAndBillIdAndStatus(Long idShoeDetail, Long idBill, Boolean status);
 
     @Query(value = """
             SELECT
@@ -47,7 +47,8 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
                         THEN MAX(pm.value)
                     ELSE NULL
                 END AS discountPercent,
-                GROUP_CONCAT(DISTINCT img.name) AS images
+                GROUP_CONCAT(DISTINCT img.name) AS images,
+                bd.status AS status
             FROM
                 bill_detail bd
                 JOIN shoe_detail sd ON sd.id = bd.shoe_detail_id
@@ -60,6 +61,7 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
                 LEFT JOIN promotion pm ON pm.id = pmd.promotion_id
             WHERE
                 bd.bill_id = :#{#req.bill}
+                AND :#{#req.status} IS NULL OR bd.status = :#{#req.status}
             GROUP BY
                 bd.id,pmd.promotion_price,pm.start_date, pm.end_date
             """, nativeQuery = true)

@@ -22,4 +22,6 @@ public class BillDetailRequest extends PageableRequest {
     private BigDecimal maxPrice;
     private String code;
 
+    private Boolean status;
+
 }

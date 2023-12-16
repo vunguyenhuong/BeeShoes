@@ -17,6 +17,7 @@ public interface IVoucherRepository extends JpaRepository<Voucher, Long> {
     @Query(value = """
             SELECT
             ROW_NUMBER() OVER(ORDER BY v.create_at DESC) AS indexs,
+            v.id AS id,
             v.code AS code, v.name AS name,
             v.quantity AS quantity, v.percent_reduce AS percentReduce,
             v.min_bill_value AS minBillValue,

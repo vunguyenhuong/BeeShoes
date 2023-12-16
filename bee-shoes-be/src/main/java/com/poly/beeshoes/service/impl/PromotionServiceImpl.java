@@ -83,6 +83,7 @@ public class PromotionServiceImpl implements PromotionService {
             promotionDetail.setPromotionPrice(shoeDetail.getPrice().subtract((shoeDetail.getPrice().divide(new BigDecimal("100"))).multiply(new BigDecimal(request.getValue()))));
             promotionDetailRepository.save(promotionDetail);
         }
+        updateStatusPromotion();
         return new ResponseObject(request);
     }
 

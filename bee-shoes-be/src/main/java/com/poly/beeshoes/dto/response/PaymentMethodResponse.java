@@ -14,6 +14,7 @@ public interface PaymentMethodResponse {
     Integer getMethod();
 
     BigDecimal getTotalMoney();
+    Boolean getType();
 
     String getNote();
 

@@ -13,4 +13,5 @@ public class PaymentMethodRequest {
     private BigDecimal totalMoney;
     private String note;
     private String tradingCode;
+    private Boolean type;
 }

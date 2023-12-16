@@ -1,5 +1,6 @@
 package com.poly.beeshoes.repository;
 
+import com.poly.beeshoes.entity.Bill;
 import com.poly.beeshoes.entity.BillDetail;
 import com.poly.beeshoes.dto.request.billdetail.BillDetailRequest;
 import com.poly.beeshoes.dto.response.BillDetailResponse;
@@ -19,6 +20,8 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
     BillDetail findBillDetail(@Param("id") Long id);
 
     List<BillDetail> findByBillId(Long id);
+
+    List<BillDetail> findByBillAndStatus(Bill bill, Boolean status);
 
     BillDetail findByShoeDetailCodeAndBillIdAndStatus(String codeShoeDetail, Long idBill, Boolean status);
 

@@ -77,6 +77,7 @@ const showDeleteConfirm = (id) => {
       })
       .catch((e) => {
         console.log(e);
+        console.log('---------');
         toast.error(e.response.data);
       });
     },

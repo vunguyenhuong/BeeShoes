@@ -21,6 +21,5 @@ public class ShoeRequest {
     private Long brand;
     @NotNull(message = "Danh mục không được để trống!")
     private Long category;
-    @NotEmpty(message = "Mô tả không được để trống!")
     private String description;
 }

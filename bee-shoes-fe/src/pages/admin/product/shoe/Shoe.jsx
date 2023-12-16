@@ -1,9 +1,10 @@
-import { Button, Col, Input, Radio, Row, Select, Table, Tooltip } from "antd";
+import { Button, Col, Input, Radio, Row, Select, Switch, Table, Tooltip } from "antd";
 import { Option } from "antd/es/mentions";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import BaseUI from "~/layouts/admin/BaseUI";
 import * as request from "~/utils/httpRequest";
 
@@ -43,6 +44,26 @@ function Shoe() {
     });
   }, [currentPage, selectedCate, selectedBrand, pageSize, searchValue, statusProduct]);
 
+  const loadData = () => {
+    request.get("/shoe", {
+      params: { name: searchValue, page: currentPage, sizePage: pageSize, category: selectedCate, brand: selectedBrand, status: statusProduct },
+    }).then((response) => {
+      setProductList(response.data);
+      setTotalPages(response.totalPages);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
+  const handleChangeStatus = async (id) => {
+    await request.remove(`/shoe/${id}`).then(response => {
+      toast.success("Đã cập nhật trạng thái!");
+      loadData();
+    }).catch(e => {
+      console.log(e);
+    })
+  }
+
   const columns = [
     {
       title: '#',
@@ -74,7 +95,11 @@ function Shoe() {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
-      render: (x) => <span className={x ? 'text-danger fw-semibold' : 'text-success fw-semibold'}>{x ? 'Ngừng bán' : 'Đang bán'}</span>,
+      render: (x, record) => (
+        <Tooltip title={`${x ? "Ngừng bán" : "Đang bán"}`}>
+          <Switch key={record.id} defaultChecked={x ? false : true} onChange={() => handleChangeStatus(record.id)} />
+        </Tooltip>
+      )
     },
     {
       title: 'Thao tác',

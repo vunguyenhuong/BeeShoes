@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Select, Tooltip } from 'antd';
+import { Button, Col, Form, Input, Modal, Row, Select, Switch, Tooltip } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Option } from 'antd/es/mentions';
 import React from 'react'
@@ -59,35 +59,45 @@ function UpdateShoe({ props, onSuccess }) {
                     name: props.name,
                     category: props.category.id,
                     brand: props.brand.id,
-                    description: props.description
+                    description: props.description,
                 }}>
-                    <Form.Item label={"Tên giày"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!" }]}>
-                        <Input placeholder="Nhập tên giày..." />
-                    </Form.Item>
-                    <Form.Item label={"Danh mục"} name={"category"} rules={[{ required: true, message: "Danh mục không được để trống!" }]}>
-                        <Select className="me-2" showSearch optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchCate} placeholder="Chọn danh mục...">
-                            <Option value="">-- Chọn danh mục --</Option>
-                            {cateList.map((item) => (
-                                <Option key={item.id} value={item.id}>
-                                    {item.name}
-                                </Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item label={"Thương hiệu"} name={"brand"} rules={[{ required: true, message: "Thương hiệu không được để trống!" }]}>
-                        <Select className="me-2" showSearch optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchBrand} placeholder="Chọn thương hiệu...">
-                            <Option value="">-- Chọn thương hiệu --</Option>
-                            {brandList.map((item) => (
-                                <Option key={item.id} value={item.id}>
-                                    {item.name}
-                                </Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item label={"Mô tả"} name={"description"} rules={[{ required: true, message: "Mô tả không được để trống!" }]}>
-                        <TextArea />
-                    </Form.Item>
-                    <div className="d-flex justify-content-end">
+                    <Row gutter={10}>
+                        <Col xl={24}>
+                            <Form.Item label={"Tên giày"} name={"name"} rules={[{ required: true, message: "Tên không được để trống!" }]}>
+                                <Input placeholder="Nhập tên giày..." />
+                            </Form.Item>
+                        </Col>
+                        <Col xl={12}>
+                            <Form.Item label={"Danh mục"} name={"category"} rules={[{ required: true, message: "Danh mục không được để trống!" }]}>
+                                <Select className="me-2" showSearch optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchCate} placeholder="Chọn danh mục...">
+                                    <Option value="">-- Chọn danh mục --</Option>
+                                    {cateList.map((item) => (
+                                        <Option key={item.id} value={item.id}>
+                                            {item.name}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col xl={12}>
+                            <Form.Item label={"Thương hiệu"} name={"brand"} rules={[{ required: true, message: "Thương hiệu không được để trống!" }]}>
+                                <Select className="me-2" showSearch optionFilterProp="children" style={{ width: '100%' }} onSearch={setSearchBrand} placeholder="Chọn thương hiệu...">
+                                    <Option value="">-- Chọn thương hiệu --</Option>
+                                    {brandList.map((item) => (
+                                        <Option key={item.id} value={item.id}>
+                                            {item.name}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col xl={24}>
+                            <Form.Item label={"Mô tả"} name={"description"} rules={[{ required: true, message: "Mô tả không được để trống!" }]}>
+                                <TextArea />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <div className="d-flex justify-content-end align-items-center">
                         <Button type="primary" htmlType="submit" className='bg-warning'><i className="fas fa-edit me-1"></i> Cập nhật</Button>
                     </div>
                 </Form>

@@ -381,7 +381,7 @@ const BillDetail = () => {
         {bill.status <= 4 ? (
           <ShowProductModal idBill={bill.id} onClose={() => { loadBillDetail(); loadBill(); loadBillHistory() }} />
         ) : bill.status === 6 ? (
-          <GivebackAll bill={bill} />
+          <GivebackAll bill={bill} onSuccess={() => { loadBillDetail(); loadBill(); loadBillHistory() }} />
         ) : ""}
       </div>
       <Table dataSource={listBillDetail} columns={columns}

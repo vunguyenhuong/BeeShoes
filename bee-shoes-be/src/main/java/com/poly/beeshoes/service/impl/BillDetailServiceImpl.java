@@ -71,7 +71,6 @@ public class BillDetailServiceImpl implements BillDetailService {
             if(existBillDetail.getPrice().compareTo(request.getPrice()) < 0){
                 existBillDetail.setPrice(request.getPrice());
             }
-            existBillDetail.setStatus(true);
             return billDetailRepository.save(existBillDetail);
         }
         BillDetail billDetail1 = billDetailRepository.save(billDetail);

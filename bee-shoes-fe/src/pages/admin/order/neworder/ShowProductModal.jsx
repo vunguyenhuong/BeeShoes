@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Table } from 'antd'
+import { Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Table, Tabs, Tag } from 'antd'
 import { Option } from 'antd/es/mentions';
 import React from 'react'
 import { useEffect } from 'react';
@@ -67,28 +67,32 @@ function ShowProductModal({ idBill, onClose }) {
 
     const handleChoose = (shoeDetail) => {
         const data = {};
-        if (shoeDetail.quantity === 0) {
-            toast.error("Sản phẩm này đã hết hàng!")
+        if (shoeDetail.status) {
+            toast.error("Sản phẩm hiện đang ngừng kinh doanh!");
         } else {
-            Modal.confirm({
-                title: "Xác nhận",
-                maskClosable: true,
-                content: "Xác nhận thêm sản phẩm ?",
-                okText: "Xác nhận",
-                cancelText: "Hủy",
-                onOk: () => {
-                    data.shoeDetail = shoeDetail?.code;
-                    data.bill = idBill;
-                    data.price = shoeDetail?.discountValue !== null ? shoeDetail?.discountValue : shoeDetail?.price;
-                    data.quantity = 1;
-                    request.post('/bill-detail', data).then(response => {
-                        toast.success('Thêm thành công!');
-                        loadData(dataFilter);
-                    }).catch(e => {
-                        toast.error(e.response.data);
-                    })
-                },
-            });
+            if (shoeDetail.quantity === 0) {
+                toast.error("Sản phẩm này đã hết hàng!")
+            } else {
+                Modal.confirm({
+                    title: "Xác nhận",
+                    maskClosable: true,
+                    content: "Xác nhận thêm sản phẩm ?",
+                    okText: "Xác nhận",
+                    cancelText: "Hủy",
+                    onOk: () => {
+                        data.shoeDetail = shoeDetail?.code;
+                        data.bill = idBill;
+                        data.price = shoeDetail?.discountValue !== null ? shoeDetail?.discountValue : shoeDetail?.price;
+                        data.quantity = 1;
+                        request.post('/bill-detail', data).then(response => {
+                            toast.success('Thêm thành công!');
+                            loadData(dataFilter);
+                        }).catch(e => {
+                            toast.error(e.response.data);
+                        })
+                    },
+                });
+            }
         }
     }
 
@@ -120,6 +124,7 @@ function ShowProductModal({ idBill, onClose }) {
                                 <li>{x}</li>
                                 <li><small>Màu: {record.color} - Kích cỡ: {record.size}</small></li>
                                 <li><small>Loại đế: {record.sole}</small></li>
+                                <li><small><Tag color={record.status === true ? "red" : "green"}>{record.status === true ? "Ngừng kinh doanh" : "Đang kinh doanh"}</Tag></small></li>
                             </ul>
                         </div>
                     </div>

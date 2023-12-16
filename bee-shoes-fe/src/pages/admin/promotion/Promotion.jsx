@@ -59,7 +59,7 @@ const loadDataPromotions =async () => {
 //     })
 
 //  };
-const showDeleteConfirm = (item) => {
+const showDeleteConfirm = (id) => {
     confirm({
       title: "Xác nhận ",
       content: "Bạn có chắc muốn kết thúc khuyến mại này không?",
@@ -67,8 +67,8 @@ const showDeleteConfirm = (item) => {
       okType: "danger",
       cancelText: "Hủy",
       onOk() {
-        request
-        .put(`/promotion/update/end-date/${item.id}`)
+        httpRequest
+        .put(`/promotion/update/end-date/${id}`)
         .then((response) => {
           if (response.status === 200) {
             loadDataPromotions();
@@ -138,11 +138,11 @@ const showDeleteConfirm = (item) => {
                                 <i className="fas fa-edit"></i>
                             </Link>
                     </Tooltip>
-                    <Tooltip placement="top" title="Hủy">
+                    <Tooltip placement="top" title="Kết thúc">
                         <Button
                             type="text"
                             icon={<i class="fa-solid fa-calendar-xmark text-danger"></i>}
-                            onClick={() => showDeleteConfirm(item)}    
+                            onClick={() => showDeleteConfirm(x)}    
                         />
                     </Tooltip>
                 </>

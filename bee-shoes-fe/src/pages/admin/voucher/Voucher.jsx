@@ -128,7 +128,7 @@ function Voucher() {
             <i className="fas fa-edit"></i>
           </Link>
           </Tooltip>
-          <Tooltip placement="top" title="Hủy">
+          <Tooltip placement="top" title="Kết thúc">
           <Button
               type="text"
               icon={<i class="fa-solid fa-calendar-xmark text-danger"></i>}

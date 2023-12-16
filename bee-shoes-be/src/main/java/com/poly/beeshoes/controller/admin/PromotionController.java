@@ -6,6 +6,7 @@ import com.poly.beeshoes.dto.request.PromotionRequest;
 import com.poly.beeshoes.dto.response.PromotionResponse;
 import com.poly.beeshoes.service.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/promotion")
 public class PromotionController {
     @Autowired
@@ -57,7 +59,7 @@ public class PromotionController {
         service.deleteAll(id);
     }
 
-    @PutMapping("/promotion/end-date/{id}")
+    @PutMapping("/update/end-date/{id}")
     public ResponseObject updateEndDate( @PathVariable Long id) {
         return new ResponseObject(service.updateEndDate(id));
     }

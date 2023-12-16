@@ -249,7 +249,8 @@ import {
               placeholder="Tìm kiếm danh mục..."
             />
           </Col>
-          <Col span={7}>
+          <Col span ={6}></Col>
+          {/* <Col span={7}>
             <div className="mb-1">Trạng thái</div>
             <Radio.Group
               defaultValue={null}
@@ -259,7 +260,7 @@ import {
               <Radio value={false}>Hoạt động</Radio>
               <Radio value={true}>Ngừng hoạt động</Radio>
             </Radio.Group>
-          </Col>
+          </Col> */}
           <Col span={4}>
             <div className="mb-1">‍</div>
             <Link to={"/admin/category"}>

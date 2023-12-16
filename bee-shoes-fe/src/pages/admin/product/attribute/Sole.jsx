@@ -239,14 +239,15 @@ function Sole() {
     <BaseUI>
       <h6 className="fw-semibold">Danh sách đế giày</h6>
       <Row gutter={10}>
-        <Col span={15}>
+        <Col span={13}>
           <label className="mb-1">Tên đế giày </label>
           <Input
             onChange={(event) => setSearchValue(event.target.value)}
             placeholder="Tìm kiếm đế giày theo tên..."
           />
         </Col>
-        <Col span={5}>
+        <Col span ={6}></Col>
+        {/* <Col span={5}>
           <div className="mb-1">Trạng thái</div>
           <Radio.Group
             defaultValue={null}
@@ -256,7 +257,7 @@ function Sole() {
             <Radio value={false}>Hoạt động</Radio>
             <Radio value={true}>Ngừng hoạt động</Radio>
           </Radio.Group>
-        </Col>
+        </Col> */}
         <Col span={4}>
           <div className="mb-1">‍</div>
           <Link to={"/admin/sole"}>

@@ -171,7 +171,7 @@ function AddProduct() {
                   </Option>
                 ))}
               </Select>
-              <AddShoeModal />
+              <AddShoeModal onAddSuccess={() => loadShoe()} />
             </div>
           </Col>
           <Col xl={24} className="my-3">
@@ -193,7 +193,7 @@ function AddProduct() {
                         <>
                           {menu}
                           <Space className="my-2 ms-2">
-                            <AddProperties placeholder={"đế giày"} name={"sole"} onSuccess={() => loadSole()}/>
+                            <AddProperties placeholder={"đế giày"} name={"sole"} onSuccess={() => loadSole()} />
                           </Space>
                         </>
                       )}
@@ -252,7 +252,7 @@ function AddProduct() {
                         <>
                           {menu}
                           <Space className="my-2 ms-2">
-                            <AddProperties placeholder={"màu sắc"} name={"color"} onSuccess={() => loadColor()}/>
+                            <AddProperties placeholder={"màu sắc"} name={"color"} onSuccess={() => loadColor()} />
                           </Space>
                         </>
                       )}

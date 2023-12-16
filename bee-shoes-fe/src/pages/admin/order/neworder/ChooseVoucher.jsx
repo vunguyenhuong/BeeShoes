@@ -19,6 +19,7 @@ function ChooseVoucher({ onSelectVoucher, customerId }) {
             params: {
                 name: searchValue,
                 deleted: false,
+                status: 1
             }
         }).then(response => {
             setPublicVoucher(response.data);
@@ -30,6 +31,7 @@ function ChooseVoucher({ onSelectVoucher, customerId }) {
             params: {
                 name: searchValue,
                 deleted: false,
+                status: 1
             }
         }).then(response => {
             setPrivateVoucher(response.data);

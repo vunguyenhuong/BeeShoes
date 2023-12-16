@@ -176,7 +176,7 @@ function OrderItem({ index, props, onSuccess }) {
   useEffect(() => {
     if (voucher !== null) {
       if (totalMoney < voucher.minBillValue) {
-        toast.error("Hủy áp dụng Voucher do không đủ điều kiện!")
+        toast.error("Không thể áp dụng Voucher do không đủ điều kiện!")
         setVoucher(null);
         setMoneyReduce(0);
       } else {

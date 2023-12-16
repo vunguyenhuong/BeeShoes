@@ -229,7 +229,9 @@ public class BillServiceImpl implements BillService {
             bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
         }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
-        bill.setVoucher(voucherRepository.findById(request.getVoucher()).get());
+        if(request.getVoucher() != null){
+            bill.setVoucher(voucherRepository.findById(request.getVoucher()).orElse(null));
+        }
         bill.setCode(this.genBillCode());
         bill.setType(TyperOrderConstant.GIAO_HANG);
         bill.setNote(request.getNote());
@@ -282,7 +284,9 @@ public class BillServiceImpl implements BillService {
             bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
         }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
-        bill.setVoucher(voucherRepository.findById(request.getVoucher()).get());
+        if(request.getVoucher() != null){
+            bill.setVoucher(voucherRepository.findById(request.getVoucher()).orElse(null));
+        }
         bill.setCode(this.genBillCode());
         bill.setType(TyperOrderConstant.GIAO_HANG);
         bill.setNote(request.getNote());
@@ -484,6 +488,7 @@ public class BillServiceImpl implements BillService {
         BillDetail billDetail = billDetailRepository.findById(request.getBillDetail()).get();
         ShoeDetail shoeDetail = billDetail.getShoeDetail();
         Bill bill = billDetail.getBill();
+        bill.setVoucher(null);
         BillDetail billReturnCheck = billDetailRepository.findByShoeDetailCodeAndBillIdAndStatus(shoeDetail.getCode(), bill.getId(), Boolean.TRUE);
         if (request.getQuantity() <= 0) {
             throw new RestApiException("Vui lòng nhập số lượng hợp lệ!");
@@ -493,8 +498,10 @@ public class BillServiceImpl implements BillService {
         }
         if (request.getQuantity() == billDetail.getQuantity()) {
             billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
-            bill.setTotalMoney(bill.getTotalMoney()
+            bill.setTotalMoney((bill.getTotalMoney()
+                    .add(bill.getMoneyReduce()))
                     .subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
+            bill.setMoneyReduce(BigDecimal.ZERO);
             billRepository.save(bill);
             if (billDetail.getQuantity() == 0) {
                 billDetailRepository.delete(billDetail);
@@ -522,7 +529,10 @@ public class BillServiceImpl implements BillService {
                 billDetailRepository.save(billDeReturn);
             }
             billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
-            bill.setTotalMoney(bill.getTotalMoney().subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
+            bill.setTotalMoney((bill.getTotalMoney()
+                    .add(bill.getMoneyReduce()))
+                    .subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
+            bill.setMoneyReduce(BigDecimal.ZERO);
             billRepository.save(bill);
             if (billDetail.getQuantity() == 0) {
                 billDetailRepository.delete(billDetail);

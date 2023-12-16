@@ -27,8 +27,8 @@ function AddShoeModal({ onAddSuccess }) {
       form.resetFields();
       setIsModalOpen(false);
     }).catch(e => {
-      form.resetFields();
-      toast.error(e.response.data.message);
+      console.log(e);
+      toast.error(e.response.data);
     })
     // setIsModalOpen(false);
   };

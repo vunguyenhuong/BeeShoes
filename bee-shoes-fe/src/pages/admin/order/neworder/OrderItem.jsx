@@ -539,7 +539,13 @@ function OrderItem({ index, props, onSuccess }) {
                 }} /> Giao hàng</>}
               </li>
               <Row gutter={10}>
-                <ChooseVoucher onSelectVoucher={(voucher) => setVoucher(voucher)} customerId={customer?.id} />
+                <ChooseVoucher onSelectVoucher={(voucher) => {
+                  if (voucher.quantity <= 0) {
+                    toast.error("Voucher này đã hết lượt sử dụng!");
+                  } else {
+                    setVoucher(voucher);
+                  }
+                }} customerId={customer?.id} />
               </Row>
               <li className="mb-2">Tạm tính: <span className="float-end fw-semibold"><FormatCurrency value={totalMoney} /></span></li>
               {typeOrder === 1 && <li className="mb-2">Phí vận chuyển (tạm tính): <span className="float-end fw-semibold"><FormatCurrency value={feeShip} /></span></li>}

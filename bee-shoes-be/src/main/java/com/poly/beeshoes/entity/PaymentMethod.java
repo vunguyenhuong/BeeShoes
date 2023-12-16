@@ -37,4 +37,5 @@ public class PaymentMethod extends PrimaryEntity {
     @Nationalized
     @Column(name = "trading_code")
     private String tradingCode;
+    private Boolean type;
 }

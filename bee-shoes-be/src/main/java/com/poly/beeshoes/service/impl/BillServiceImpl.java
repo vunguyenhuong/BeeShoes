@@ -1,6 +1,11 @@
 package com.poly.beeshoes.service.impl;
 
+import com.poly.beeshoes.dto.request.CartClientRequest;
+import com.poly.beeshoes.dto.request.bill.BillRequest;
+import com.poly.beeshoes.dto.request.bill.BillSearchRequest;
+import com.poly.beeshoes.dto.request.billdetail.BillClientRequest;
 import com.poly.beeshoes.dto.request.giveback.GivebackRequest;
+import com.poly.beeshoes.dto.response.BillResponse;
 import com.poly.beeshoes.dto.response.statistic.StatisticBillStatus;
 import com.poly.beeshoes.entity.Account;
 import com.poly.beeshoes.entity.Bill;
@@ -19,11 +24,6 @@ import com.poly.beeshoes.infrastructure.constant.PaymentMethodConstant;
 import com.poly.beeshoes.infrastructure.constant.TyperOrderConstant;
 import com.poly.beeshoes.infrastructure.converter.BillConvert;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
-import com.poly.beeshoes.dto.request.billdetail.BillClientRequest;
-import com.poly.beeshoes.dto.request.CartClientRequest;
-import com.poly.beeshoes.dto.request.bill.BillRequest;
-import com.poly.beeshoes.dto.request.bill.BillSearchRequest;
-import com.poly.beeshoes.dto.response.BillResponse;
 import com.poly.beeshoes.infrastructure.session.ShoseSession;
 import com.poly.beeshoes.repository.IAccountRepository;
 import com.poly.beeshoes.repository.IBillDetailRepository;
@@ -128,6 +128,7 @@ public class BillServiceImpl implements BillService {
         Bill bill = billConvert.convertRequestToEntity(billRepository.findById(id).get(), request);
         history.setBill(bill);
         paymentMethod.setBill(bill);
+        paymentMethod.setType(PaymentMethodConstant.TIEN_KHACH_DUA);
 
         if (request.getWaitPay()) {
             bill.setStatus(BillStatusConstant.CHO_THANH_TOAN);
@@ -162,6 +163,7 @@ public class BillServiceImpl implements BillService {
                 paymentMethod1.setTotalMoney(request.getTienMat());
                 paymentMethod1.setNote("Đã thanh toán!");
                 paymentMethod1.setMethod(PaymentMethodConstant.TIEN_MAT);
+                paymentMethod1.setType(PaymentMethodConstant.TIEN_KHACH_DUA);
                 paymentMethodRepository.save(paymentMethod1);
                 paymentMethod.setTotalMoney(request.getTienChuyenKhoan());
                 paymentMethod.setTradingCode(request.getTradingCode());
@@ -227,8 +229,9 @@ public class BillServiceImpl implements BillService {
             bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
         }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
+        bill.setVoucher(voucherRepository.findById(request.getVoucher()).get());
         bill.setCode(this.genBillCode());
-        bill.setType(1);
+        bill.setType(TyperOrderConstant.GIAO_HANG);
         bill.setNote(request.getNote());
         bill.setCustomerName(request.getCustomerName());
         bill.setAddress(request.getSpecificAddress() + "##" + request.getWard() + "##" + request.getDistrict() + "##" + request.getProvince());
@@ -252,6 +255,7 @@ public class BillServiceImpl implements BillService {
             billDetail.setQuantity(x.getQuantity());
             billDetail.setShoeDetail(shoeDetail);
             billDetail.setPrice(shoeDetail.getPrice());
+            billDetail.setStatus(false);
             billDetailRepository.save(billDetail);
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
             shoeDetailRepository.save(shoeDetail);
@@ -278,8 +282,9 @@ public class BillServiceImpl implements BillService {
             bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
         }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
+        bill.setVoucher(voucherRepository.findById(request.getVoucher()).get());
         bill.setCode(this.genBillCode());
-        bill.setType(1);
+        bill.setType(TyperOrderConstant.GIAO_HANG);
         bill.setNote(request.getNote());
         bill.setCustomerName(request.getCustomerName());
         bill.setAddress(request.getSpecificAddress() + "##" + request.getWard() + "##" + request.getDistrict() + "##" + request.getProvince());
@@ -298,7 +303,8 @@ public class BillServiceImpl implements BillService {
 
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setBill(billSave);
-        paymentMethod.setMethod(1);
+        paymentMethod.setType(PaymentMethodConstant.TIEN_KHACH_DUA);
+        paymentMethod.setMethod(PaymentMethodConstant.CHUYEN_KHOAN);
         paymentMethod.setTradingCode(code);
         paymentMethod.setTotalMoney(billSave.getTotalMoney());
         paymentMethod.setNote("Đã thanh toán");
@@ -311,6 +317,7 @@ public class BillServiceImpl implements BillService {
             billDetail.setQuantity(x.getQuantity());
             billDetail.setShoeDetail(shoeDetail);
             billDetail.setPrice(shoeDetail.getPrice());
+            billDetail.setStatus(false);
             billDetailRepository.save(billDetail);
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
             shoeDetailRepository.save(shoeDetail);
@@ -341,7 +348,7 @@ public class BillServiceImpl implements BillService {
         history.setBill(bill);
         history.setNote(note);
 
-        List<PaymentMethod> paymentMethods = paymentMethodRepository.findByBillId(bill.getId());
+        List<PaymentMethod> paymentMethods = paymentMethodRepository.findByBillIdAndType(bill.getId(), PaymentMethodConstant.TIEN_KHACH_DUA);
         Double totalPayment = 0.0;
         for (PaymentMethod x : paymentMethods) {
             totalPayment += x.getTotalMoney().doubleValue();
@@ -469,7 +476,7 @@ public class BillServiceImpl implements BillService {
             notification.setTitle("Xin chào " + bill.getCustomer().getName() + ". Đơn hàng #" + bill.getCode() +
                     " đã bị hủy do trả toàn bộ sản phẩm trong hóa đơn.");
         }
-        return null;
+        return new ResponseObject(bill);
     }
 
     @Override
@@ -485,13 +492,20 @@ public class BillServiceImpl implements BillService {
             throw new RestApiException("Quá số lượng cho phép!");
         }
         if (request.getQuantity() == billDetail.getQuantity()) {
+            billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
+            bill.setTotalMoney(bill.getTotalMoney()
+                    .subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
+            billRepository.save(bill);
+            if (billDetail.getQuantity() == 0) {
+                billDetailRepository.delete(billDetail);
+            } else {
+                billDetailRepository.save(billDetail);
+            }
             if (billReturnCheck != null) {
                 billReturnCheck.setQuantity(billReturnCheck.getQuantity() + request.getQuantity());
                 billDetailRepository.save(billReturnCheck);
             } else {
                 billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
-                bill.setTotalMoney(bill.getTotalMoney().subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
-                billRepository.save(bill);
                 billDetailRepository.save(billDetail);
             }
         } else if (request.getQuantity() < billDetail.getQuantity()) {
@@ -503,18 +517,18 @@ public class BillServiceImpl implements BillService {
                 billDeReturn.setQuantity(request.getQuantity());
                 billDeReturn.setShoeDetail(shoeDetail);
                 billDeReturn.setBill(bill);
-                billDeReturn.setPrice(billDetail.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
+                billDeReturn.setPrice(billDetail.getPrice());
                 billDeReturn.setStatus(BillDetailStatusConstant.TRA_HANG);
                 billDetailRepository.save(billDeReturn);
             }
             billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
-            if (billDetail.getQuantity() == 0) {
-                billDetailRepository.delete(billDetail);
-            }else {
-                billDetailRepository.save(billDetail);
-            }
             bill.setTotalMoney(bill.getTotalMoney().subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
             billRepository.save(bill);
+            if (billDetail.getQuantity() == 0) {
+                billDetailRepository.delete(billDetail);
+            } else {
+                billDetailRepository.save(billDetail);
+            }
         }
 
         BillHistory history = new BillHistory();
@@ -523,7 +537,15 @@ public class BillServiceImpl implements BillService {
         history.setNote("Trả sản phẩm \"" + shoeDetail.getShoe().getName() + " [" + shoeDetail.getColor().getName() +
                 "-" + shoeDetail.getSize().getName() + "]\" - Số lượng: \"" + request.getQuantity() + "\". Lý do: " + request.getNote());
         billHistoryRepository.save(history);
-
+        if (billDetailRepository.findByBillAndStatus(bill, false).isEmpty()) {
+            bill.setStatus(BillStatusConstant.DA_HUY);
+            billRepository.save(bill);
+            BillHistory billHistory = new BillHistory();
+            billHistory.setBill(bill);
+            billHistory.setNote("Đơn hàng đã bị hủy");
+            billHistory.setStatus(BillStatusConstant.DA_HUY);
+            billHistoryRepository.save(billHistory);
+        }
         return new ResponseObject(billDetail);
     }
 }

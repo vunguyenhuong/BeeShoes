@@ -20,6 +20,7 @@ public class PaymentMethodConvert {
                 .note(request.getNote())
                 .tradingCode(request.getTradingCode())
                 .bill(billRepository.findById(request.getBill()).orElse(null))
+                .type(request.getType())
                 .build();
     }
 }

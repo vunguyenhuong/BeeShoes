@@ -38,7 +38,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     @Override
     public ResponseObject create(PaymentMethodRequest request) {
         PaymentMethod paymentMethod = repository.save(paymentMethodConvert.convertRequestToEntity(request));
-        List<PaymentMethod> paymentMethods = repository.findByBillId(request.getBill());
+        List<PaymentMethod> paymentMethods = repository.findByBillIdAndType(request.getBill(), request.getType());
         Bill bill = billRepository.findById(request.getBill()).orElse(null);
         Double totalPayment = 0.0;
         for (PaymentMethod x: paymentMethods) {

@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, InputNumber, Modal, Row, Switch, Table } from "antd";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Switch, Table, Tag } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Title from "antd/es/typography/Title";
 import React, { useEffect } from "react";
@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import FormatCurrency from "~/utils/FormatCurrency";
 import FormatDate from "~/utils/FormatDate";
+import formatCurrency from "~/utils/format";
 import * as request from "~/utils/httpRequest";
 
 function PaymentMethod({ bill, onSucess }) {
@@ -13,9 +14,11 @@ function PaymentMethod({ bill, onSucess }) {
   const [paymentMethod, setPaymentMethod] = useState([]);
   const [method, setMethod] = useState(0);
   const [totalPayment, setTotalPayment] = useState(0);
+  const [totalPaymentRefund, setTotalPaymentRefund] = useState(0);
   const [extraMoney, setExtraMoney] = useState(null);
 
   const [totalBillDetail, setTotalBillDetail] = useState(0);
+  const [totalBillDetailRefund, setTotalBillDetailRefund] = useState(0);
 
   const [isRefund, setIsRefund] = useState(false);
 
@@ -28,36 +31,47 @@ function PaymentMethod({ bill, onSucess }) {
   const loadPaymentMethod = () => {
     request.get(`/payment-method/${bill.id}`).then((response) => {
       setPaymentMethod(response);
-      const caculateTotalPayment = response.reduce((total, item) => {
+      const caculateTotalPayment = response.filter(item => item.type === true).reduce((total, item) => {
         return total + item.totalMoney;
       }, 0);
+      const caculateTotalPaymentRefund = response.filter(item => item.type === false).reduce((total, item) => {
+        return total + item.totalMoney;
+      }, 0);
+      setTotalPaymentRefund(caculateTotalPaymentRefund);
       setTotalPayment(caculateTotalPayment)
     }).catch((error) => {
       console.error(error);
     });
     request.get(`/bill-detail`, {
-      params: {
-        bill: bill.id,
-        page: 1,
-        status: true,
-        sizePage: 1_000_000,
-      }
+      params: { bill: bill.id, page: 1, sizePage: 1_000_000, }
     }).then((response) => {
-      const calculatedTotalMoney = response.data.reduce((total, item) => {
+      const calculatedTotalMoney = response.data.filter(item => item.status === false).reduce((total, item) => {
         return total + item.quantity * (item.discountPercent !== null ? item.discountValue : item.price);
       }, 0);
+      const calculatedTotalMoneyRefund = response.data.filter(item => item.status === true).reduce((total, item) => {
+        return total + item.quantity * (item.discountPercent !== null ? item.discountValue : item.price);
+      }, 0);
+      setTotalBillDetailRefund(calculatedTotalMoneyRefund);
       setTotalBillDetail(calculatedTotalMoney);
     }).catch((e) => {
       console.log(e);
     });
+    form.setFieldsValue({
+      totalMoney: (totalBillDetailRefund !== totalPaymentRefund) ? (totalBillDetailRefund - totalPaymentRefund) : (bill.totalMoney + bill.moneyShip - totalPayment)
+    })
   }
 
   const handleCreatePaymentMethod = (data) => {
+    if (method === 1) {
+      data.totalMoney = bill.totalMoney + bill.moneyShip - totalPayment
+    }
+    data.type = !isRefund
     data.method = method;
     data.bill = bill.id;
     request.post(`/payment-method`, data).then((response) => {
       loadPaymentMethod();
       onSucess();
+      toast.success(`Đã thanh toán ${formatCurrency(data.totalMoney)}`);
       setIsModalOpen(false);
     }).catch((error) => {
       console.error(error);
@@ -84,19 +98,19 @@ function PaymentMethod({ bill, onSucess }) {
       render: (x) => (<FormatDate date={x} />)
     },
     {
-      title: 'Phương thức thanh toán',
-      dataIndex: 'method',
-      key: 'method',
-      render: (x, record) => (
-        <>{x === 0 ? "Tiền mặt" : "Chuyển khoản"}</>
-      )
-    },
-    {
       title: 'Mã giao dịch',
       dataIndex: 'tradingCode',
       key: 'tradingCode',
       render: (x, record) => (
-        <>{x}</>
+        <>{x === null ? '---' : x}</>
+      )
+    },
+    {
+      title: 'Loại giao dịch',
+      dataIndex: 'type',
+      key: 'type',
+      render: (x, record) => (
+        <Tag color={x === true ? 'green' : 'red'} style={{ width: "100px" }} className="text-center">{x === true ? 'Thanh toán' : 'Hoàn trả'}</Tag>
       )
     },
     {
@@ -116,12 +130,11 @@ function PaymentMethod({ bill, onSucess }) {
         <div className="d-flex align-items-center">
           <Title level={5} className="text-danger text-uppercase p-0 m-0 flex-grow-1 p-2">Lịch sử thanh toán</Title>
           <div className="p-2">
-            {totalPayment < (bill.totalMoney + bill?.moneyShip) ? (
+            {totalPayment < (bill.totalMoney + bill?.moneyShip) && (
               <>
-                <Button type="primary" className='text-dark bg-warning' onClick={() => setIsModalOpen(true)}>Xác nhận thanh toán</Button>
-              </>) : bill.status === 7 || bill.status === 8 ? (
-                <Button type="primary" danger onClick={() => { setIsModalOpen(true); setIsRefund(true) }}>Hoàn tiền</Button>
-              ) : ""}
+                <Button type="primary" className='text-dark bg-warning' onClick={() => { setIsModalOpen(true); loadPaymentMethod() }}>Xác nhận thanh toán</Button>
+              </>)}
+            {totalBillDetailRefund !== totalPaymentRefund && <Button type="primary" danger onClick={() => { setIsModalOpen(true); setIsRefund(true); loadPaymentMethod() }}>Hoàn tiền</Button>}
           </div>
         </div>
 
@@ -134,7 +147,7 @@ function PaymentMethod({ bill, onSucess }) {
           <Form layout="vertical" form={form} onFinish={handleCreatePaymentMethod}>
             {method === 0 ? (
               <Form.Item label={`Tiền ${isRefund ? "trả khách" : "khách đưa"}`} name="totalMoney" rules={[{ required: true, message: `Tiền ${isRefund ? "trả khách" : "khách đưa"} không được để trống!`, },]}>
-                <InputNumber className='w-100 mb-2' formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} controls={false} min={0} suffix="VNĐ" placeholder="Nhập tiền khách đưa..." onChange={(e) => { setExtraMoney(e - (bill.totalMoney + bill.moneyShip - totalPayment)); }} />
+                <InputNumber className='w-100 mb-2' formatter={(value) => ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} suffix="VNĐ" placeholder="Nhập tiền khách đưa..." onChange={(e) => { setExtraMoney(e - (bill.totalMoney + bill.moneyShip - totalPayment)); }} />
               </Form.Item>
             ) : (
               <Form.Item label="Mã giao dịch" name={"tradingCode"} rules={[{ required: true, message: "Mã giao dịch không được để trống!", },]}>
@@ -163,9 +176,7 @@ function PaymentMethod({ bill, onSucess }) {
           </Form>
           {isRefund ? <>
             Cần phải trả lại khách: <span className=" float-end fw-semibold text-danger">
-              <FormatCurrency value={
-                bill.status === 7 ? bill.totalMoney : totalPayment - totalBillDetail
-              } />
+              <FormatCurrency value={totalBillDetailRefund - totalPaymentRefund} />
             </span>
           </> : (
             <div className="mt-3 fw-semibold ">

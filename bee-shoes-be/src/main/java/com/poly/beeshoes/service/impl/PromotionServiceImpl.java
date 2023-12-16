@@ -3,6 +3,7 @@ package com.poly.beeshoes.service.impl;
 import com.poly.beeshoes.entity.Promotion;
 import com.poly.beeshoes.entity.PromotionDetail;
 import com.poly.beeshoes.entity.ShoeDetail;
+import com.poly.beeshoes.entity.Voucher;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.dto.request.PromotionRequest;
@@ -118,6 +119,7 @@ public class PromotionServiceImpl implements PromotionService {
         for (Long x: request.getProductDetails()) {
             PromotionDetail check = promotionDetailRepository.findByShoeDetailId(x);
             if(check != null) {
+                updateStatus(promotion);
                 promotionDetailRepository.delete(check);
             }
         }
@@ -156,6 +158,21 @@ public class PromotionServiceImpl implements PromotionService {
     public void deleteAll(Long idPromotion) {
         promotionDetailRepository.deleteAllById(promotionDetailRepository.findIdsByPromotionId(idPromotion));
     }
+    public void updateStatus(Promotion promotion) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime startDate = promotion.getStartDate();
+        LocalDateTime endDate = promotion.getEndDate();
+        if (currentDate.isBefore(startDate)) {
+            promotion.setStatus(0); // Chưa bắt đầu
+        } else if (currentDate.isAfter(startDate) && currentDate.isBefore(endDate)) {
+            promotion.setStatus(1); // Đang diễn ra
+        } else {
+            promotion.setStatus(2); // Đã kết thúc
+            promotion.setDeleted(true);
+        }
+        promotionRepository.save(promotion);
+    }
+
     public void updateStatusPromotion() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         List<Promotion> promotions = promotionRepository.findAll();

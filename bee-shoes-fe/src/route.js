@@ -28,6 +28,7 @@ import PromotionDetail from "./pages/admin/promotion/update/PromotionDetail";
 import Statistic from "./pages/admin/statistic/Statistic";
 import withAuth from "./auth";
 import Payment from "./pages/admin/payment/Payment";
+import UserProfile from "./pages/admin/settings/UserProfile";
 
 const publicRouters = [
   { path: "/", element: withAuth(Statistic) },
@@ -61,6 +62,7 @@ const publicRouters = [
   { path: "/admin/promotion/create", element: withAuth(AddPromotion) },
 
   { path: "/admin/vnpay-payment", element: withAuth(Payment) },
+  { path: "/admin/profile", element: withAuth(UserProfile) },
   // { path: '*', element: NotFound}
 ];
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IColorRepository extends JpaRepository<Color, Long> {
+    Color findByName(String name);
     Boolean existsByNameIgnoreCaseAndNameNot(String name, String exceptName);
     Boolean existsByNameIgnoreCase(String name);
 

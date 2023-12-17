@@ -63,6 +63,9 @@ public class ShoeServiceImpl implements ShoeService {
         if (shoeRepository.existsByNameIgnoreCase(request.getName())) {
             throw new RestApiException(request.getName() + " đã tồn tại!");
         }
+        if(request.getName().length() > 50){
+            throw new RestApiException("Tên sản phẩm có vẻ quá dài, vui lòng thử lại!");
+        }
         Shoe shoe = shoeConvert.convertRequestToEntity(request);
         return shoeRepository.save(shoe);
     }
@@ -76,6 +79,9 @@ public class ShoeServiceImpl implements ShoeService {
             }
             throw new RestApiException(request.getName() + " đã tồn tại!");
         } else {
+            if(request.getName().length() > 50){
+                throw new RestApiException("Tên sản phẩm có vẻ quá dài, vui lòng thử lại!");
+            }
             return shoeRepository.save(shoeConvert.convertRequestToEntity(oldShoe, request));
         }
     }

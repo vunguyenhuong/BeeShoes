@@ -1,5 +1,6 @@
 package com.poly.beeshoes.service;
 
+import com.poly.beeshoes.dto.request.shoedetail.UpdateShoeDetailRequest;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.dto.request.shoedetail.ShoeDetailRequest;
@@ -16,7 +17,7 @@ public interface ShoeDetailService {
     PageableObject<ShoeDetailResponse> getAll(FindShoeDetailRequest request);
     ShoeDetail getOne(Long id);
     String create(List<ShoeDetailRequest> list);
-    ShoeDetail update(Long id, ShoeDetailRequest request);
+    ShoeDetail update(Long id, UpdateShoeDetailRequest request);
     ShoeDetail delete(Long id);
 
     ResponseObject updateFast(List<ShoeDetailRequest> list);

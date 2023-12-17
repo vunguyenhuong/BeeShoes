@@ -66,20 +66,19 @@ function ImageModal({ colorName, sttModal, handleChange }) {
         icon: "warning",
         buttons: true,
         dangerMode: true,
-      })
-        .then((willDelete) => {
-          if (willDelete) {
-            setLoading(true);
-            formData.append("folder", colorName);
-            request.post('/image-gallery', formData, { headers: { "Content-Type": "multipart/form-data", }, }).then(response => {
-              toast.success(response.data);
-              loadImage(colorName);
-              setLoading(false);
-            }).catch(e => {
-              console.log(e);
-            })
-          }
-        });
+      }).then(async (willDelete) => {
+        if (willDelete) {
+          setLoading(true);
+          formData.append("folder", colorName);
+          await request.post('/image-gallery', formData, { headers: { "Content-Type": "multipart/form-data", }, }).then(response => {
+            toast.success("Thêm thành công!");
+            loadImage(colorName);
+            setLoading(false);
+          }).catch(e => {
+            console.log(e);
+          })
+        }
+      });
     } else {
       toast.error("Không tìm thấy ảnh hợp lệ!");
     }

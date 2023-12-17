@@ -27,8 +27,7 @@ function CoreUI({ children }) {
         </Sider>
         <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
           <Header
-            className="bg-body px-3 d-flex"
-            style={{ position: "fixed", width: "100%", zIndex: 1 }}
+            className="bg-body px-3 d-flex w-100"
           >
             <div className="flex-grow-1">
               <button
@@ -40,7 +39,7 @@ function CoreUI({ children }) {
             </div>
             <div className="">
               <Space size="middle">
-                <Badge count={1} size="small">
+                <Badge count={0} size="small">
                   <BellOutlined className="p-1" />
                 </Badge>
               </Space>
@@ -49,7 +48,7 @@ function CoreUI({ children }) {
               <UserOutlined />
             </div>
           </Header>
-          <div style={{ marginTop: "54px" }}>
+          <div>
             <Content
               className="m-3 p-3 bg-body mt-4"
               style={{ minHeight: "calc(100vh - 64px)", overflowY: "auto" }}

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ISoleRepository extends JpaRepository<Sole, Long> {
+    Sole findByName(String name);
     Boolean existsByNameIgnoreCaseAndNameNot(String name, String exceptName);
     Boolean existsByNameIgnoreCase(String name);
 

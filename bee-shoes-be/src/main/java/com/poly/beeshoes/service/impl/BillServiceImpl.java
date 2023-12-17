@@ -235,6 +235,7 @@ public class BillServiceImpl implements BillService {
         bill.setCode(this.genBillCode());
         bill.setType(TyperOrderConstant.GIAO_HANG);
         bill.setNote(request.getNote());
+        bill.setPhoneNumber(request.getPhoneNumber());
         bill.setCustomerName(request.getCustomerName());
         bill.setAddress(request.getSpecificAddress() + "##" + request.getWard() + "##" + request.getDistrict() + "##" + request.getProvince());
         bill.setMoneyShip(request.getMoneyShip());
@@ -290,6 +291,7 @@ public class BillServiceImpl implements BillService {
         bill.setCode(this.genBillCode());
         bill.setType(TyperOrderConstant.GIAO_HANG);
         bill.setNote(request.getNote());
+        bill.setPhoneNumber(request.getPhoneNumber());
         bill.setCustomerName(request.getCustomerName());
         bill.setAddress(request.getSpecificAddress() + "##" + request.getWard() + "##" + request.getDistrict() + "##" + request.getProvince());
         bill.setMoneyShip(request.getMoneyShip());
@@ -310,7 +312,7 @@ public class BillServiceImpl implements BillService {
         paymentMethod.setType(PaymentMethodConstant.TIEN_KHACH_DUA);
         paymentMethod.setMethod(PaymentMethodConstant.CHUYEN_KHOAN);
         paymentMethod.setTradingCode(code);
-        paymentMethod.setTotalMoney(billSave.getTotalMoney());
+        paymentMethod.setTotalMoney(billSave.getTotalMoney().add(billSave.getMoneyShip()));
         paymentMethod.setNote("Đã thanh toán");
         paymentMethodRepository.save(paymentMethod);
 
@@ -497,23 +499,28 @@ public class BillServiceImpl implements BillService {
             throw new RestApiException("Quá số lượng cho phép!");
         }
         if (request.getQuantity() == billDetail.getQuantity()) {
-            billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
             bill.setTotalMoney((bill.getTotalMoney()
                     .add(bill.getMoneyReduce()))
                     .subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
             bill.setMoneyReduce(BigDecimal.ZERO);
             billRepository.save(bill);
-            if (billDetail.getQuantity() == 0) {
-                billDetailRepository.delete(billDetail);
-            } else {
-                billDetailRepository.save(billDetail);
-            }
             if (billReturnCheck != null) {
+                billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
+                billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
+                if (billDetail.getQuantity() == 0) {
+                    billDetailRepository.delete(billDetail);
+                } else {
+                    billDetailRepository.save(billDetail);
+                }
                 billReturnCheck.setQuantity(billReturnCheck.getQuantity() + request.getQuantity());
                 billDetailRepository.save(billReturnCheck);
             } else {
                 billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
-                billDetailRepository.save(billDetail);
+                if (billDetail.getQuantity() == 0) {
+                    billDetailRepository.delete(billDetail);
+                } else {
+                    billDetailRepository.save(billDetail);
+                }
             }
         } else if (request.getQuantity() < billDetail.getQuantity()) {
             if (billReturnCheck != null) {

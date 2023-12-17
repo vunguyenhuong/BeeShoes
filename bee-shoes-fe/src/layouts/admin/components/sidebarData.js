@@ -112,6 +112,25 @@ const sidebarData = [
     icon: "fa-image",
     path: "/admin/image-gallery",
   },
+  {
+    key: "settings",
+    title: "Cài đặt",
+    icon: "fa-gear",
+    children: [
+      {
+        key: "xemttcanhan",
+        title: "Thông tin cá nhân",
+        icon: "fa-user",
+        path: "/admin/profile",
+      },
+      {
+        key: "doimk",
+        title: "Đổi mật khẩu",
+        icon: "fa-lock",
+        path: "/admin/promotion",
+      },
+    ],
+  },
 ];
 
 export default sidebarData;

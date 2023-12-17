@@ -7,6 +7,7 @@ import OrderItem from "./OrderItem";
 import Loading from "~/components/Loading/Loading";
 import { toast } from "react-toastify";
 import { getTokenEmpoloyee } from "~/helper/useCookies";
+import { jwtDecode } from "jwt-decode";
 
 function NewOrder() {
   const [listOrder, setListOrder] = useState([]);
@@ -24,7 +25,7 @@ function NewOrder() {
   const loadOrders = () => {
     request.get(`/bill/new-bill`, {
       params: {
-        idStaff: getTokenEmpoloyee().id,
+        idStaff: jwtDecode(getTokenEmpoloyee()).id,
         status: 1
       }
     }).then((response) => {

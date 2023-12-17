@@ -33,8 +33,8 @@ function PromotionDetail() {
                 code: response.data.code,
                 name: response.data.name,
                 value: response.data.value,
-                startDate: response.data.startDate,
-                endDate: response.data.endDate
+                startDate: new Date(response.data.startDate + "Z").toISOString().slice(0, 16),
+                endDate: new Date(response.data.endDate + "Z").toISOString().slice(0, 16),
             })
         }).catch(e => {
             console.log(e);

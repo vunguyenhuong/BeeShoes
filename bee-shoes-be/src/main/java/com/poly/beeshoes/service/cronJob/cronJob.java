@@ -16,7 +16,7 @@ public class cronJob {
     @Autowired
     private PromotionService promotionService;
 
-    @Scheduled(cron = "*/30 * * * * ?")// 30s chạy một lần
+    @Scheduled(cron = "*/2 * * * * ?")// 2s chạy một lần
     public void autoUpdateStatusVoucher() {
         try {
             voucherService.updateStatusVoucher();
@@ -24,7 +24,7 @@ public class cronJob {
             e.printStackTrace();
         }
     }
-    @Scheduled(cron = "*/30 * * * * ?")// 30s chạy một lần
+    @Scheduled(cron = "*/2 * * * * ?")// 2s chạy một lần
     public void autoUpdateStatusPromotion() {
         try {
             promotionService.updateStatusPromotion();

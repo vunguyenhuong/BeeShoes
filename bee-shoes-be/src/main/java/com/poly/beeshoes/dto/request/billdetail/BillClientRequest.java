@@ -18,6 +18,7 @@ public class BillClientRequest {
     private String province;
     private String ward;
     private String specificAddress;
+    private String phoneNumber;
     private BigDecimal moneyShip;
     private BigDecimal moneyReduce;
     private BigDecimal totalMoney;

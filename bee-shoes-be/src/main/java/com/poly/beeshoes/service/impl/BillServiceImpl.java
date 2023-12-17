@@ -235,6 +235,7 @@ public class BillServiceImpl implements BillService {
         bill.setCode(this.genBillCode());
         bill.setType(TyperOrderConstant.GIAO_HANG);
         bill.setNote(request.getNote());
+        bill.setPhoneNumber(request.getPhoneNumber());
         bill.setCustomerName(request.getCustomerName());
         bill.setAddress(request.getSpecificAddress() + "##" + request.getWard() + "##" + request.getDistrict() + "##" + request.getProvince());
         bill.setMoneyShip(request.getMoneyShip());
@@ -290,6 +291,7 @@ public class BillServiceImpl implements BillService {
         bill.setCode(this.genBillCode());
         bill.setType(TyperOrderConstant.GIAO_HANG);
         bill.setNote(request.getNote());
+        bill.setPhoneNumber(request.getPhoneNumber());
         bill.setCustomerName(request.getCustomerName());
         bill.setAddress(request.getSpecificAddress() + "##" + request.getWard() + "##" + request.getDistrict() + "##" + request.getProvince());
         bill.setMoneyShip(request.getMoneyShip());

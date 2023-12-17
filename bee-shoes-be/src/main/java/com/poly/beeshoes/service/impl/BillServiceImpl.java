@@ -239,7 +239,7 @@ public class BillServiceImpl implements BillService {
         bill.setMoneyReduce(request.getMoneyReduce());
         bill.setTotalMoney(request.getTotalMoney());
         if(request.getVoucher() != null){
-            Voucher voucher = new Voucher();
+            Voucher voucher = voucherRepository.findById(request.getVoucher()).get();
             voucher.setQuantity(voucher.getQuantity()-1);
             voucherRepository.save(voucher);
             bill.setVoucher(voucher);
@@ -286,7 +286,7 @@ public class BillServiceImpl implements BillService {
         }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
         if(request.getVoucher() != null){
-            Voucher voucher = new Voucher();
+            Voucher voucher = voucherRepository.findById(request.getVoucher()).get();
             voucher.setQuantity(voucher.getQuantity()-1);
             voucherRepository.save(voucher);
             bill.setVoucher(voucher);

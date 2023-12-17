@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, Row, Select, Switch, Table, Tooltip } from "antd";
+import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, QRCode, Row, Select, Switch, Table, Tooltip } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -14,6 +14,8 @@ import FormatCurrency from "~/utils/FormatCurrency";
 import Title from "antd/es/typography/Title";
 import { toast } from "react-toastify";
 import { Option } from "antd/es/mentions";
+import html2canvas from "html2canvas";
+import { QRCode as QRCodeReact } from 'qrcode-svg';
 
 
 
@@ -22,33 +24,65 @@ function ShoeInfo() {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [listProductDetail, setListProductDetail] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [pageSize, setPageSize] = useState(5);
-
   const [listUpdate, setListUpdate] = useState([]);
-
   const [listSize, setListSize] = useState([]);
   const [searchSize, setSearchSize] = useState('');
-
   const [listColor, setListColor] = useState([]);
   const [listSole, setListSole] = useState([]);
-
   const [dataFilter, setDataFilter] = useState({});
-
-  const [productCodes, setProductCodes] = useState([]);
+  const [shoeDetailSelect, setShoeDetailSelect] = useState([]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const onSelectChange = (newSelectedRowKeys) => {
+  const onSelectChange = (newSelectedRowKeys, record) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
+    setShoeDetailSelect(record);
   };
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+  };
+
+  const generateQrCodes = async () => {
+    try {
+      const promises = shoeDetailSelect.map(async (code, index) => {
+        // Tạo QR code
+        const qr = new QRCodeReact({
+          content: code.code,
+          padding: 4,
+          width: 256,
+          height: 256,
+          color: '#000000',
+          background: '#ffffff',
+        });
+
+        // Lấy SVG của QR code
+        const svgString = qr.svg();
+
+        // Tạo một div chứa QR code
+        const container = document.createElement('div');
+        container.innerHTML = `<div>${svgString}</div>`;
+
+        // Chuyển đổi div thành ảnh sử dụng html2canvas
+        const canvas = await html2canvas(container);
+
+        // Tạo và tải ảnh
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = `qrcode_${index + 1}.png`;
+        link.click();
+      });
+
+      await Promise.all(promises);
+
+      console.log('Đã tạo và tải về thành công các ảnh QR!');
+    } catch (error) {
+      console.error('Lỗi khi tạo và tải về ảnh QR:', error);
+    }
   };
 
   const handleWeightChange = (value, id) => {
@@ -330,7 +364,12 @@ function ShoeInfo() {
             <Title level={5}>Chi tiết sản phẩm</Title>
           </div>
           <div className="">
-            {selectedRowKeys.length > 0 && <Button type="primary" onClick={() => handleUpdateFast()} className="bg-warning">Cập nhật {selectedRowKeys.length} sản phẩm</Button>}
+            {selectedRowKeys.length > 0 && (
+              <>
+                <Button onClick={() => generateQrCodes()}></Button>
+                <Button type="primary" onClick={() => handleUpdateFast()} className="bg-warning">Cập nhật {selectedRowKeys.length} sản phẩm</Button>
+              </>
+            )}
           </div>
         </div>
         <Form layout='vertical' onFinish={(data) => setDataFilter(data)} form={formFilter}>

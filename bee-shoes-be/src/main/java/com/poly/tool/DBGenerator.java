@@ -166,7 +166,7 @@ public class DBGenerator implements CommandLineRunner {
         Account nhanVien1 = new Account();
         nhanVien1.setName("Vũ Nguyên Hướng");
         nhanVien1.setBirthday(new Date(99, 3, 16));
-        nhanVien1.setAvatar("https://res.cloudinary.com/beeshoes/image/upload/v1691146814/products/pyxjixea5klgwiw9ziv6.jpg");
+        nhanVien1.setAvatar("https://res.cloudinary.com/beeshoes/image/upload/v1702806762/account/logovippro_s4fuam.jpg");
         nhanVien1.setCccd("535834053750");
         nhanVien1.setEmail("admin@fpt.edu.vn");
         nhanVien1.setAccountRoles(AccountRoles.ROLE_EMLOYEE);
@@ -180,7 +180,7 @@ public class DBGenerator implements CommandLineRunner {
         Account khachHang1 = new Account();
         khachHang1.setName("Vũ Văn Nguyên");
         khachHang1.setBirthday(new Date(98, 5, 17));
-        khachHang1.setAvatar("http://res.cloudinary.com/beeshoes/image/upload/v1696177712/account/sancw2l5mkss2nkyg3fv.webp");
+        khachHang1.setAvatar("https://res.cloudinary.com/beeshoes/image/upload/v1702806762/account/logovippro_s4fuam.jpg");
         khachHang1.setCccd("535834053333");
         khachHang1.setEmail("Nguyenvv4@gmail.com");
         khachHang1.setGender("Nam");
@@ -194,7 +194,7 @@ public class DBGenerator implements CommandLineRunner {
         Account khachHang2 = new Account();
         khachHang2.setName("Nguyễn Anh Dũng");
         khachHang2.setBirthday(new Date(97, 4, 15));
-        khachHang2.setAvatar("https://res.cloudinary.com/beeshoes/image/upload/v1691146877/products/l73usfzqw2dgorfrywyw.jpg");
+        khachHang2.setAvatar("https://res.cloudinary.com/beeshoes/image/upload/v1702806762/account/logovippro_s4fuam.jpg");
         khachHang2.setCccd("535834053321");
         khachHang2.setEmail("DungNA29@gmail.com");
         khachHang2.setGender("Nam");

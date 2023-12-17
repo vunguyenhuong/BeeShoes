@@ -229,9 +229,6 @@ public class BillServiceImpl implements BillService {
             bill.setCustomer(accountRepository.findById(request.getAccount()).orElse(null));
         }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
-        if(request.getVoucher() != null){
-            bill.setVoucher(voucherRepository.findById(request.getVoucher()).orElse(null));
-        }
         bill.setCode(this.genBillCode());
         bill.setType(TyperOrderConstant.GIAO_HANG);
         bill.setNote(request.getNote());
@@ -241,8 +238,11 @@ public class BillServiceImpl implements BillService {
         bill.setMoneyShip(request.getMoneyShip());
         bill.setMoneyReduce(request.getMoneyReduce());
         bill.setTotalMoney(request.getTotalMoney());
-        if (request.getVoucher() != null) {
-            bill.setVoucher(voucherRepository.findById(request.getVoucher()).get());
+        if(request.getVoucher() != null){
+            Voucher voucher = new Voucher();
+            voucher.setQuantity(voucher.getQuantity()-1);
+            voucherRepository.save(voucher);
+            bill.setVoucher(voucher);
         }
 
         Bill billSave = billRepository.save(bill);
@@ -286,7 +286,10 @@ public class BillServiceImpl implements BillService {
         }
         bill.setStatus(BillStatusConstant.CHO_XAC_NHAN);
         if(request.getVoucher() != null){
-            bill.setVoucher(voucherRepository.findById(request.getVoucher()).orElse(null));
+            Voucher voucher = new Voucher();
+            voucher.setQuantity(voucher.getQuantity()-1);
+            voucherRepository.save(voucher);
+            bill.setVoucher(voucher);
         }
         bill.setCode(this.genBillCode());
         bill.setType(TyperOrderConstant.GIAO_HANG);

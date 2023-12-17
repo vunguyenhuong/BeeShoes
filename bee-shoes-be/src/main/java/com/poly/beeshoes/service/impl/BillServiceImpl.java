@@ -497,23 +497,28 @@ public class BillServiceImpl implements BillService {
             throw new RestApiException("Quá số lượng cho phép!");
         }
         if (request.getQuantity() == billDetail.getQuantity()) {
-            billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
             bill.setTotalMoney((bill.getTotalMoney()
                     .add(bill.getMoneyReduce()))
                     .subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
             bill.setMoneyReduce(BigDecimal.ZERO);
             billRepository.save(bill);
-            if (billDetail.getQuantity() == 0) {
-                billDetailRepository.delete(billDetail);
-            } else {
-                billDetailRepository.save(billDetail);
-            }
             if (billReturnCheck != null) {
+                billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
+                billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
+                if (billDetail.getQuantity() == 0) {
+                    billDetailRepository.delete(billDetail);
+                } else {
+                    billDetailRepository.save(billDetail);
+                }
                 billReturnCheck.setQuantity(billReturnCheck.getQuantity() + request.getQuantity());
                 billDetailRepository.save(billReturnCheck);
             } else {
                 billDetail.setStatus(BillDetailStatusConstant.TRA_HANG);
-                billDetailRepository.save(billDetail);
+                if (billDetail.getQuantity() == 0) {
+                    billDetailRepository.delete(billDetail);
+                } else {
+                    billDetailRepository.save(billDetail);
+                }
             }
         } else if (request.getQuantity() < billDetail.getQuantity()) {
             if (billReturnCheck != null) {

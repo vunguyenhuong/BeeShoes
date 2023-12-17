@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +28,11 @@ public class ImageGalleryController {
     }
 
     @PostMapping
-    public String uploadImage(@ModelAttribute ImageGalleryRequest request) {
+    public List<String> uploadImage(@ModelAttribute ImageGalleryRequest request) {
         List<String> url = cloudinaryUtils.uploadMultipleImages(request.getImages(), request.getFolder());
         if (url.isEmpty())
-            return "Thất bại!";
+            return new ArrayList<>();
         else
-            return "Thêm thành công!";
+            return url;
     }
 }

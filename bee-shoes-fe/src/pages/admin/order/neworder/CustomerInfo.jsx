@@ -138,7 +138,7 @@ function CustomerInfo({ handleSelect }) {
             }
           }).catch((e) => {
             console.log(e);
-            toast.error(e.response.id);
+            toast.error(e.response.data);
           }); 
         },
       });
@@ -201,36 +201,15 @@ function CustomerInfo({ handleSelect }) {
 
         <Row gutter={24}>
           <Col span={8}>
-            {previewUrl !== null ? (
+          {previewUrl !== null ? (
               <div className="text-center">
-                <img
-                  src={avatar}
-                  alt="Preview"
-                  style={{ width: "162px", height: "162px" }}
-                  className="mt-2 border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain"
-                />
-                <Button
-                  className="position-absolute border-0"
-                  onClick={() => {
-                    setPreviewUrl(null);
-                    setAvatar(null);
-                  }}
-                >
-                  <FaTrash className="text-danger" />
-                </Button>
+                <img src={previewUrl} alt="Preview" style={{ width: "162px", height: "162px" }} className="mt-2 border border-warning shadow-lg bg-body-tertiary rounded-circle object-fit-contain" />
+                <Button className="position-absolute border-0" onClick={() => { setPreviewUrl(null); setAvatar(null); }}><FaTrash className="text-danger" /></Button>
               </div>
             ) : (
               <div className="d-flex align-items-center justify-content-center">
-                <div
-                  className="position-relative rounded-circle border border-warning mt-2 d-flex align-items-center justify-content-center"
-                  style={{ width: "162px", height: "162px" }}
-                >
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageSelect}
-                    className="position-absolute opacity-0 py-5"
-                  />
+                <div className="position-relative rounded-circle border border-warning mt-2 d-flex align-items-center justify-content-center" style={{ width: "162px", height: "162px" }}>
+                  <Input type="file" accept="image/*" onChange={handleImageSelect} className="position-absolute opacity-0 py-5" required />
                   <div className="text-center text-secondary">
                     <i className="fas fa-plus"></i> <br />
                     <span>Chọn ảnh đại diện</span>

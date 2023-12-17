@@ -39,6 +39,8 @@ function ShoeInfo() {
 
   const [dataFilter, setDataFilter] = useState({});
 
+  const [productCodes, setProductCodes] = useState([]);
+
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const onSelectChange = (newSelectedRowKeys) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
@@ -202,7 +204,7 @@ function ShoeInfo() {
       key: 'action',
       render: (x, record) => (
         <>
-          <UpdateShoeDetail props={record} />
+          <UpdateShoeDetail props={record} onSuccess={() => loadShoeDetail()} />
           <Tooltip placement="bottom" title="Xóa">
             <Button type="text"><i className="fas fa-trash text-danger"></i></Button>
           </Tooltip>

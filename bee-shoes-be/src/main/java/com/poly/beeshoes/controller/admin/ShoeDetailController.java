@@ -1,5 +1,6 @@
 package com.poly.beeshoes.controller.admin;
 
+import com.poly.beeshoes.dto.request.shoedetail.UpdateShoeDetailRequest;
 import com.poly.beeshoes.dto.response.ShoeDetailResponse;
 import com.poly.beeshoes.entity.ShoeDetail;
 import com.poly.beeshoes.infrastructure.common.PageableObject;
@@ -54,7 +55,7 @@ public class ShoeDetailController {
     }
 
     @PutMapping("/{id}")
-    public ResponseObject update(@PathVariable Long id, @ModelAttribute @Valid ShoeDetailRequest request) {
+    public ResponseObject update(@PathVariable Long id, @RequestBody @Valid UpdateShoeDetailRequest request) {
         return new ResponseObject(shoeDetailService.update(id, request));
     }
 

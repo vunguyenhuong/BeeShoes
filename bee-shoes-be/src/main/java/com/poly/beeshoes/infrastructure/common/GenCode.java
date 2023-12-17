@@ -12,15 +12,22 @@ import java.util.regex.Pattern;
 public class GenCode {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int CODE_LENGTH = 10;
-    public static String genCodeByName(String name){
+    public static String genCodeByName(String name) {
         /*
-        * input: Vũ Nguyên Hướng
-        * output: VUNGUYENHUONG
-        * */
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(Normalizer.normalize(name, Normalizer.Form.NFD))
-                .replaceAll("")
-                .replaceAll("\\s","").toUpperCase();
+         * input: Vũ Nguyên Hướng
+         * output: VUNGUYENHUONG
+         * */
+
+        // Remove diacritical marks and spaces, convert to uppercase
+        String normalizedCode = Normalizer.normalize(name, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .replaceAll("\\s", "")
+                .toUpperCase();
+
+        // Get the last 15 characters
+        int length = normalizedCode.length();
+        int startIndex = Math.max(0, length - 15);
+        return normalizedCode.substring(startIndex);
     }
 
     public static String randomPassword(){

@@ -17,6 +17,7 @@ import java.util.Map;
 
 @Repository
 public interface IShoeDetailRepository extends JpaRepository<ShoeDetail, Long> {
+    Boolean existsByCodeAndCodeNot(String code, String exceptCode);
     ShoeDetail findByCode(String code);
     List<ShoeDetail> findByShoe(Shoe shoe);
 

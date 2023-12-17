@@ -312,7 +312,7 @@ public class BillServiceImpl implements BillService {
         paymentMethod.setType(PaymentMethodConstant.TIEN_KHACH_DUA);
         paymentMethod.setMethod(PaymentMethodConstant.CHUYEN_KHOAN);
         paymentMethod.setTradingCode(code);
-        paymentMethod.setTotalMoney(billSave.getTotalMoney());
+        paymentMethod.setTotalMoney(billSave.getTotalMoney().add(billSave.getMoneyShip()));
         paymentMethod.setNote("Đã thanh toán");
         paymentMethodRepository.save(paymentMethod);
 

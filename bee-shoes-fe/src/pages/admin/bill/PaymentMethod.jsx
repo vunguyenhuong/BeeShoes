@@ -57,7 +57,7 @@ function PaymentMethod({ bill, onSucess }) {
       console.log(e);
     });
     form.setFieldsValue({
-      totalMoney: (totalBillDetailRefund !== totalPaymentRefund) ? (totalBillDetailRefund - totalPaymentRefund) : (bill.totalMoney + bill.moneyShip - totalPayment)
+      totalMoney: (totalBillDetailRefund !== totalPaymentRefund) ? (totalBillDetailRefund - totalPaymentRefund - bill.moneyReduce) : (bill.totalMoney + bill.moneyShip - totalPayment)
     })
   }
 
@@ -73,6 +73,7 @@ function PaymentMethod({ bill, onSucess }) {
       onSucess();
       toast.success(`Đã thanh toán ${formatCurrency(data.totalMoney)}`);
       setIsModalOpen(false);
+      form.resetFields();
     }).catch((error) => {
       console.error(error);
       toast.error(error.response.data);
@@ -134,7 +135,7 @@ function PaymentMethod({ bill, onSucess }) {
               <>
                 <Button type="primary" className='text-dark bg-warning' onClick={() => { setIsModalOpen(true); loadPaymentMethod() }}>Xác nhận thanh toán</Button>
               </>)}
-            {totalBillDetailRefund !== totalPaymentRefund && <Button type="primary" danger onClick={() => { setIsModalOpen(true); setIsRefund(true); loadPaymentMethod() }}>Hoàn tiền</Button>}
+            {totalBillDetailRefund - (bill.status === 8 ? bill.moneyReduce : 0) !== totalPaymentRefund && <Button type="primary" danger onClick={() => { setIsModalOpen(true); setIsRefund(true); loadPaymentMethod() }}>Hoàn tiền</Button>}
           </div>
         </div>
 
@@ -176,7 +177,7 @@ function PaymentMethod({ bill, onSucess }) {
           </Form>
           {isRefund ? <>
             Cần phải trả lại khách: <span className=" float-end fw-semibold text-danger">
-              <FormatCurrency value={totalBillDetailRefund - totalPaymentRefund} />
+              <FormatCurrency value={totalBillDetailRefund - totalPaymentRefund - bill.moneyReduce} />
             </span>
           </> : (
             <div className="mt-3 fw-semibold ">

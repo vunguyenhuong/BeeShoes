@@ -5,6 +5,7 @@ import com.poly.beeshoes.entity.BillHistory;
 import com.poly.beeshoes.entity.PaymentMethod;
 import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import com.poly.beeshoes.infrastructure.constant.BillStatusConstant;
+import com.poly.beeshoes.infrastructure.constant.PaymentMethodConstant;
 import com.poly.beeshoes.infrastructure.converter.PaymentMethodConvert;
 import com.poly.beeshoes.dto.request.PaymentMethodRequest;
 import com.poly.beeshoes.dto.response.PaymentMethodResponse;
@@ -39,7 +40,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     public ResponseObject create(PaymentMethodRequest request) {
         PaymentMethod paymentMethod = repository.save(paymentMethodConvert.convertRequestToEntity(request));
         List<PaymentMethod> paymentMethods = repository.findByBillIdAndType(request.getBill(), request.getType());
-        Bill bill = billRepository.findById(request.getBill()).orElse(null);
+        Bill bill = paymentMethod.getBill();
         Double totalPayment = 0.0;
         for (PaymentMethod x: paymentMethods) {
             totalPayment+=x.getTotalMoney().doubleValue();
@@ -50,6 +51,10 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
             history1.setStatus(BillStatusConstant.XAC_NHAN_THONG_TIN_THANH_TOAN);
             history1.setNote("Đã thanh toán đủ tiền");
             billHistoryRepository.save(history1);
+        }
+        if(request.getType() == PaymentMethodConstant.TIEN_HOAN && bill.getStatus() == BillStatusConstant.TRA_HANG){
+            bill.setMoneyReduce(BigDecimal.ZERO);
+            billRepository.save(bill);
         }
 
         return new ResponseObject(paymentMethod);

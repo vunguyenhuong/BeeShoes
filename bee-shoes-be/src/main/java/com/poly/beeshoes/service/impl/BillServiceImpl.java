@@ -494,6 +494,7 @@ public class BillServiceImpl implements BillService {
         ShoeDetail shoeDetail = billDetail.getShoeDetail();
         Bill bill = billDetail.getBill();
         bill.setVoucher(null);
+        bill.setStatus(BillStatusConstant.TRA_HANG);
         BillDetail billReturnCheck = billDetailRepository.findByShoeDetailCodeAndBillIdAndStatus(shoeDetail.getCode(), bill.getId(), Boolean.TRUE);
         if (request.getQuantity() <= 0) {
             throw new RestApiException("Vui lòng nhập số lượng hợp lệ!");
@@ -505,7 +506,6 @@ public class BillServiceImpl implements BillService {
             bill.setTotalMoney((bill.getTotalMoney()
                     .add(bill.getMoneyReduce()))
                     .subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
-            bill.setMoneyReduce(BigDecimal.ZERO);
             billRepository.save(bill);
             if (billReturnCheck != null) {
                 billDetail.setQuantity(billDetail.getQuantity() - request.getQuantity());
@@ -542,7 +542,6 @@ public class BillServiceImpl implements BillService {
             bill.setTotalMoney((bill.getTotalMoney()
                     .add(bill.getMoneyReduce()))
                     .subtract(BigDecimal.valueOf(billDetail.getPrice().doubleValue() * request.getQuantity())));
-            bill.setMoneyReduce(BigDecimal.ZERO);
             billRepository.save(bill);
             if (billDetail.getQuantity() == 0) {
                 billDetailRepository.delete(billDetail);

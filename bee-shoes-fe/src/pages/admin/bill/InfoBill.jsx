@@ -14,7 +14,7 @@ function InfoBill({ props, onSuccess }) {
         <Row gutter={24} className="fw-semibold">
           <Col xl={12}>
             <ul className="list-unstyled">
-              <li className="mb-2">Trạng thái: <span className="float-end text-danger">{props.status === 0 ? " Chờ thanh toán" : props.status === 1 ? " Tạo đơn hàng" : props.status === 2 ? " Chờ xác nhận" : props.status === 3 ? " Xác nhận thông tin thanh toán" : props.status === 4 ? " Chờ giao" : props.status === 5 ? " Đang giao" : props.status === 6 ? " Hoàn thành" : props.status === 7 ? " Hủy" : " Tạo đơn hàng"}</span></li>
+              <li className="mb-2">Trạng thái: <span className="float-end text-danger">{props.status === 0 ? " Chờ thanh toán" : props.status === 1 ? " Tạo đơn hàng" : props.status === 2 ? " Chờ xác nhận" : props.status === 3 ? " Xác nhận thông tin thanh toán" : props.status === 4 ? " Chờ giao" : props.status === 5 ? " Đang giao" : props.status === 6 ? " Hoàn thành" : props.status === 7 ? " Hủy" : props.status === 8 ? " Trả hàng" : " "}</span></li>
               <li className="mb-2">Mã đơn hàng: <span className="float-end text-danger">{props?.code}</span></li>
               <li className="mb-2">Loại đơn hàng: <span className="float-end text-danger">{props.type === 0 ? " Tại quầy" : " Giao hàng"}</span></li>
             </ul>

@@ -87,19 +87,22 @@ public class VoucherServiceImpl implements VoucherService {
         if (request.getQuantity() <= 0 || request.getQuantity() != (int) request.getQuantity() || request.getQuantity() == null) {
             throw new RestApiException("Số lượng phải là số nguyên dương.");
         }
+        if(request.getQuantity()>10000){
+            throw new RestApiException("Số lượng không được vượt quá 10000. ");
+        }
         try {
             float percentReduce = Float.valueOf(request.getPercentReduce());
-            if (percentReduce < 0 || percentReduce > 100) {
-                throw new RestApiException("Phần trăm giảm phải nằm trong khoảng từ 0 đến 100. ");
+            if (percentReduce < 0 || percentReduce > 50) {
+                throw new RestApiException("Phần trăm giảm phải nằm trong khoảng từ 1 đến 50. ");
             }
         } catch (NumberFormatException e) {
-            throw new RestApiException("Phần trăm giảm phải nằm trong khoảng từ 0 đến 100. ");
+            throw new RestApiException("Phần trăm giảm phải nằm trong khoảng từ 1 đến 50. ");
         } catch (RestApiException e) {
             throw e;
         }
 
         if (Float.valueOf(request.getPercentReduce()) <= 0) {
-            throw new RestApiException("Phần trăm giảm phải lớn hơn 0. ");
+            throw new RestApiException("Phần trăm giảm phải nằm trong khoảng từ 1 đến 50. ");
         }
         if (request.getMinBillValue().compareTo(BigDecimal.ZERO) < 0) {
             throw new RestApiException("Đơn tối thiểu phải lớn hơn hoặc bằng 0. ");
@@ -153,14 +156,17 @@ public class VoucherServiceImpl implements VoucherService {
         if (request.getQuantity() <= 0) {
             throw new RestApiException("Số lượng phải lớn hơn 0. ");
         }
+        if(request.getQuantity()>10000){
+            throw new RestApiException("Số lượng không được vượt quá 10000. ");
+        }
         if (request.getQuantity() <= 0 || request.getQuantity() != (int) request.getQuantity() || request.getQuantity() == null) {
             throw new RestApiException("Số lượng phải là số nguyên dương.");
         }
-        if (Float.valueOf(request.getPercentReduce()) < 0 || Float.valueOf(request.getPercentReduce()) > 100) {
-            throw new RestApiException("Phần trăm giảm phải nằm trong khoảng từ 0 đến 100");
+        if (Float.valueOf(request.getPercentReduce()) < 0 || Float.valueOf(request.getPercentReduce()) > 50) {
+            throw new RestApiException("Phần trăm giảm phải nằm trong khoảng từ 1 đến 50. ");
         }
         if (!String.valueOf(request.getPercentReduce()).matches("^-?\\d+(\\.\\d+)?$")) {
-            System.out.println("1212");
+//            System.out.println("1212");
             throw new RestApiException("Phần trăm giảm phải là số");
         }
         if (request.getMinBillValue().compareTo(BigDecimal.ZERO) < 0) {
@@ -236,7 +242,7 @@ public class VoucherServiceImpl implements VoucherService {
 //                voucher.setDeleted(true);
                 }
 
-              
+
                 if (endDate.isEqual(startDate)) {
                     voucher.setStatus(2); // Đã kết thúc
 //                voucher.setDeleted(true);

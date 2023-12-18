@@ -62,7 +62,7 @@ const loadDataPromotions =async () => {
 const showDeleteConfirm = (id) => {
     confirm({
       title: "Xác nhận ",
-      content: "Bạn có chắc muốn kết thúc khuyến mại này không?",
+      content: "Bạn có chắc muốn kết thúc đợt khuyến mại này không?",
       okText: "Xác nhận",
       okType: "danger",
       cancelText: "Hủy",
@@ -155,7 +155,7 @@ const showDeleteConfirm = (id) => {
           className="mb-2"
           items={[
             { href: "/", title: <FaHome /> },
-            { title: "Danh sách khuyến mại" },
+            { title: "Danh sách đợt khuyến mại" },
           ]}
         />
             <Row gutter={12}>
@@ -163,7 +163,7 @@ const showDeleteConfirm = (id) => {
                     <label className="mb-1">Tìm kiếm </label>
                     <Input
                         onChange={(event) => setSearchValue(event.target.value)}
-                        placeholder="Tìm kiếm khuyến mại theo tên, mã ..."
+                        placeholder="Tìm kiếm đợt khuyến mại theo tên, mã ..."
                     //
                     />
                 </Col>
@@ -200,7 +200,7 @@ const showDeleteConfirm = (id) => {
                             className="bg-warning"
                             style={{ textAlign: "center" }}
                         >
-                            <i className="fas fa-plus-circle me-1"></i>Thêm khuyến mại
+                            <i className="fas fa-plus-circle me-1"></i>Thêm đợt khuyến mại
                         </Button>
                     </Link>
                 </Col>

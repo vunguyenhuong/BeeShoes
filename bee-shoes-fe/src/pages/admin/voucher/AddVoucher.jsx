@@ -78,7 +78,7 @@ function AddVoucherForm() {
                 </Col>
                 <Col xl={12}>
                   <Form.Item label={"Số lượng"} name={"quantity"} rules={[{ required: true, message: "Số lượng không được để trống!" },]} >
-                    <Input type="number" min={0} placeholder="Nhập số lượng..." />
+                    <Input type="number" min={0} max={10000} placeholder="Nhập số lượng..." />
                   </Form.Item>
                 </Col>
                 <Col xl={12}>
@@ -95,6 +95,7 @@ function AddVoucherForm() {
                       formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       parser={(value) => (value !== null && value !== undefined ? value.replace(/(,*)/g, "") : "")}
                       controls={false}
+                      max={1000000000}
                       min={0}
                       suffix="VNĐ"
                       placeholder="Nhập giá trị đơn tối thiểu..."

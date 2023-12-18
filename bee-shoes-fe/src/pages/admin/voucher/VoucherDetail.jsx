@@ -112,7 +112,7 @@ function VoucherDetail() {
                 </Col>
                 <Col xl={12}>
                   <Form.Item label={"Số lượng"} name={"quantity"} rules={[{ required: true, message: "Số lượng không được để trống!" },]} >
-                    <Input type="number" min={0} placeholder="Nhập số lượng..." />
+                    <Input type="number" min={0} max={10000} placeholder="Nhập số lượng..." />
                   </Form.Item>
                 </Col>
                 <Col xl={12}>

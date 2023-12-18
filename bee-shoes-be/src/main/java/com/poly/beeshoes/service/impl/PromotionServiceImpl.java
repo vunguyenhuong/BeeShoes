@@ -56,7 +56,7 @@ public class PromotionServiceImpl implements PromotionService {
         if (request.getName().length() > 50) {
             throw new RestApiException("Tên khuyến mại không được vượt quá 50 kí tự.");
         }
-        if(request.getValue() <= 0 || request.getValue() >= 100){
+        if(request.getValue() < 1 || request.getValue() >50){
             throw new RestApiException("Vui lòng nhập giá trị (%) hợp lệ!");
         }
         if (request.getStartDate().isAfter(request.getEndDate())) {
@@ -105,7 +105,7 @@ public class PromotionServiceImpl implements PromotionService {
         if (request.getName().length() > 50) {
             throw new RestApiException("Tên khuyến mại không được vượt quá 50 kí tự.");
         }
-        if(request.getValue() <= 0 || request.getValue() >= 100){
+        if(request.getValue() < 1 || request.getValue() >50){
             throw new RestApiException("Vui lòng nhập giá trị (%) hợp lệ!");
         }
         if (request.getStartDate().isAfter(request.getEndDate())) {

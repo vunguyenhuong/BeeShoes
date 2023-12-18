@@ -88,7 +88,7 @@ const sidebarData = [
     children: [
       {
         key: "qlkhuyenmai",
-        title: "Quản lý đợt khuyến mại",
+        title: "Quản lý đợt giảm giá",
         icon: "fa-gifts",
         path: "/admin/promotion",
       },

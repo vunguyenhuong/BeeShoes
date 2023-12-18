@@ -224,6 +224,9 @@ public class VoucherServiceImpl implements VoucherService {
                 voucher.setStatus(2); // Đã kết thúc
 //                voucher.setEndDate(currentDateTime);
             } else {
+                if (voucher.getQuantity() > 0) {
+                    voucher.setStatus(1); // Đang diễn ra
+                }
                 if (currentDateTime.isBefore(startDate)) {
                     voucher.setStatus(0); // Chưa bắt đầu
                 } else if (currentDateTime.isAfter(startDate) && currentDateTime.isBefore(endDate)) {
@@ -233,9 +236,7 @@ public class VoucherServiceImpl implements VoucherService {
 //                voucher.setDeleted(true);
                 }
 
-                if (voucher.getQuantity() > 0) {
-                    voucher.setStatus(1); // Đang diễn ra
-                }
+              
                 if (endDate.isEqual(startDate)) {
                     voucher.setStatus(2); // Đã kết thúc
 //                voucher.setDeleted(true);

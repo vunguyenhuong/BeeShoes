@@ -267,7 +267,7 @@ public class BillServiceImpl implements BillService {
             Account account = bill.getCustomer();
             Notification notification = new Notification();
             notification.setTitle("Đơn hàng của bạn đã được đặt");
-            notification.setContent("Xin chào " + account.getName() + ", đơn hàng với mã vận đơn" +
+            notification.setContent("Xin chào " + account.getName() + ", đơn hàng với mã vận đơn " +
                     bill.getCode() + " đã được hệ thống ghi nhận và đang chờ nhân viên xác nhận. " +
                     "Cảm ơn bạn đã dành thời gian cho BeeShoes!");
             notification.setAccount(account);
@@ -335,7 +335,7 @@ public class BillServiceImpl implements BillService {
             Account account = bill.getCustomer();
             Notification notification = new Notification();
             notification.setTitle("Đơn hàng của bạn đã được đặt");
-            notification.setContent("Xin chào " + account.getName() + ", đơn hàng với mã vận đơn" +
+            notification.setContent("Xin chào " + account.getName() + ", đơn hàng với mã vận đơn " +
                     bill.getCode() + " đã được hệ thống ghi nhận và đang chờ nhân viên xác nhận. " +
                     "Cảm ơn bạn đã dành thời gian cho BeeShoes!");
             notification.setAccount(account);

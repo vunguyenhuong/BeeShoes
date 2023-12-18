@@ -1,4 +1,5 @@
-import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, QRCode, Row, Select, Switch, Table, Tooltip } from "antd";
+import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, Row, Select, Switch, Table, Tooltip } from "antd";
+import { QRCode as QRCodeAntd } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -14,9 +15,9 @@ import FormatCurrency from "~/utils/FormatCurrency";
 import Title from "antd/es/typography/Title";
 import { toast } from "react-toastify";
 import { Option } from "antd/es/mentions";
-import html2canvas from "html2canvas";
-import { QRCode as QRCodeReact } from 'qrcode-svg';
-
+import QRCode from 'qrcode-generator';
+import download from 'downloadjs';
+import JSZip from "jszip";
 
 
 function ShoeInfo() {
@@ -47,42 +48,26 @@ function ShoeInfo() {
     onChange: onSelectChange,
   };
 
-  const generateQrCodes = async () => {
-    try {
-      const promises = shoeDetailSelect.map(async (code, index) => {
-        // Tạo QR code
-        const qr = new QRCodeReact({
-          content: code.code,
-          padding: 4,
-          width: 256,
-          height: 256,
-          color: '#000000',
-          background: '#ffffff',
-        });
-
-        // Lấy SVG của QR code
-        const svgString = qr.svg();
-
-        // Tạo một div chứa QR code
-        const container = document.createElement('div');
-        container.innerHTML = `<div>${svgString}</div>`;
-
-        // Chuyển đổi div thành ảnh sử dụng html2canvas
-        const canvas = await html2canvas(container);
-
-        // Tạo và tải ảnh
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = `qrcode_${index + 1}.png`;
-        link.click();
-      });
-
-      await Promise.all(promises);
-
-      console.log('Đã tạo và tải về thành công các ảnh QR!');
-    } catch (error) {
-      console.error('Lỗi khi tạo và tải về ảnh QR:', error);
-    }
+  const downloadAllQRCode = () => {
+    const zip = new JSZip();
+    shoeDetailSelect.forEach((item, index) => {
+      const qr = QRCode(0, 'H');
+      qr.addData(item.code);
+      qr.make();
+      const canvas = document.createElement('canvas');
+      canvas.width = qr.getModuleCount() * 10;
+      canvas.height = qr.getModuleCount() * 10;
+      const context = canvas.getContext('2d');
+      context.fillStyle = '#ffffff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = '#000000';
+      qr.renderTo2dContext(context, 10);
+      const folder = zip.folder(`qrcodes`);
+      folder.file(`${item.code}${index + 1}.png`, canvas.toDataURL('image/png').split('base64,')[1], { base64: true });
+    });
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      download(content, 'qrcodes.zip', 'application/zip');
+    });
   };
 
   const handleWeightChange = (value, id) => {
@@ -363,14 +348,16 @@ function ShoeInfo() {
           <div className="flex-grow-1">
             <Title level={5}>Chi tiết sản phẩm</Title>
           </div>
-          <div className="">
-            {selectedRowKeys.length > 0 && (
-              <>
-                <Button onClick={() => generateQrCodes()}></Button>
+          {selectedRowKeys.length > 0 && (
+            <>
+              <div className="me-2">
+                <Button type="primary" onClick={() => downloadAllQRCode()}><i class="fa-solid fa-download me-2"></i> Tải QR</Button>
+              </div>
+              <div className="">
                 <Button type="primary" onClick={() => handleUpdateFast()} className="bg-warning">Cập nhật {selectedRowKeys.length} sản phẩm</Button>
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </div>
         <Form layout='vertical' onFinish={(data) => setDataFilter(data)} form={formFilter}>
           <Row gutter={10}>

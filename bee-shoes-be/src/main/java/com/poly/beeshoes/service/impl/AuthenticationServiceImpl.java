@@ -3,6 +3,7 @@ package com.poly.beeshoes.service.impl;
 import com.poly.beeshoes.dto.request.logindto.ChangePassword;
 import com.poly.beeshoes.dto.request.logindto.ResetPassword;
 import com.poly.beeshoes.entity.Account;
+import com.poly.beeshoes.infrastructure.common.GenCode;
 import com.poly.beeshoes.infrastructure.constant.AccountRoles;
 import com.poly.beeshoes.infrastructure.exception.RestApiException;
 import com.poly.beeshoes.infrastructure.sercurity.auth.JwtAuhenticationResponse;
@@ -93,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String password = String.valueOf(rnd.nextInt(999999));
         optional.get().setPassword(passwordEncoder.encode(password));
         accountRepository.save(optional.get());
-        String emailContent = "Chào " + optional.get().getEmail() + "\n" + "Mật khẩu mới cho hệ thống Bee Shoes Store\n" + "Tài khoản của bạn là: " + optional.get().getEmail() + "\n" + "Mật khẩu đăng nhập là: " + password + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n" + "Trang chủ BeeShoes: https://beeshoes.vunguyenhuong.id.vn\n" + "Liên hệ: https://facebook.com/VuNguyenHuong.Official";
+        String emailContent = "Chào " + optional.get().getEmail() + "\n" + "Mật khẩu mới cho hệ thống Bee Shoes Store\n" + "Tài khoản của bạn là: " + optional.get().getEmail() + "\n" + "Mật khẩu đăng nhập là: " + GenCode.randomPassword() + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n" + "Trang chủ BeeShoes: https://beeshoes.vunguyenhuong.id.vn\n" + "Liên hệ: https://facebook.com/VuNguyenHuong.Official";
         mailUtils.sendEmail(optional.get().getEmail(), "Thư xác thực tài khoản", emailContent);
         return "Thành công.";
     }

@@ -123,12 +123,12 @@ const sidebarData = [
         icon: "fa-user",
         path: "/admin/profile",
       },
-      {
-        key: "doimk",
-        title: "Đổi mật khẩu",
-        icon: "fa-lock",
-        path: "/admin/promotion",
-      },
+      // {
+      //   key: "doimk",
+      //   title: "Đổi mật khẩu",
+      //   icon: "fa-lock",
+      //   path: "/admin/promotion",
+      // },
     ],
   },
 ];

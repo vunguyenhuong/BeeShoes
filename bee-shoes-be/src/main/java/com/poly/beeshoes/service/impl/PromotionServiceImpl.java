@@ -48,13 +48,13 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional(rollbackFor = RestApiException.class)
     public ResponseObject create(PromotionRequest request) {
         if (request.getCode().length() > 20) {
-            throw new RestApiException("Mã khuyến mại không được vượt quá 20 kí tự.");
+            throw new RestApiException("Mã đợt giảm giá không được vượt quá 20 kí tự.");
         }
         if (!isCodeUnique(request.getCode())) {
-            throw new RestApiException("Mã khuyến mại đã tồn tại");
+            throw new RestApiException("Mã đợt giảm giá đã tồn tại");
         }
         if (request.getName().length() > 50) {
-            throw new RestApiException("Tên khuyến mại không được vượt quá 50 kí tự.");
+            throw new RestApiException("Tên đợt giảm giá không được vượt quá 50 kí tự.");
         }
         if(request.getValue() < 1 || request.getValue() >50){
             throw new RestApiException("Vui lòng nhập giá trị (%) hợp lệ!");
@@ -94,16 +94,16 @@ public class PromotionServiceImpl implements PromotionService {
         Promotion promotion = promotionRepository.findById(id).get();
 
         if (request.getCode().length() > 20) {
-            throw new RestApiException("Mã khuyến mại không được vượt quá 20 kí tự.");
+            throw new RestApiException("Mã đợt giảm giá không được vượt quá 20 kí tự.");
         }
 
         if(!promotion.getCode().equalsIgnoreCase(request.getCode())){
             if (!isCodeUnique(request.getCode())) {
-                throw new RestApiException("Mã khuyến mại đã tồn tại");
+                throw new RestApiException("Mã đợt giảm giá đã tồn tại");
             }
         }
         if (request.getName().length() > 50) {
-            throw new RestApiException("Tên khuyến mại không được vượt quá 50 kí tự.");
+            throw new RestApiException("Tên đợt giảm giá không được vượt quá 50 kí tự.");
         }
         if(request.getValue() < 1 || request.getValue() >50){
             throw new RestApiException("Vui lòng nhập giá trị (%) hợp lệ!");
@@ -202,7 +202,7 @@ public class PromotionServiceImpl implements PromotionService {
         Promotion promotionToUpdate = promotionRepository.findById(id).orElse(null);
         LocalDateTime currentDate = LocalDateTime.now();
         if(promotionToUpdate.getStatus()==2) {
-            throw new RestApiException("Khuyến mại này đã kết thúc rồi!");
+            throw new RestApiException("Đợt giảm giá này đã kết thúc rồi!");
         }
         if(promotionToUpdate.getStatus()==0){
             LocalDateTime startDate = currentDate.with(LocalTime.MIN);

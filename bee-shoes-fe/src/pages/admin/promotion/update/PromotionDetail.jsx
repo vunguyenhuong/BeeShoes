@@ -58,7 +58,7 @@ function PromotionDetail() {
         Modal.confirm({
             title: "Xác nhận",
             maskClosable: true,
-            content: "Xác nhận thêm đợt khuyến mại mới?",
+            content: "Xác nhận thêm đợt giảm giá mới?",
             okText: "Xác nhận",
             cancelText: "Hủy",
             onOk: async () => {
@@ -86,7 +86,7 @@ function PromotionDetail() {
             </Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-            <Link to="/admin/promotion">Danh sách đợt khuyến mại</Link>
+            <Link to="/admin/promotion">Danh sách đợt giảm giá</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item> {promotion.name}</Breadcrumb.Item>
       </Breadcrumb>
@@ -95,18 +95,18 @@ function PromotionDetail() {
                     <Col xl={12}>
                         <Row gutter={10}>
                             <Col xl={12}>
-                                <Form.Item label={"Mã đợt khuyến mại"} name={"code"} rules={[{ required: true, message: "Mã đợt khuyến mại không được để trống!", },]}>
-                                    <Input placeholder="Nhập mã đợt khuyến mại..." />
+                                <Form.Item label={"Mã đợt giảm giá"} name={"code"} rules={[{ required: true, message: "Mã đợt giảm giá không được để trống!", },]}>
+                                    <Input placeholder="Nhập mã đợt giảm giá..." />
                                 </Form.Item>
                             </Col>
                             <Col xl={12}>
-                                <Form.Item label={"Tên đợt khuyến mại"} name={"name"} rules={[{ required: true, message: "Tên đợt khuyến mại không được để trống!", },]} >
-                                    <Input placeholder="Nhập tên đợt khuyến mại..." />
+                                <Form.Item label={"Tên đợt giảm giá"} name={"name"} rules={[{ required: true, message: "Tên đợt giảm giá không được để trống!", },]} >
+                                    <Input placeholder="Nhập tên đợt giảm giá..." />
                                 </Form.Item>
                             </Col>
                             <Col xl={12}>
                                 <Form.Item label={"Giá trị (%)"} name={"value"} rules={[{ required: true, message: "Giá trị không được để trống!", },]} >
-                                    <Input placeholder="Nhập % đợt khuyến mại..." />
+                                    <Input placeholder="Nhập % đợt giảm giá..." />
                                 </Form.Item>
                             </Col>
                             <Col xl={12}>
@@ -120,7 +120,7 @@ function PromotionDetail() {
                                 </Form.Item>
                             </Col>
                             <Col xl={24}>
-                                <Button type="primary" className="bg-warning" htmlType="submit">Cập nhật đợt khuyến mại</Button>
+                                <Button type="primary" className="bg-warning" htmlType="submit">Cập nhật đợt giảm giá</Button>
                             </Col>
                         </Row>
                     </Col>

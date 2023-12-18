@@ -79,7 +79,7 @@ public class VoucherServiceImpl implements VoucherService {
     @Transactional(rollbackFor = RestApiException.class)
     public Voucher add(VoucherRequest request) {
         if (request.getName().length() > 50) {
-            throw new RestApiException("Tên Voucher không được vượt quá 50 kí tự.");
+            throw new RestApiException("Tên phiếu giảm giá không được vượt quá 50 kí tự.");
         }
         if (request.getQuantity() <= 0) {
             throw new RestApiException("Số lượng phải lớn hơn 0.");
@@ -132,8 +132,8 @@ public class VoucherServiceImpl implements VoucherService {
 
                     Notification notification = new Notification();
                     notification.setAccount(account);
-                    notification.setTitle("Voucher dành riêng cho bạn [" + voucher.getCode() + "]");
-                    notification.setContent("Bạn vừa nhận được Voucher giảm " +
+                    notification.setTitle("Phiếu giảm giá dành riêng cho bạn [" + voucher.getCode() + "]");
+                    notification.setContent("Bạn vừa nhận được phiếu giảm giá giảm " +
                             voucher.getPercentReduce() + "% cho đơn hàng từ " +
                             FormatCommon.convertCurrency(voucher.getMinBillValue().doubleValue()) + "" +
                             "##Ngày bắt đầu: " + FormatCommon.formatDate(voucher.getStartDate()) +
@@ -151,7 +151,7 @@ public class VoucherServiceImpl implements VoucherService {
     public Voucher update(Long id, VoucherRequest request) {
         Voucher voucherToUpdate = voucherRepository.findById(id).orElse(null);
         if (request.getName().length() > 50) {
-            throw new RestApiException("Tên Voucher không được vượt quá 50 kí tự.");
+            throw new RestApiException("Tên phiếu giảm giá không được vượt quá 50 kí tự.");
         }
         if (request.getQuantity() <= 0) {
             throw new RestApiException("Số lượng phải lớn hơn 0. ");
@@ -191,8 +191,8 @@ public class VoucherServiceImpl implements VoucherService {
 
                     Notification notification = new Notification();
                     notification.setAccount(account);
-                    notification.setTitle("Voucher dành riêng cho bạn [" + voucherSave.getCode() + "]");
-                    notification.setContent("Bạn vừa nhận được Voucher giảm " +
+                    notification.setTitle("Phiếu giảm giá dành riêng cho bạn [" + voucherSave.getCode() + "]");
+                    notification.setContent("Bạn vừa nhận được phiếu giảm giá giảm " +
                             voucherSave.getPercentReduce() + "% cho đơn hàng từ " +
                             FormatCommon.convertCurrency(voucherSave.getMinBillValue().doubleValue()) + "" +
                             "##Ngày bắt đầu: " + FormatCommon.formatDate(voucherSave.getStartDate()) +
@@ -257,7 +257,7 @@ public class VoucherServiceImpl implements VoucherService {
         Voucher voucherToUpdate = voucherRepository.findById(id).orElse(null);
         LocalDateTime currentDate = LocalDateTime.now();
         if(voucherToUpdate.getStatus()==2) {
-            throw new RestApiException("Voucher này đã kết thúc rồi!");
+            throw new RestApiException("Phiếu giảm giá này đã kết thúc rồi!");
         }
         if(voucherToUpdate.getStatus()==0){
             LocalDateTime startDate = currentDate.with(LocalTime.MIN);
@@ -290,7 +290,7 @@ public class VoucherServiceImpl implements VoucherService {
         // Lấy ngày hiện tại
         LocalDateTime currentDateTime = LocalDateTime.now();
         // set name voucher theo ngày tạo
-        String voucherName = "Voucher ngày " + currentDateTime.format(DateTimeFormatter.ofPattern("dd/MM"));
+        String voucherName = "Phiếu giảm giá ngày " + currentDateTime.format(DateTimeFormatter.ofPattern("dd/MM"));
         // Đặt startDate vào 00:00:00 của ngày hiện tại
         LocalDateTime startDate = currentDateTime.with(LocalTime.MIN);
         // Đặt endDate vào 23:59:59 của ngày hiện tại

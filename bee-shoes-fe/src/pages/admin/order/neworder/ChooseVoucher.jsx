@@ -55,7 +55,7 @@ function ChooseVoucher({ onSelectVoucher, customerId }) {
             <Col xl={24}>
                 <div className="border border-1 p-2 d-flex rounded-2" style={{ cursor: "pointer" }}>
                     <div className="flex-grow-1 fw-semibold">
-                        <i className='fas fa-ticket'></i> BeeShoes Voucher
+                        <i className='fas fa-ticket'></i> BeeShoes phiếu giảm giá
                     </div>
                     <div className="text-secondary" onClick={() => { setIsModalOpen(true); loadData() }}>
                         Chọn hoặc nhập mã <i class="fa-solid fa-chevron-right"></i>
@@ -67,8 +67,8 @@ function ChooseVoucher({ onSelectVoucher, customerId }) {
                 <div className="" style={{ maxHeight: '64vh', overflowY: 'auto', overflowX: 'hidden' }}>
                     <div className="container">
                         <Input placeholder='Tìm kiếm voucher theo mã, tên...' onChange={(e) => setSearchValue(e.target.value)} />
-                        <h6 className='mt-2'>Voucher dành riêng cho bạn</h6>
-                        {privateVoucher.length === 0 ? <Empty description="Danh sách voucher trống" /> : privateVoucher.map((item, index) => (
+                        <h6 className='mt-2'>Phiếu giảm giá dành riêng cho bạn</h6>
+                        {privateVoucher.length === 0 ? <Empty description="Danh sách phiếu giảm giá trống" /> : privateVoucher.map((item, index) => (
                             <div onClick={() => { setSelectedVoucher(item); onSelectVoucher(item) }} className={`d-flex align-items-center position-relative pt-2 mt-3 border border-2 rounded-2 px-2 ${selectedVoucher === item && 'border-warning'}`}>
                                 <div className="flex-grow-1">
                                     <ul className='list-unstyled'>
@@ -86,8 +86,8 @@ function ChooseVoucher({ onSelectVoucher, customerId }) {
                             </div>
                         ))}
                         <hr className='' />
-                        <h6 >Các voucher khác</h6>
-                        {publicVoucher.length === 0 ? <Empty description="Danh sách voucher trống" /> : publicVoucher.map((item, index) => (
+                        <h6 >Các phiếu giảm giá khác</h6>
+                        {publicVoucher.length === 0 ? <Empty description="Danh sách phiếu giảm giá trống" /> : publicVoucher.map((item, index) => (
                             <div onClick={() => { setSelectedVoucher(item); onSelectVoucher(item) }} className={`d-flex align-items-center position-relative pt-2 mt-3 border border-2 rounded-2 px-2 ${selectedVoucher === item && 'border-warning'}`}>
                                 <div className="flex-grow-1">
                                     <ul className='list-unstyled'>

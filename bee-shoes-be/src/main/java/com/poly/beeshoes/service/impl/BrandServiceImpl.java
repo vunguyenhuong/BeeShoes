@@ -34,7 +34,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Brand create(BrandRequest request) {
         if (repository.existsByNameIgnoreCase(request.getName())) {
-            throw new RestApiException("Thương hiệu  " + request.getName() + " đã tồn tại!");
+            throw new RestApiException("Thương hiệu:  " + request.getName() + " đã tồn tại!");
         }
         Brand brand = brandConvert.convertRequestToEntity(request);
         return repository.save(brand);
@@ -47,7 +47,7 @@ public class BrandServiceImpl implements BrandService {
             if (oldBrand.getName().equals(request.getName())) {
                 return repository.save(brandConvert.convertRequestToEntity(oldBrand, request));
             }
-            throw new RestApiException("Màu " + request.getName() + " đã tồn tại!");
+            throw new RestApiException("Thương hiệu: " + request.getName() + " đã tồn tại!");
         } else {
             return repository.save(brandConvert.convertRequestToEntity(oldBrand, request));
         }

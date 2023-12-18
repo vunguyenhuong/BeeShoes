@@ -219,17 +219,27 @@ public class VoucherServiceImpl implements VoucherService {
         for (Voucher voucher : vouchers) {
             LocalDateTime startDate = voucher.getStartDate();
             LocalDateTime endDate = voucher.getEndDate();
-            if (currentDateTime.isBefore(startDate)) {
-                voucher.setStatus(0); // Chưa bắt đầu
-            } else if (currentDateTime.isAfter(startDate) && currentDateTime.isBefore(endDate)) {
-                voucher.setStatus(1); // Đang diễn ra
+            // so luong bang 0 thi se ket thuc voucher som
+            if (voucher.getQuantity() == 0) {
+                voucher.setStatus(2); // Đã kết thúc
+//                voucher.setEndDate(currentDateTime);
             } else {
-                voucher.setStatus(2); // Đã kết thúc
+                if (currentDateTime.isBefore(startDate)) {
+                    voucher.setStatus(0); // Chưa bắt đầu
+                } else if (currentDateTime.isAfter(startDate) && currentDateTime.isBefore(endDate)) {
+                    voucher.setStatus(1); // Đang diễn ra
+                } else {
+                    voucher.setStatus(2); // Đã kết thúc
 //                voucher.setDeleted(true);
-            }
-            if (endDate.isEqual(startDate)) {
-                voucher.setStatus(2); // Đã kết thúc
+                }
+
+                if (voucher.getQuantity() > 0) {
+                    voucher.setStatus(1); // Đang diễn ra
+                }
+                if (endDate.isEqual(startDate)) {
+                    voucher.setStatus(2); // Đã kết thúc
 //                voucher.setDeleted(true);
+                }
             }
             voucherRepository.save(voucher);
         }

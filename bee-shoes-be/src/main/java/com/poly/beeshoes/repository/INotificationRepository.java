@@ -21,9 +21,8 @@ public interface INotificationRepository extends JpaRepository<Notification, Lon
             n.type AS type
             FROM notification n
             WHERE n.account_id = :idAccount
-            AND :title IS NULL OR :title = '' OR n.title LIKE %:title%
             """, nativeQuery = true)
-    List<NotificationResponse> getByAccount(@Param("idAccount") Long id, @Param("title") String title);
+    List<NotificationResponse> getByAccount(@Param("idAccount") Long id);
 
     List<Notification> findByAccountId(Long id);
 }

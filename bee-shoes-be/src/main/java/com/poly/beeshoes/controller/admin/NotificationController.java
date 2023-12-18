@@ -16,8 +16,8 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
     @GetMapping("/{id}")
-    public ResponseObject getByAccount(@PathVariable Long id, @RequestParam(defaultValue = "", required = false) String title){
-        return new ResponseObject(notificationService.getByAccount(id, title));
+    public ResponseObject getByAccount(@PathVariable Long id){
+        return new ResponseObject(notificationService.getByAccount(id));
     }
 
     @DeleteMapping("/{id}")

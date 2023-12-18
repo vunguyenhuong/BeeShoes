@@ -19,8 +19,8 @@ public class NotificationControllerClient {
 //    @MessageMapping("/sendNotification")
 //    @SendTo("/topic/notification")
     @GetMapping("/{id}")
-    public ResponseObject getByAccount(@PathVariable(name = "id") Long id,@RequestParam(defaultValue = "", required = false) String title){
-        return new ResponseObject(notificationService.getByAccount(id,title));
+    public ResponseObject getByAccount(@PathVariable(name = "id") Long id){
+        return new ResponseObject(notificationService.getByAccount(id));
     }
 
     @PutMapping("/{id}")

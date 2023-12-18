@@ -55,7 +55,7 @@ function ChooseVoucher({ onSelectVoucher, customerId }) {
             <Col xl={24}>
                 <div className="border border-1 p-2 d-flex rounded-2" style={{ cursor: "pointer" }}>
                     <div className="flex-grow-1 fw-semibold">
-                        <i className='fas fa-ticket'></i> BeeShoes phiếu giảm giá
+                        <i className='fas fa-ticket'></i> Phiếu giảm giá
                     </div>
                     <div className="text-secondary" onClick={() => { setIsModalOpen(true); loadData() }}>
                         Chọn hoặc nhập mã <i class="fa-solid fa-chevron-right"></i>
@@ -63,10 +63,10 @@ function ChooseVoucher({ onSelectVoucher, customerId }) {
                 </div>
             </Col>
 
-            <Modal title="Chọn Voucher" open={isModalOpen} onOk={() => setIsModalOpen(false)} onCancel={() => setIsModalOpen(false)} footer={""} width={500}>
+            <Modal title="Chọn phiếu giảm giá" open={isModalOpen} onOk={() => setIsModalOpen(false)} onCancel={() => setIsModalOpen(false)} footer={""} width={500}>
                 <div className="" style={{ maxHeight: '64vh', overflowY: 'auto', overflowX: 'hidden' }}>
                     <div className="container">
-                        <Input placeholder='Tìm kiếm voucher theo mã, tên...' onChange={(e) => setSearchValue(e.target.value)} />
+                        <Input placeholder='Tìm kiếm phiếu giảm giá theo mã, tên...' onChange={(e) => setSearchValue(e.target.value)} />
                         <h6 className='mt-2'>Phiếu giảm giá dành riêng cho bạn</h6>
                         {privateVoucher.length === 0 ? <Empty description="Danh sách phiếu giảm giá trống" /> : privateVoucher.map((item, index) => (
                             <div onClick={() => { setSelectedVoucher(item); onSelectVoucher(item) }} className={`d-flex align-items-center position-relative pt-2 mt-3 border border-2 rounded-2 px-2 ${selectedVoucher === item && 'border-warning'}`}>

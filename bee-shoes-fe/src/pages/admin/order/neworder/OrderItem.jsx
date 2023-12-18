@@ -176,7 +176,7 @@ function OrderItem({ index, props, onSuccess }) {
   useEffect(() => {
     if (voucher !== null) {
       if (totalMoney < voucher.minBillValue) {
-        toast.error("Không thể áp dụng Voucher do không đủ điều kiện!")
+        toast.error("Không thể áp dụng phiếu giảm giá do không đủ điều kiện!")
         setVoucher(null);
         setMoneyReduce(0);
       } else {
@@ -541,7 +541,7 @@ function OrderItem({ index, props, onSuccess }) {
               <Row gutter={10}>
                 <ChooseVoucher onSelectVoucher={(voucher) => {
                   if (voucher.quantity <= 0) {
-                    toast.error("Voucher này đã hết lượt sử dụng!");
+                    toast.error("Phiếu giảm giá này đã hết lượt sử dụng!");
                   } else {
                     setVoucher(voucher);
                   }
@@ -556,7 +556,7 @@ function OrderItem({ index, props, onSuccess }) {
                     <Alert message={
                       <div className="d-flex align-items-center">
                         <div className="flex-grow-1">
-                          Áp dụng thành công Voucher <span className="fw-semibold">{voucher?.name}</span>
+                          Áp dụng thành công phiếu giảm giá <span className="fw-semibold">{voucher?.name}</span>
                           <br />
                           Giảm <span className="text-danger fw-semibold">{voucher?.percentReduce}%</span> đơn tối thiểu <span className="text-danger fw-semibold"><FormatCurrency value={voucher?.minBillValue} /></span>
                         </div>
@@ -565,7 +565,7 @@ function OrderItem({ index, props, onSuccess }) {
                             setVoucher(null);
                             setMoneyReduce(0);
                           }}>
-                            <Tooltip title="Bỏ chọn Voucher" >
+                            <Tooltip title="Bỏ chọn phiếu giảm giá" >
                               <i className="fas fa-xmark-circle"></i>
                             </Tooltip>
                           </span>

@@ -262,9 +262,14 @@ public class BillServiceImpl implements BillService {
             billDetail.setPrice(shoeDetail.getPrice());
             billDetail.setStatus(false);
             billDetailRepository.save(billDetail);
+            if(shoeDetail.getQuantity() < x.getQuantity()){
+                throw new RestApiException(shoeDetail.getShoe().getName()
+                        + " [" + shoeDetail.getColor().getName()+"-" + shoeDetail.getSize().getName()+"] chỉ được mua tối đa " + shoeDetail.getQuantity() + " sản phẩm!");
+            }
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
             if(shoeDetail.getQuantity() < 0){
-                throw new RestApiException("Sản phẩm này đã hết hàng!");
+                throw new RestApiException("Sản phẩm " + shoeDetail.getShoe().getName()
+                        + " [" + shoeDetail.getColor().getName()+"-" + shoeDetail.getSize().getName()+"] đã hết hàng!");
             }
             shoeDetailRepository.save(shoeDetail);
         }

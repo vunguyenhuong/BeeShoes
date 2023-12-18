@@ -94,7 +94,7 @@ const sidebarData = [
       },
       {
         key: "qlVoucher",
-        title: "Quản lý Voucher",
+        title: "Quản lý phiếu giảm giá",
         icon: "fa-ticket",
         path: "/admin/voucher",
       },

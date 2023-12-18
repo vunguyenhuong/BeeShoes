@@ -63,7 +63,7 @@ function VoucherDetail() {
     Modal.confirm({
       title: "Xác nhận",
       maskClosable: true,
-      content: "Xác nhận cập nhật Voucher ?",
+      content: "Xác nhận cập nhật phiếu giảm giá ?",
       okText: "Xác nhận",
       cancelText: "Hủy",
       onOk: () => {
@@ -95,19 +95,19 @@ function VoucherDetail() {
           </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link to="/admin/voucher">Danh sách Voucher</Link>
+          <Link to="/admin/voucher">Danh sách phiếu giảm giá</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>[{voucher.code}] {voucher.name}</Breadcrumb.Item>
       </Breadcrumb>
-      <h6>Thông tin Voucher</h6>
+      <h6>Thông tin phiếu giảm giá</h6>
       <div className="container">
         <Form onFinish={onSubmit} layout="vertical" form={form}>
           <Row gutter={10}>
             <Col xl={12}>
               <Row gutter={10}>
                 <Col xl={12}>
-                  <Form.Item label={"Tên voucher"} name={"name"} rules={[{ required: true, message: "Tên Voucher không được để trống!", },]}>
-                    <Input placeholder="Nhập tên voucher..." />
+                  <Form.Item label={"Tên phiếu giảm giá"} name={"name"} rules={[{ required: true, message: "Tên phiếu giảm giá không được để trống!", },]}>
+                    <Input placeholder="Nhập tên phiếu giảm giá..." />
                   </Form.Item>
                 </Col>
                 <Col xl={12}>
@@ -136,7 +136,7 @@ function VoucherDetail() {
                   </Form.Item>
                 </Col>
                 <Col xl={24}>
-                  <Form.Item label={"Loại voucher"} name={"type"} rules={[{ required: true, message: "Ngày kết thúc không được để trống!", },]} >
+                  <Form.Item label={"Loại phiếu giảm giá"} name={"type"} rules={[{ required: true, message: "Ngày kết thúc không được để trống!", },]} >
                     <Radio.Group>
                       <Radio value={true}>Công khai</Radio>
                       <Radio value={false}>Áp dụng với 1 số khách hàng</Radio>
@@ -151,7 +151,7 @@ function VoucherDetail() {
           </Row>
           <Form.Item className="mt-3 float-end">
             <Button type="primary" htmlType="submit" className="bg-warning">
-              <i className="fas fa-edit me-2"></i> Cập nhật Voucher
+              <i className="fas fa-edit me-2"></i> Cập nhật phiếu giảm giá
             </Button>
           </Form.Item>
         </Form>

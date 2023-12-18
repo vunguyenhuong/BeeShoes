@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -222,6 +223,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+    @Transactional(rollbackFor = RestApiException.class)
     public ResponseObject createBillClient(BillClientRequest request) {
         Bill bill = new Bill();
         BillHistory billHistory = new BillHistory();
@@ -261,6 +263,9 @@ public class BillServiceImpl implements BillService {
             billDetail.setStatus(false);
             billDetailRepository.save(billDetail);
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
+            if(shoeDetail.getQuantity() < 0){
+                throw new RestApiException("Sản phẩm này đã hết hàng!");
+            }
             shoeDetailRepository.save(shoeDetail);
         }
         if (bill.getCustomer() != null) {
@@ -278,6 +283,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+    @Transactional(rollbackFor = RestApiException.class)
     public ResponseObject createBillClientVnpay(BillClientRequest request, String code) {
         Bill bill = new Bill();
         BillHistory billHistory = new BillHistory();
@@ -329,6 +335,9 @@ public class BillServiceImpl implements BillService {
             billDetail.setStatus(false);
             billDetailRepository.save(billDetail);
             shoeDetail.setQuantity(shoeDetail.getQuantity() - x.getQuantity());
+            if(shoeDetail.getQuantity() < 0){
+                throw new RestApiException("Sản phẩm này đã hết hàng!");
+            }
             shoeDetailRepository.save(shoeDetail);
         }
         if (bill.getCustomer() != null) {

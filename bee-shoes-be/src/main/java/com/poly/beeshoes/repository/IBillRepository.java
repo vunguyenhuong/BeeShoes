@@ -62,7 +62,7 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
                WHEN status = 5 THEN 'Đang giao'
                WHEN status = 6 THEN 'Hoàn thành'
                WHEN status = 7 THEN 'Đã hủy'
-               WHEN status = 8 THEN 'Trả hàng'
+               WHEN status = 8 THEN 'Hoàn 1 phần'
                ELSE 'Chờ thanh toán'
            END AS statusName,
            status as status,
@@ -97,7 +97,7 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
                     COUNT(DISTINCT b.id) AS totalBillToday,
                     SUM(b.total_money) AS totalBillAmountToday
                 FROM bill b JOIN bill_detail bd ON b.id = bd.bill_id
-                WHERE receive_date >= :startOfDay AND receive_date <= :endOfDay 
+                WHERE b.receive_date >= :startOfDay AND b.receive_date <= :endOfDay 
                 AND b.status IN ('8', '6')                   
                           """, nativeQuery = true)
     List<StatisticalDayResponse> getAllStatisticalDay(@Param("startOfDay") Long startOfDay,

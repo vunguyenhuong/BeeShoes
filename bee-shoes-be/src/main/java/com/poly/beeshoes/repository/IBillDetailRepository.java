@@ -41,12 +41,12 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
                 bd.price AS price,
                 sd.price AS shoePrice,
                 CASE
-                    WHEN CURRENT_TIMESTAMP BETWEEN pm.start_date AND pm.end_date
+                    WHEN pm.status = 1
                         THEN pmd.promotion_price
                     ELSE NULL
                 END AS discountValue,
                 CASE
-                    WHEN CURRENT_TIMESTAMP BETWEEN pm.start_date AND pm.end_date
+                    WHEN pm.status = 1
                         THEN MAX(pm.value)
                     ELSE NULL
                 END AS discountPercent,
@@ -66,7 +66,7 @@ public interface IBillDetailRepository extends JpaRepository<BillDetail, Long> {
                 bd.bill_id = :#{#req.bill}
                 AND :#{#req.status} IS NULL OR bd.status = :#{#req.status}
             GROUP BY
-                bd.id,pmd.promotion_price,pm.start_date, pm.end_date
+                bd.id,pmd.promotion_price,pm.status
             """, nativeQuery = true)
     Page<BillDetailResponse> getAllBillDetail(@Param("req") BillDetailRequest request, Pageable pageable);
 }

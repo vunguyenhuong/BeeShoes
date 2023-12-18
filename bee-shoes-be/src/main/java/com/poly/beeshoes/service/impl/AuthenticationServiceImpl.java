@@ -43,12 +43,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String signUp(SignUpRequets signUpRequets) {
-
-        Optional<Account> optional = accountRepository.findByEmail(signUpRequets.getEmail());
-        if(optional.isPresent()){
-            throw new RestApiException("Email không tồn tại");
-        }
-
         Account account = new Account();
         account.setEmail(signUpRequets.getEmail());
         account.setAccountRoles(signUpRequets.getRole());
@@ -57,11 +51,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if(signUpRequets.getRole().equals(AccountRoles.ROLE_USER)){
             account.setRole(roleRepository.findByName("Khách hàng"));
         }
+        if (accountRepository.existsByEmailAndEmailNot(signUpRequets.getEmail(), ""))
+            throw new RestApiException("Email đã tồn tại!");
+        if (accountRepository.existsByPhoneNumberAndPhoneNumberNot(signUpRequets.getPhoneNumber(), ""))
+            throw new RestApiException("SDT đã tồn tại!");
         accountRepository.save(account);
-
         String emailContent = "Chào " + signUpRequets.getEmail() + "\n" + "Bạn vừa dùng email này để đăng ký tài khoản cho hệ thống Bee Shoes Store\n" + "Tài khoản của bạn là: " + signUpRequets.getEmail() + "\n" + "Mật khẩu đăng nhập là: " + signUpRequets.getPassword() + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n" + "Trang chủ BeeShoes: https://beeshoes.vunguyenhuong.id.vn\n" + "Liên hệ: https://facebook.com/VuNguyenHuong.Official";
         mailUtils.sendEmail(signUpRequets.getEmail(), "Thư xác thực tài khoản", emailContent);
-
         return "Người dùng đã được thêm vào hệ thống";
     }
 
@@ -90,11 +86,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RestApiException("Không tìm thấy tài khoản.");
         }
 
-        Random rnd = new Random();
-        String password = String.valueOf(rnd.nextInt(999999));
+        String password = GenCode.randomPassword();
         optional.get().setPassword(passwordEncoder.encode(password));
         accountRepository.save(optional.get());
-        String emailContent = "Chào " + optional.get().getEmail() + "\n" + "Mật khẩu mới cho hệ thống Bee Shoes Store\n" + "Tài khoản của bạn là: " + optional.get().getEmail() + "\n" + "Mật khẩu đăng nhập là: " + GenCode.randomPassword() + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n" + "Trang chủ BeeShoes: https://beeshoes.vunguyenhuong.id.vn\n" + "Liên hệ: https://facebook.com/VuNguyenHuong.Official";
+        String emailContent = "Chào " + optional.get().getEmail() + "\n" + "Mật khẩu mới cho hệ thống Bee Shoes Store\n" + "Tài khoản của bạn là: " + optional.get().getEmail() + "\n" + "Mật khẩu đăng nhập là: " + password + "\n\n" + "Đây là email tự động, vui lòng không reply email này.\nCảm ơn.\n\n" + "Trang chủ BeeShoes: https://beeshoes.vunguyenhuong.id.vn\n" + "Liên hệ: https://facebook.com/VuNguyenHuong.Official";
         mailUtils.sendEmail(optional.get().getEmail(), "Thư xác thực tài khoản", emailContent);
         return "Thành công.";
     }

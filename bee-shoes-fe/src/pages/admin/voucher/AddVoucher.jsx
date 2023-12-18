@@ -72,7 +72,7 @@ function AddVoucherForm() {
             <Col xl={12}>
               <Row gutter={10}>
                 <Col xl={12}>
-                  <Form.Item label={"Tên phiếu giảm giá"} name={"name"} rules={[{ required: true, message: "Tên Voucher không được để trống!", },]}>
+                  <Form.Item label={"Tên phiếu giảm giá"} name={"name"} rules={[{ required: true, message: "Tên phiếu giảm giá không được để trống!", },]}>
                     <Input placeholder="Nhập tên phiếu giảm giá..." />
                   </Form.Item>
                 </Col>

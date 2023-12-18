@@ -35,7 +35,7 @@ function AddVoucherForm() {
     Modal.confirm({
       title: "Xác nhận",
       maskClosable: true,
-      content: "Xác nhận thêm Voucher ?",
+      content: "Xác nhận thêm phiếu giảm giá ?",
       okText: "Xác nhận",
       cancelText: "Hủy",
       onOk: () => {
@@ -62,9 +62,9 @@ function AddVoucherForm() {
           </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link to="/admin/voucher">Danh sách Voucher</Link>
+          <Link to="/admin/voucher">Danh sách phiếu giảm giá</Link>
         </Breadcrumb.Item>
-        <Breadcrumb.Item>Thêm Voucher</Breadcrumb.Item>
+        <Breadcrumb.Item>Thêm phiếu giảm giá</Breadcrumb.Item>
       </Breadcrumb>
       <div className="container">
         <Form onFinish={handAddVoucher} layout="vertical" form={form}>
@@ -72,13 +72,13 @@ function AddVoucherForm() {
             <Col xl={12}>
               <Row gutter={10}>
                 <Col xl={12}>
-                  <Form.Item label={"Tên voucher"} name={"name"} rules={[{ required: true, message: "Tên Voucher không được để trống!", },]}>
-                    <Input placeholder="Nhập tên voucher..." />
+                  <Form.Item label={"Tên phiếu giảm giá"} name={"name"} rules={[{ required: true, message: "Tên Voucher không được để trống!", },]}>
+                    <Input placeholder="Nhập tên phiếu giảm giá..." />
                   </Form.Item>
                 </Col>
                 <Col xl={12}>
                   <Form.Item label={"Số lượng"} name={"quantity"} rules={[{ required: true, message: "Số lượng không được để trống!" },]} >
-                    <Input type="number" min={0} placeholder="Nhập số lượng..." />
+                    <Input type="number" min={0} max={10000} placeholder="Nhập số lượng..." />
                   </Form.Item>
                 </Col>
                 <Col xl={12}>
@@ -95,6 +95,7 @@ function AddVoucherForm() {
                       formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       parser={(value) => (value !== null && value !== undefined ? value.replace(/(,*)/g, "") : "")}
                       controls={false}
+                      max={1000000000}
                       min={0}
                       suffix="VNĐ"
                       placeholder="Nhập giá trị đơn tối thiểu..."
@@ -114,7 +115,7 @@ function AddVoucherForm() {
                   </Form.Item>
                 </Col>
                 <Col xl={24}>
-                  <Form.Item label={"Loại voucher"} name={"type"} rules={[{ required: true, message: "Ngày kết thúc không được để trống!", },]} >
+                  <Form.Item label={"Loại phiếu giảm giá"} name={"type"} rules={[{ required: true, message: "Ngày kết thúc không được để trống!", },]} >
                     <Radio.Group>
                       <Radio value={true}>Công khai</Radio>
                       <Radio value={false}>Áp dụng với 1 số khách hàng</Radio>
@@ -129,7 +130,7 @@ function AddVoucherForm() {
           </Row>
           <Form.Item className="mt-3 float-end">
             <Button type="primary" htmlType="submit" className="bg-warning">
-              <i className="fas fa-plus me-2"></i> Thêm Voucher
+              <i className="fas fa-plus me-2"></i> Thêm phiếu giảm giá
             </Button>
           </Form.Item>
         </Form>

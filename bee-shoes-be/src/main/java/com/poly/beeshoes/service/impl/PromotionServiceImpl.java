@@ -56,7 +56,7 @@ public class PromotionServiceImpl implements PromotionService {
         if (request.getName().length() > 50) {
             throw new RestApiException("Tên khuyến mại không được vượt quá 50 kí tự.");
         }
-        if(request.getValue() <= 0 || request.getValue() >= 100){
+        if(request.getValue() < 1 || request.getValue() >50){
             throw new RestApiException("Vui lòng nhập giá trị (%) hợp lệ!");
         }
         if (request.getStartDate().isAfter(request.getEndDate())) {
@@ -105,7 +105,7 @@ public class PromotionServiceImpl implements PromotionService {
         if (request.getName().length() > 50) {
             throw new RestApiException("Tên khuyến mại không được vượt quá 50 kí tự.");
         }
-        if(request.getValue() <= 0 || request.getValue() >= 100){
+        if(request.getValue() < 1 || request.getValue() >50){
             throw new RestApiException("Vui lòng nhập giá trị (%) hợp lệ!");
         }
         if (request.getStartDate().isAfter(request.getEndDate())) {
@@ -169,7 +169,7 @@ public class PromotionServiceImpl implements PromotionService {
             promotion.setStatus(1); // Đang diễn ra
         } else {
             promotion.setStatus(2); // Đã kết thúc
-            promotion.setDeleted(true);
+//            promotion.setDeleted(true);
         }
         promotionRepository.save(promotion);
     }
@@ -184,13 +184,14 @@ public class PromotionServiceImpl implements PromotionService {
                 promotion.setStatus(0); // Chưa bắt đầu
             } else if (currentDateTime.isAfter(startDate) && currentDateTime.isBefore(endDate)) {
                 promotion.setStatus(1); // Đang diễn ra
+//                promotion.setDeleted(null);
             } else {
                 promotion.setStatus(2); // Đã kết thúc
-                promotion.setDeleted(true);
+//                promotion.setDeleted(true);
             }
             if (endDate.isEqual(startDate)) {
                 promotion.setStatus(2); // Đã kết thúc
-                promotion.setDeleted(true);
+//                promotion.setDeleted(true);
             }
             promotionRepository.save(promotion);
         }

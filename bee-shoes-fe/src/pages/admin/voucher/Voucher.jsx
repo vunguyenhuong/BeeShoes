@@ -53,7 +53,7 @@ function Voucher() {
   const showDeleteConfirm = (item) => {
     confirm({
       title: "Xác nhận ",
-      content: "Bạn có chắc muốn kết thúc voucher này không?",
+      content: "Bạn có chắc muốn kết thúc phiếu giảm giá này không?",
       okText: "Xác nhận",
       okType: "danger",
       cancelText: "Hủy",
@@ -146,15 +146,15 @@ function Voucher() {
           className="mb-2"
           items={[
             { href: "/", title: <FaHome /> },
-            { title: "Danh sách Voucher" },
+            { title: "Danh sách phiếu giảm giá" },
           ]}
         />
         <Row gutter={12}>
           <Col span={6}>
-            <label className="mb-1">Nhập mã, tên Voucher </label>
+            <label className="mb-1">Nhập mã, tên phiếu giảm giá </label>
             <Input
               onChange={(event) => setSearchValue(event.target.value)}
-              placeholder="Tìm kiếm voucher theo tên, mã ..."
+              placeholder="Tìm kiếm phiếu giảm giá theo tên, mã ..."
             //
             />
           </Col>
@@ -191,7 +191,7 @@ function Voucher() {
                 className="bg-warning"
                 style={{ textAlign: "center" }}
               >
-                <i className="fas fa-plus-circle me-1"></i>Thêm Voucher
+                <i className="fas fa-plus-circle me-1"></i>Thêm phiếu giảm giá
               </Button>
             </Link>
           </Col>

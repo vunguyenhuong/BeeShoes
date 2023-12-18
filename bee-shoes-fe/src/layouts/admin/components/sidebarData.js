@@ -88,13 +88,13 @@ const sidebarData = [
     children: [
       {
         key: "qlkhuyenmai",
-        title: "Quản lý khuyến mại",
+        title: "Quản lý đợt khuyến mại",
         icon: "fa-gifts",
         path: "/admin/promotion",
       },
       {
         key: "qlVoucher",
-        title: "Quản lý Voucher",
+        title: "Quản lý phiếu giảm giá",
         icon: "fa-ticket",
         path: "/admin/voucher",
       },

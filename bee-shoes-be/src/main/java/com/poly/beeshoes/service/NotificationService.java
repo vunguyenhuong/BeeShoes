@@ -7,7 +7,7 @@ import com.poly.beeshoes.infrastructure.common.ResponseObject;
 import java.util.List;
 
 public interface NotificationService {
-    List<NotificationResponse> getByAccount(Long idAccount, String title);
+    List<NotificationResponse> getByAccount(Long idAccount);
     ResponseObject updateType(Long id);
     void delete(Long idNotification);
     void deleteAllByAccount(Long idAccount);

@@ -28,6 +28,7 @@ function UserProfile() {
 
     const loadData = async () => {
         setLoading(true);
+        console.log(decodedToken.role);
         await request.get(`/staff/${decodedToken.id}`).then(response => {
             setProfile(response);
             form.setFieldsValue({
@@ -55,13 +56,13 @@ function UserProfile() {
         if (avatar !== null) {
             formData.append("avatar", avatar);
         }
-        formData.append("cccd", data.cccd);
+        formData.append("cccd", jwtDecode(getTokenEmpoloyee()).role === 'ROLE_EMLOYEE' ? profile.cccd : data.cccd);
         formData.append("username", data.username);
         formData.append("name", data.name);
         formData.append("gender", data.gender);
         formData.append("birthday", data.birthday);
-        formData.append("email", data.email);
-        formData.append("phoneNumber", data.phoneNumber);
+        formData.append("email", jwtDecode(getTokenEmpoloyee()).role === 'ROLE_EMLOYEE' ? profile.email : data.email);
+        formData.append("phoneNumber", jwtDecode(getTokenEmpoloyee()).role === 'ROLE_EMLOYEE' ? profile.phoneNumber : data.phoneNumber);
         Modal.confirm({
             title: "Xác nhận",
             maskClosable: true,
@@ -126,17 +127,17 @@ function UserProfile() {
                             </Col>
                             <Col xl={24}>
                                 <Form.Item label={"Mã định danh (Số CMT/CCCD)"} name={"cccd"} rules={[{ required: true, message: "Mã định danh không được để trống!", }, { pattern: '^([0-9]{9}|[0-9]{12})$', message: "Mã định danh phải có 9 hoặc 12 kí tự!" }]}>
-                                    <Input placeholder="Nhập mã định danh..." />
+                                    <Input placeholder="Nhập mã định danh..." disabled={jwtDecode(getTokenEmpoloyee()).role === 'ROLE_EMLOYEE' ? true : false} />
                                 </Form.Item>
                             </Col>
                             <Col xl={12}>
                                 <Form.Item label={"Email"} name={"email"} rules={[{ required: true, message: "Email không được để trống!" }, { pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$$', message: "Email không đúng định dạng!" }]} >
-                                    <Input placeholder="Nhập email ..." />
+                                    <Input placeholder="Nhập email ..." disabled={jwtDecode(getTokenEmpoloyee()).role === 'ROLE_EMLOYEE' ? true : false} />
                                 </Form.Item>
                             </Col>
                             <Col xl={12}>
                                 <Form.Item label={"Số điện thoại"} name={"phoneNumber"} rules={[{ required: true, message: "Số điện thoại không được để trống!", }, { pattern: '^0[0-9]{9}$', message: "SDT không đúng định dạng!" }]} >
-                                    <Input placeholder="Nhập số điện thoại ..." />
+                                    <Input placeholder="Nhập số điện thoại ..." disabled={jwtDecode(getTokenEmpoloyee()).role === 'ROLE_EMLOYEE' ? true : false} />
                                 </Form.Item>
                             </Col>
                             <Col xl={12}>
@@ -153,6 +154,7 @@ function UserProfile() {
                                 </Form.Item>
                             </Col>
                         </Row>
+                        {jwtDecode(getTokenEmpoloyee()).role === 'ROLE_EMLOYEE' ? "" : ""}
                         <Form.Item className="float-end">
                             <Button type="primary" className="bg-warning" htmlType="submit">
                                 <i className="fas fa-edit me-2"></i> Cập nhật

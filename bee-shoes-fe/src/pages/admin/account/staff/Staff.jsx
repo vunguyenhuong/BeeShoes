@@ -1,6 +1,8 @@
-import { Button, Col, Input, Radio, Row, Table,Tooltip } from "antd";
+import { Button, Col, Input, Radio, Row, Table, Tooltip } from "antd";
+import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getTokenEmpoloyee } from "~/helper/useCookies";
 import BaseUI from "~/layouts/admin/BaseUI";
 import FormatDate from "~/utils/FormatDate";
 import * as request from "~/utils/httpRequest";
@@ -28,50 +30,6 @@ function Staff() {
       console.log(e);
     })
   }, [searchValue, pageSize, staffStatus, currentPage]);
-
-
-
-  // const handleUpdateStatus = (staff) => {
-  //   Modal.confirm({
-  //     title: "Xác nhận",
-  //     maskClosable: true,
-  //     content: (
-  //       <div>
-  //         <p>{`Cập nhật trạng thái ${staff.name} thành ${staff.deleted === false ? "Đã nghỉ" : "Đang làm"
-  //           } ?`}</p>
-  //         {staff.deleted === false ? (
-  //           <Input
-  //             placeholder="Nhập lý do nghỉ việc"
-  //             onChange={(e) => console.log(e.target.value)}
-  //           />
-  //         ) : (
-  //           ""
-  //         )}
-  //       </div>
-  //     ),
-  //     okText: "Xác nhận",
-  //     cancelText: "Hủy",
-  //     onOk: () => {
-  //       request
-  //         .put(`/staff/${staff.id}`, {
-  //           ...staff,
-  //           deleted:
-  //             staff.deleted === true
-  //               ? (staff.deleted = false)
-  //               : (staff.deleted = true),
-  //         })
-  //         .then((response) => {
-  //           if (response.status === 200) {
-  //             toast.success("Cập nhật thành công!");
-  //             loadData();
-  //           }
-  //         })
-  //         .catch((e) => {
-  //           console.log(e);
-  //         });
-  //     },
-  //   });
-  // };
 
   const columns = [
     {
@@ -116,11 +74,16 @@ function Staff() {
       dataIndex: 'id',
       key: 'action',
       render: (x) => (
-        <Tooltip placement="top" title="Chỉnh sửa">
-          <Link to={`/admin/staff/${x}`} className="btn btn-sm text-warning">
-            <i className="fas fa-edit"></i>
-          </Link>
-        </Tooltip>
+        <>
+          {jwtDecode(getTokenEmpoloyee()).role === 'ROLE_EMLOYEE' ? "" : (
+            <Tooltip placement="top" title="Chỉnh sửa">
+              <Link to={`/admin/staff/${x}`} className="btn btn-sm text-warning">
+                <i className="fas fa-edit"></i>
+              </Link>
+            </Tooltip>
+          )
+          }
+        </>
       )
     },
   ];
@@ -149,16 +112,18 @@ function Staff() {
         </Col>
         <Col span={4}>
           <div className="mb-1">‍</div>
-          <Link to={"/admin/staff/add"}>
-            <Button type="primary" className="bg-warning">
-              <i className="fas fa-plus-circle me-1"></i>Thêm nhân viên
-            </Button>
-          </Link>
+          {jwtDecode(getTokenEmpoloyee()).role === 'ROLE_EMLOYEE' ? "" : (
+            <Link to={"/admin/staff/add"}>
+              <Button type="primary" className="bg-warning">
+                <i className="fas fa-plus-circle me-1"></i>Thêm nhân viên
+              </Button>
+            </Link>
+          )}
         </Col>
       </Row>
-      <Table 
-        dataSource={staffList} 
-        columns={columns} 
+      <Table
+        dataSource={staffList}
+        columns={columns}
         className="mt-3"
         pagination={{
           showSizeChanger: true,

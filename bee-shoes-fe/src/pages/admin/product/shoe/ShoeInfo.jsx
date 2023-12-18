@@ -1,4 +1,5 @@
 import { Breadcrumb, Button, Carousel, Col, Divider, Empty, Form, Input, InputNumber, Modal, Row, Select, Switch, Table, Tooltip } from "antd";
+import { QRCode as QRCodeAntd } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -14,7 +15,9 @@ import FormatCurrency from "~/utils/FormatCurrency";
 import Title from "antd/es/typography/Title";
 import { toast } from "react-toastify";
 import { Option } from "antd/es/mentions";
-
+import QRCode from 'qrcode-generator';
+import download from 'downloadjs';
+import JSZip from "jszip";
 
 
 function ShoeInfo() {
@@ -22,33 +25,49 @@ function ShoeInfo() {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [listProductDetail, setListProductDetail] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [pageSize, setPageSize] = useState(5);
-
   const [listUpdate, setListUpdate] = useState([]);
-
   const [listSize, setListSize] = useState([]);
   const [searchSize, setSearchSize] = useState('');
-
   const [listColor, setListColor] = useState([]);
   const [listSole, setListSole] = useState([]);
-
   const [dataFilter, setDataFilter] = useState({});
-
-  const [productCodes, setProductCodes] = useState([]);
+  const [shoeDetailSelect, setShoeDetailSelect] = useState([]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const onSelectChange = (newSelectedRowKeys) => {
+  const onSelectChange = (newSelectedRowKeys, record) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
+    setShoeDetailSelect(record);
   };
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+  };
+
+  const downloadAllQRCode = () => {
+    const zip = new JSZip();
+    shoeDetailSelect.forEach((item, index) => {
+      const qr = QRCode(0, 'H');
+      qr.addData(item.code);
+      qr.make();
+      const canvas = document.createElement('canvas');
+      canvas.width = qr.getModuleCount() * 10;
+      canvas.height = qr.getModuleCount() * 10;
+      const context = canvas.getContext('2d');
+      context.fillStyle = '#ffffff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = '#000000';
+      qr.renderTo2dContext(context, 10);
+      const folder = zip.folder(`qrcodes`);
+      folder.file(`${item.code}${index + 1}.png`, canvas.toDataURL('image/png').split('base64,')[1], { base64: true });
+    });
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      download(content, 'qrcodes.zip', 'application/zip');
+    });
   };
 
   const handleWeightChange = (value, id) => {
@@ -329,9 +348,16 @@ function ShoeInfo() {
           <div className="flex-grow-1">
             <Title level={5}>Chi tiết sản phẩm</Title>
           </div>
-          <div className="">
-            {selectedRowKeys.length > 0 && <Button type="primary" onClick={() => handleUpdateFast()} className="bg-warning">Cập nhật {selectedRowKeys.length} sản phẩm</Button>}
-          </div>
+          {selectedRowKeys.length > 0 && (
+            <>
+              <div className="me-2">
+                <Button type="primary" onClick={() => downloadAllQRCode()}><i class="fa-solid fa-download me-2"></i> Tải QR</Button>
+              </div>
+              <div className="">
+                <Button type="primary" onClick={() => handleUpdateFast()} className="bg-warning">Cập nhật {selectedRowKeys.length} sản phẩm</Button>
+              </div>
+            </>
+          )}
         </div>
         <Form layout='vertical' onFinish={(data) => setDataFilter(data)} form={formFilter}>
           <Row gutter={10}>

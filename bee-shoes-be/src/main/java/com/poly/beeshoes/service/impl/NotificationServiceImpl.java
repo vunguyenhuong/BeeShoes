@@ -17,8 +17,8 @@ public class NotificationServiceImpl implements NotificationService {
     private INotificationRepository notificationRepository;
 
     @Override
-    public List<NotificationResponse> getByAccount(Long idAccount, String title) {
-        return notificationRepository.getByAccount(idAccount, title);
+    public List<NotificationResponse> getByAccount(Long idAccount) {
+        return notificationRepository.getByAccount(idAccount);
     }
 
     @Override

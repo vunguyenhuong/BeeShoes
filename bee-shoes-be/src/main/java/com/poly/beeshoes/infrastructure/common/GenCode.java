@@ -22,6 +22,8 @@ public class GenCode {
         String normalizedCode = Normalizer.normalize(name, Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
                 .replaceAll("\\s", "")
+                .replace("đ", "d")  // Thay thế ký tự "đ" thành "d"
+                .replace("Đ", "D")  // Thay thế ký tự "Đ" thành "D"
                 .toUpperCase();
 
         // Get the last 15 characters

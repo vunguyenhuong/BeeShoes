@@ -270,9 +270,13 @@ const BillDetail = () => {
             </>
           ) : bill.status === 6 ? (
             record.status === false ? (
-              <Tooltip placement="top" title="Trả hàng">
-                <Button onClick={() => handleGiveBack(id)} type="primary" danger icon={<i class="fa-solid fa-rotate-left"></i>}></Button>
-              </Tooltip>
+              <>
+                {bill.status === 7 || bill.status === 8 ? "" : (
+                  <Tooltip placement="top" title="Trả hàng">
+                    <Button onClick={() => handleGiveBack(id)} type="primary" danger icon={<i class="fa-solid fa-rotate-left"></i>}></Button>
+                  </Tooltip>
+                )}
+              </>
             ) : ""
           ) : ""}
         </>
@@ -330,7 +334,7 @@ const BillDetail = () => {
                             : item.status === 5 ? "Đang giao"
                               : item.status === 6 ? "Hoàn thành"
                                 : item.status === 7 ? "Hủy"
-                                  : item.status === 8 ? "Trả hàng"
+                                  : item.status === 8 ? "Hoàn 1 phần"
                                     : item.status === 500 ? "Chỉnh sửa đơn hàng" : ""}
                 </h6>
               }
@@ -352,7 +356,7 @@ const BillDetail = () => {
               {bill.status <= 4 && (
                 <Button type="primary" danger className="me-1" onClick={() => showModal(true)}>Hủy</Button>
               )}
-              {bill.status === 7 ? '' : (
+              {bill.status === 7 || bill.status === 8 ? '' : (
                 <Button type="primary" onClick={() => showModal(false)}>
                   {bill.status === 4 ? "Giao hàng" : bill.status === 5 ? "Hoàn thành" : "Xác nhận"}
                 </Button>
@@ -382,7 +386,11 @@ const BillDetail = () => {
         {bill.status <= 4 ? (
           <ShowProductModal idBill={bill.id} onClose={() => { loadBillDetail(); loadBill(); loadBillHistory() }} />
         ) : bill.status === 6 ? (
-          <GivebackAll bill={bill} onSuccess={() => { loadBillDetail(); loadBill(); loadBillHistory() }} />
+          <>
+            {bill.status === 7 || bill.status === 8 ? "" : (
+              <GivebackAll bill={bill} onSuccess={() => { loadBillDetail(); loadBill(); loadBillHistory() }} />
+            )}
+          </>
         ) : ""}
       </div>
       <Table dataSource={listBillDetail} columns={columns}

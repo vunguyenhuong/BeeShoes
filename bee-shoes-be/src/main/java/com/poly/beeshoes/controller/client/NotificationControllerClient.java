@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationControllerClient {
     @Autowired
     private NotificationService notificationService;
-//    @MessageMapping("/sendNotification")
-//    @SendTo("/topic/notification")
     @GetMapping("/{id}")
     public ResponseObject getByAccount(@PathVariable(name = "id") Long id){
         return new ResponseObject(notificationService.getByAccount(id));
